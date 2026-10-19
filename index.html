@@ -3,25 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raj Gahoi — Full-Stack & Core Systems Engineer</title>
+  <title>RAJ GAHOI — SYSTEMS & FULL-STACK</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg: #030712;
-      --card-bg: rgba(17, 24, 39, 0.65);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-border-hover: rgba(56, 189, 248, 0.4);
-      --text-main: #f9fafb;
-      --text-muted: #94a3b8;
-      --primary: #38bdf8;
-      --primary-rgb: 56, 189, 248;
-      --emerald: #10b981;
-      --purple: #a855f7;
-      --rose: #f43f5e;
+      --bg: #070708;
+      --card: #0d0d0f;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.22);
+      --text: #ffffff;
+      --muted: #808086;
+      --faint: #3a3a40;
+      --accent: #ffffff;
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'Space Grotesk', -apple-system, sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
 
@@ -31,719 +30,602 @@
       padding: 0;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       background-color: var(--bg);
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      color: var(--text);
+      font-family: var(--font-body);
       overflow-x: hidden;
-      min-height: 100vh;
-      position: relative;
+      cursor: default;
+      selection-background-color: #fff;
+      selection-color: #000;
     }
 
-    /* Ambient Glow Background Orbs */
-    .glow-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(140px);
-      z-index: 0;
-      pointer-events: none;
-      opacity: 0.45;
+    ::selection {
+      background: #ffffff;
+      color: #000000;
     }
 
-    .orb-1 {
-      top: -100px;
-      left: 15%;
-      width: 500px;
-      height: 500px;
-      background: radial-gradient(circle, #0284c7 0%, transparent 70%);
-    }
-
-    .orb-2 {
-      top: 400px;
-      right: 5%;
-      width: 450px;
-      height: 450px;
-      background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
-    }
-
-    .orb-3 {
-      bottom: 200px;
-      left: 10%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, #059669 0%, transparent 70%);
-    }
-
-    /* Canvas Grid Background */
-    .grid-overlay {
+    /* Grain Noise Texture */
+    .noise-overlay {
       position: fixed;
       inset: 0;
-      background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 50px 50px;
-      mask-image: radial-gradient(ellipse at 50% 30%, black 40%, transparent 80%);
-      -webkit-mask-image: radial-gradient(ellipse at 50% 30%, black 40%, transparent 80%);
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
       pointer-events: none;
-      z-index: 1;
+      z-index: 999;
     }
 
-    .container {
-      position: relative;
-      z-index: 2;
-      max-width: 1160px;
+    .wrapper {
+      max-width: 1360px;
       margin: 0 auto;
-      padding: 30px 24px 100px;
+      padding: 0 40px;
     }
 
-    /* Navbar */
+    /* Minimal Floating Topbar */
     header {
+      padding: 36px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 28px;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      border-radius: 40px;
-      margin-bottom: 70px;
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      border-bottom: 1px solid var(--border);
     }
 
-    .logo-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .avatar-ring {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #38bdf8, #818cf8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .brand {
+      font-family: var(--font-display);
+      font-size: 18px;
       font-weight: 800;
-      color: #000;
-      font-size: 14px;
-    }
-
-    .logo-text {
-      font-weight: 700;
-      font-size: 16px;
-      letter-spacing: -0.3px;
-    }
-
-    .nav-items {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-    }
-
-    .nav-link {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .nav-link:hover {
-      color: #fff;
-    }
-
-    /* Status Pill */
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      border-radius: 24px;
-      font-size: 13px;
-      font-weight: 600;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #34d399;
-      margin-bottom: 24px;
-    }
-
-    .pulse-dot {
-      width: 8px;
-      height: 8px;
-      background-color: #10b981;
-      border-radius: 50%;
-      box-shadow: 0 0 12px #10b981;
-      animation: pulse 2s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.3); opacity: 0.7; }
-    }
-
-    /* Hero Section */
-    .hero {
-      text-align: center;
-      max-width: 880px;
-      margin: 0 auto 90px;
-    }
-
-    .hero h1 {
-      font-size: 64px;
-      font-weight: 800;
-      letter-spacing: -2px;
-      line-height: 1.1;
-      margin-bottom: 24px;
-    }
-
-    .gradient-text {
-      background: linear-gradient(135deg, #ffffff 10%, #38bdf8 55%, #c084fc 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-subtitle {
-      font-size: 19px;
-      color: #94a3b8;
-      line-height: 1.6;
-      max-width: 700px;
-      margin: 0 auto 36px;
-    }
-
-    .hero-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-    }
-
-    .btn {
-      padding: 14px 32px;
-      border-radius: 30px;
-      font-size: 15px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .btn-glow {
-      background: linear-gradient(135deg, #0284c7, #38bdf8);
-      color: #030712;
-      font-weight: 700;
-      box-shadow: 0 10px 30px -5px rgba(56, 189, 248, 0.45);
-    }
-
-    .btn-glow:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 35px -5px rgba(56, 189, 248, 0.65);
-    }
-
-    .btn-glass {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      color: #fff;
-      backdrop-filter: blur(12px);
-    }
-
-    .btn-glass:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
-    }
-
-    /* Stats Ribbon */
-    .stats-ribbon {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 24px;
-      backdrop-filter: blur(20px);
-      margin-bottom: 90px;
-    }
-
-    .stat-item {
-      text-align: center;
-      padding: 8px 16px;
-      border-right: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .stat-item:last-child {
-      border-right: none;
-    }
-
-    .stat-number {
-      font-family: var(--font-mono);
-      font-size: 38px;
-      font-weight: 800;
-      background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 4px;
-    }
-
-    .stat-desc {
-      font-size: 13px;
-      color: var(--text-muted);
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Section Headers */
-    .section-head {
-      margin-bottom: 40px;
-    }
-
-    .section-tag {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      display: block;
-    }
-
-    .section-title {
-      font-size: 36px;
-      font-weight: 800;
-      letter-spacing: -1px;
-    }
-
-    /* Bento Grid for Projects */
-    .bento-grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 24px;
-      margin-bottom: 100px;
-    }
-
-    .bento-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 36px;
-      backdrop-filter: blur(20px);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .bento-card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.3), transparent);
-    }
-
-    .bento-card:hover {
-      border-color: var(--card-border-hover);
-      transform: translateY(-4px);
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
-    }
-
-    .bento-card.span-7 { grid-column: span 7; }
-    .bento-card.span-5 { grid-column: span 5; }
-    .bento-card.span-12 { grid-column: span 12; }
-
-    .card-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .badge-pill {
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 20px;
-      letter-spacing: 0.2px;
-    }
-
-    .badge-cyan { background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
-    .badge-purple { background: rgba(168, 85, 247, 0.12); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
-    .badge-emerald { background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
-
-    .card-title {
-      font-size: 24px;
-      font-weight: 700;
       letter-spacing: -0.5px;
-      margin-bottom: 14px;
-      line-height: 1.3;
-    }
-
-    .card-text {
-      color: var(--text-muted);
-      font-size: 15px;
-      line-height: 1.7;
-      margin-bottom: 28px;
-    }
-
-    .tech-tags {
+      text-transform: uppercase;
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 28px;
-    }
-
-    .tag {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      padding: 5px 12px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.04);
-      color: #cbd5e1;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .action-link {
-      display: inline-flex;
       align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      color: #38bdf8;
-      text-decoration: none;
-      transition: gap 0.2s;
-    }
-
-    .action-link:hover {
       gap: 12px;
-      text-decoration: underline;
     }
 
-    /* Terminal Showcase Box */
-    .terminal-box {
-      background: #090d16;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 18px 22px;
+    .brand-index {
       font-family: var(--font-mono);
-      font-size: 13px;
-      color: #94a3b8;
-      margin-bottom: 24px;
-      line-height: 1.6;
+      font-size: 11px;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 2px;
     }
 
-    .terminal-line {
+    .nav-group {
       display: flex;
-      gap: 10px;
-    }
-
-    .term-prompt { color: #38bdf8; }
-    .term-cmd { color: #f8fafc; font-weight: 600; }
-    .term-res { color: #34d399; }
-
-    /* Tech Stack Grid */
-    .skills-section {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 28px;
-      padding: 48px;
-      backdrop-filter: blur(20px);
-      margin-bottom: 90px;
-    }
-
-    .skills-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      align-items: center;
       gap: 36px;
     }
 
-    .skill-block h3 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .skill-block h3 span {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
-
-    .h-cyan { background: #38bdf8; box-shadow: 0 0 10px #38bdf8; }
-    .h-purple { background: #a855f7; box-shadow: 0 0 10px #a855f7; }
-    .h-emerald { background: #10b981; box-shadow: 0 0 10px #10b981; }
-
-    .skills-badge-wrap {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .skill-item {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      padding: 8px 16px;
-      border-radius: 12px;
-      font-size: 14px;
-      color: #e2e8f0;
-      font-weight: 500;
-      transition: all 0.2s;
-    }
-
-    .skill-item:hover {
-      background: rgba(56, 189, 248, 0.1);
-      border-color: rgba(56, 189, 248, 0.3);
-      color: #38bdf8;
-    }
-
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--card-border);
-      padding-top: 50px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: var(--text-muted);
-      font-size: 14px;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 24px;
-    }
-
-    .footer-links a {
-      color: var(--text-muted);
+    .nav-item {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
       text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 1px;
       transition: color 0.2s;
     }
 
-    .footer-links a:hover {
-      color: #fff;
+    .nav-item:hover {
+      color: var(--text);
     }
 
-    @media (max-width: 900px) {
-      .hero h1 { font-size: 44px; }
-      .bento-card.span-7, .bento-card.span-5 { grid-column: span 12; }
-      .stats-ribbon { grid-template-columns: repeat(2, 1fr); }
-      .stat-item:nth-child(2) { border-right: none; }
-      header { flex-direction: column; gap: 16px; border-radius: 20px; }
+    /* Hero Editorial Typography */
+    .hero {
+      padding: 120px 0 100px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 40px;
+    }
+
+    .hero-status {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-indicator {
+      width: 7px;
+      height: 7px;
+      background: #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #ffffff;
+    }
+
+    .hero-location {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .huge-title {
+      font-family: var(--font-display);
+      font-size: clamp(52px, 8.5vw, 120px);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      text-transform: uppercase;
+      margin-bottom: 50px;
+      word-spacing: 0.05em;
+    }
+
+    .huge-title .outline-text {
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4);
+      transition: -webkit-text-stroke 0.3s;
+    }
+
+    .huge-title:hover .outline-text {
+      -webkit-text-stroke: 1.5px #ffffff;
+    }
+
+    .hero-bottom-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: flex-start;
+    }
+
+    .hero-manifesto {
+      font-size: 21px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: #d1d1d6;
+      letter-spacing: -0.3px;
+    }
+
+    .hero-actions-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: flex-end;
+    }
+
+    .editorial-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #000;
+      background: #fff;
+      padding: 16px 36px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .editorial-btn:hover {
+      background: #e0e0e0;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
+    }
+
+    .editorial-btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .editorial-btn-secondary:hover {
+      background: #ffffff;
+      color: #000000;
+      border-color: #ffffff;
+    }
+
+    /* Index Strip Section */
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .strip-box {
+      padding: 40px 24px;
+      border-right: 1px solid var(--border);
+    }
+
+    .strip-box:last-child {
+      border-right: none;
+    }
+
+    .strip-num {
+      font-family: var(--font-display);
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 6px;
+    }
+
+    .strip-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Curated Works (List Style Awwwards) */
+    .work-section {
+      padding: 100px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-headline {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--muted);
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .project-row {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .project-row:last-child {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .project-row::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.02);
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .project-row:hover::before {
+      opacity: 1;
+    }
+
+    .project-row-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 80px 2.5fr 3fr 1fr;
+      align-items: baseline;
+      gap: 20px;
+    }
+
+    .p-idx {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--faint);
+      transition: color 0.3s;
+    }
+
+    .project-row:hover .p-idx {
+      color: var(--text);
+    }
+
+    .p-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .project-row:hover .p-title {
+      transform: translateX(10px);
+    }
+
+    .p-desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .p-action {
+      text-align: right;
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--muted);
+      transition: color 0.3s, transform 0.3s;
+    }
+
+    .project-row:hover .p-action {
+      color: #fff;
+      transform: translateX(4px);
+    }
+
+    /* Stack & Systems Matrix */
+    .systems-section {
+      padding: 100px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+
+    .matrix-col h4 {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 28px;
+    }
+
+    .matrix-list {
+      list-style: none;
+    }
+
+    .matrix-list li {
+      font-size: 17px;
+      font-weight: 500;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .matrix-list li span {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Footer Colophon */
+    footer {
+      padding: 80px 0 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .colophon-big {
+      font-family: var(--font-display);
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .social-link {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+    }
+
+    .social-link:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 960px) {
+      .hero-bottom-grid { grid-template-columns: 1fr; gap: 30px; }
+      .hero-actions-container { align-items: flex-start; }
+      .metric-strip { grid-template-columns: repeat(2, 1fr); }
+      .project-row-inner { grid-template-columns: 1fr; gap: 12px; }
+      .matrix-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 40px; align-items: flex-start; }
     }
   </style>
 </head>
 <body>
-  <!-- Ambient Glow Orbs -->
-  <div class="glow-orb orb-1"></div>
-  <div class="glow-orb orb-2"></div>
-  <div class="glow-orb orb-3"></div>
-  <div class="grid-overlay"></div>
+  <div class="noise-overlay"></div>
 
-  <div class="container">
+  <div class="wrapper">
     <!-- Navbar -->
     <header>
-      <div class="logo-container">
-        <div class="avatar-ring">RG</div>
-        <div class="logo-text">Raj Gahoi</div>
+      <div class="brand">
+        Raj Gahoi
+        <span class="brand-index">CORE / DEV</span>
       </div>
-      <nav class="nav-items">
-        <a href="#work" class="nav-link">Production Work</a>
-        <a href="#skills" class="nav-link">Stack</a>
-        <a href="https://github.com/RajGahoi" target="_blank" class="nav-link">GitHub</a>
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="nav-link">Upwork Profile</a>
-        <a href="mailto:gahoiraj01@gmail.com" class="nav-link">Contact</a>
+      <nav class="nav-group">
+        <a href="#work" class="nav-item">Selected Works</a>
+        <a href="#systems" class="nav-item">Architecture</a>
+        <a href="https://github.com/RajGahoi" target="_blank" class="nav-item">GitHub [15]</a>
+        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="nav-item">Upwork ↗</a>
       </nav>
     </header>
 
-    <!-- Hero -->
+    <!-- Editorial Hero -->
     <section class="hero">
-      <div class="status-badge">
-        <div class="pulse-dot"></div>
-        Available for High-Impact Contracts & Bounties
+      <div class="hero-meta-row">
+        <div class="hero-status">
+          <div class="status-indicator"></div>
+          Available for Select Contracts & Bounties
+        </div>
+        <div class="hero-location">India · Remote UTC+5:30</div>
       </div>
-      <h1>
-        Engineering <span class="gradient-text">High-Throughput</span> Distributed Systems & Modern Apps.
+
+      <h1 class="huge-title">
+        Distributed <span class="outline-text">Systems</span><br>
+        & High-Scale Web.
       </h1>
-      <p class="hero-subtitle">
-        Software Engineer specializing in distributed caching architectures (Valkey / Redis clusters), enterprise state synchronization, and reactive TypeScript/React Native codebases.
-      </p>
-      <div class="hero-buttons">
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn btn-glow">
-          Hire Me on Upwork ↗
-        </a>
-        <a href="https://github.com/RajGahoi" target="_blank" class="btn btn-glass">
-          Review GitHub Commits ↗
-        </a>
+
+      <div class="hero-bottom-grid">
+        <p class="hero-manifesto">
+          Full-Stack and Systems Engineer specializing in distributed caching topologies, non-destructive data parsers, and bulletproof client-state synchronization for high-scale applications.
+        </p>
+
+        <div class="hero-actions-container">
+          <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="editorial-btn">
+            Initiate Contract on Upwork ↗
+          </a>
+          <a href="https://github.com/RajGahoi" target="_blank" class="editorial-btn editorial-btn-secondary">
+            Inspect Source Code on GitHub
+          </a>
+        </div>
       </div>
     </section>
 
-    <!-- Stats Ribbon -->
-    <div class="stats-ribbon">
-      <div class="stat-item">
-        <div class="stat-number">15+</div>
-        <div class="stat-desc">Production Pull Requests</div>
+    <!-- Metric Strip -->
+    <div class="metric-strip">
+      <div class="strip-box">
+        <div class="strip-num">15+</div>
+        <div class="strip-label">Production Pull Requests</div>
       </div>
-      <div class="stat-item">
-        <div class="stat-number">16,384</div>
-        <div class="stat-desc">Cluster Slots Mapped</div>
+      <div class="strip-box">
+        <div class="strip-num">16K</div>
+        <div class="strip-label">Cluster Slots Mapped</div>
       </div>
-      <div class="stat-item">
-        <div class="stat-number">100%</div>
-        <div class="stat-desc">CI Verification & Pass</div>
+      <div class="strip-box">
+        <div class="strip-num">100%</div>
+        <div class="strip-label">CI Verification Rate</div>
       </div>
-      <div class="stat-item">
-        <div class="stat-number">0-Downtime</div>
-        <div class="stat-desc">Non-Destructive Parsers</div>
+      <div class="strip-box">
+        <div class="strip-num">0.00</div>
+        <div class="strip-label">Regression Tolerance</div>
       </div>
     </div>
 
-    <!-- Featured Engineering Showcase (Bento Grid) -->
-    <section id="work">
-      <div class="section-head">
-        <span class="section-tag">// SELECTED WORK</span>
-        <h2 class="section-title">Core Systems & Open-Source Infrastructure</h2>
+    <!-- Curated Works (Awwwards Style List) -->
+    <section class="work-section" id="work">
+      <div class="section-headline">
+        <span>// 01 · CURATED PRODUCTION CODE</span>
+        <span>2025 — 2026</span>
       </div>
 
-      <div class="bento-grid">
-        <!-- Card 1: Heatmap (Span 7) -->
-        <div class="bento-card span-7">
-          <div>
-            <div class="card-meta">
-              <span class="badge-pill badge-cyan">Distributed Systems · Linux Foundation</span>
-              <span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);">PR #579</span>
-            </div>
-            <h3 class="card-title">Valkey Admin: Cluster Slot Heatmap for Big Keys</h3>
-            <p class="card-text">
-              Engineered a full 16,384-slot CRC16 XMODEM hash tag distribution engine for Valkey in cluster mode. Features visual hot-spot detection, cluster node routing, and seamless Key Browser navigation.
-            </p>
-            <div class="terminal-box">
-              <div class="terminal-line"><span class="term-prompt">$</span> <span class="term-cmd">valkey-admin cluster-slots --analyze</span></div>
-              <div class="terminal-line"><span class="term-res">✓ [CRC16 HashTag Extracted]</span> 16384 slots mapped cleanly</div>
-              <div class="terminal-line"><span class="term-res">✓ [Coverage]</span> 100% CI passes (ESLint, Integration, CodeRabbit)</div>
-            </div>
-            <div class="tech-tags">
-              <span class="tag">TypeScript</span>
-              <span class="tag">React 19</span>
-              <span class="tag">CRC16 XMODEM</span>
-              <span class="tag">GLIDE 2.4</span>
-              <span class="tag">Radix UI</span>
-            </div>
+      <!-- Item 01 -->
+      <a href="https://github.com/valkey-io/valkey-admin/pull/579" target="_blank" class="project-row">
+        <div class="project-row-inner">
+          <div class="p-idx">01</div>
+          <div class="p-title">Valkey Cluster Heatmap</div>
+          <div class="p-desc">
+            Engineered full 16,384-slot CRC16 XMODEM hash tag distribution engine for Valkey Big Keys in cluster mode. Integrated interactive route selection and GLIDE 2.4 client routing.
           </div>
-          <a href="https://github.com/valkey-io/valkey-admin/pull/579" target="_blank" class="action-link">
-            Explore Pull Request #579 →
-          </a>
+          <div class="p-action">PR #579 ↗</div>
         </div>
+      </a>
 
-        <!-- Card 2: Binary Collections (Span 5) -->
-        <div class="bento-card span-5">
-          <div>
-            <div class="card-meta">
-              <span class="badge-pill badge-purple">Core Architecture</span>
-              <span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);">PR #578</span>
-            </div>
-            <h3 class="card-title">Collection Binary Elements Parser</h3>
-            <p class="card-text">
-              Solved collection key truncation in Valkey Admin by implementing a non-destructive binary detection engine across nested Hash, List, Set, and Zset structures.
-            </p>
-            <div class="tech-tags">
-              <span class="tag">Node.js</span>
-              <span class="tag">Buffer Streaming</span>
-              <span class="tag">Redux Toolkit</span>
-            </div>
+      <!-- Item 02 -->
+      <a href="https://github.com/valkey-io/valkey-admin/pull/578" target="_blank" class="project-row">
+        <div class="project-row-inner">
+          <div class="p-idx">02</div>
+          <div class="p-title">Binary Elements Parser</div>
+          <div class="p-desc">
+            Eliminated collection key truncation by designing non-destructive binary byte-level detection across nested Hash, List, Set, and Zset storage structures.
           </div>
-          <a href="https://github.com/valkey-io/valkey-admin/pull/578" target="_blank" class="action-link">
-            Explore Pull Request #578 →
-          </a>
+          <div class="p-action">PR #578 ↗</div>
         </div>
+      </a>
 
-        <!-- Card 3: Expensify Lifecycle (Span 12) -->
-        <div class="bento-card span-12">
-          <div>
-            <div class="card-meta">
-              <span class="badge-pill badge-emerald">Enterprise React Native Ecosystem</span>
-              <span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);">Issue #104307</span>
-            </div>
-            <h3 class="card-title">Expensify/App: Carousel Navigation & Stale State Resolution</h3>
-            <p class="card-text">
-              Identified and resolved an asynchronous race condition in navigation headers caused by split transaction deletions. Implemented defensive Onyx selectors and decoupled container transactions from carousel sibling resolvers.
-            </p>
-            <div class="tech-tags">
-              <span class="tag">React Native</span>
-              <span class="tag">Onyx ORM</span>
-              <span class="tag">Jest Unit Testing</span>
-              <span class="tag">Mobile Web & Native</span>
-            </div>
+      <!-- Item 03 -->
+      <a href="https://github.com/valkey-io/valkey-admin/pull/577" target="_blank" class="project-row">
+        <div class="project-row-inner">
+          <div class="p-idx">03</div>
+          <div class="p-title">Cluster Topology Metrics</div>
+          <div class="p-desc">
+            Surfaced real-time INFO metrics and CPU/memory utilization telemetry for replica nodes across heterogeneous Valkey cluster shards.
           </div>
-          <a href="https://github.com/RajGahoi/App/tree/fix/104307-arrow-nav-split-delete" target="_blank" class="action-link">
-            Review Verified Fix Branch on GitHub →
-          </a>
+          <div class="p-action">PR #577 ↗</div>
         </div>
-      </div>
+      </a>
+
+      <!-- Item 04 -->
+      <a href="https://github.com/RajGahoi/App/tree/fix/104307-arrow-nav-split-delete" target="_blank" class="project-row">
+        <div class="project-row-inner">
+          <div class="p-idx">04</div>
+          <div class="p-title">Expensify Navigation Core</div>
+          <div class="p-desc">
+            Fixed race conditions and asynchronous Onyx state desynchronization in multi-screen expense carousels with 100% automated regression coverage.
+          </div>
+          <div class="p-action">Issue #104307 ↗</div>
+        </div>
+      </a>
     </section>
 
-    <!-- Technical Arsenal -->
-    <section id="skills">
-      <div class="section-head">
-        <span class="section-tag">// TECHNICAL STACK</span>
-        <h2 class="section-title">Core Competencies & Stack</h2>
+    <!-- Architecture & Systems Section -->
+    <section class="systems-section" id="systems">
+      <div class="section-headline">
+        <span>// 02 · ARCHITECTURAL CAPABILITY</span>
+        <span>ENGINEERING FOUNDATION</span>
       </div>
 
-      <div class="skills-section">
-        <div class="skills-row">
-          <div class="skill-block">
-            <h3><span class="h-cyan"></span> Frontend Engineering</h3>
-            <div class="skills-badge-wrap">
-              <div class="skill-item">React 19 & Next.js</div>
-              <div class="skill-item">React Native & Expo</div>
-              <div class="skill-item">TypeScript (Strict)</div>
-              <div class="skill-item">Tailwind CSS</div>
-              <div class="skill-item">Radix & Shadcn UI</div>
-              <div class="skill-item">Redux Toolkit</div>
-            </div>
-          </div>
+      <div class="matrix-grid">
+        <div class="matrix-col">
+          <h4>Core Distributed</h4>
+          <ul class="matrix-list">
+            <li>Valkey / Redis Clusters <span>CRC16 / Sharding</span></li>
+            <li>Binary Protocol Parsers <span>Buffers / Framing</span></li>
+            <li>GLIDE 2.4 Driver <span>Rust / Node / Py</span></li>
+            <li>Memory Profiling <span>jemalloc / V8</span></li>
+          </ul>
+        </div>
 
-          <div class="skill-block">
-            <h3><span class="h-purple"></span> Backend & Systems</h3>
-            <div class="skills-badge-wrap">
-              <div class="skill-item">Node.js & Express</div>
-              <div class="skill-item">Valkey / Redis Clusters</div>
-              <div class="skill-item">Python & FastAPI</div>
-              <div class="skill-item">GraphQL & REST APIs</div>
-              <div class="skill-item">PostgreSQL & SQLite</div>
-              <div class="skill-item">Buffer & Binary Parsers</div>
-            </div>
-          </div>
+        <div class="matrix-col">
+          <h4>Modern Full-Stack</h4>
+          <ul class="matrix-list">
+            <li>React 19 & Next.js <span>Server Components</span></li>
+            <li>React Native & Expo <span>Mobile / Web</span></li>
+            <li>TypeScript <span>Strict Typing</span></li>
+            <li>Node.js & FastAPI <span>High-Throughput</span></li>
+          </ul>
+        </div>
 
-          <div class="skill-block">
-            <h3><span class="h-emerald"></span> Quality & DevOps</h3>
-            <div class="skills-badge-wrap">
-              <div class="skill-item">Jest & Automated Tests</div>
-              <div class="skill-item">GitHub Actions / CI/CD</div>
-              <div class="skill-item">Docker Containers</div>
-              <div class="skill-item">Memory Profiling</div>
-              <div class="skill-item">Linux / Bash</div>
-            </div>
-          </div>
+        <div class="matrix-col">
+          <h4>Reliability Standards</h4>
+          <ul class="matrix-list">
+            <li>Jest & Automated CI <span>Zero Failures</span></li>
+            <li>GitHub Actions <span>Multi-OS Matrix</span></li>
+            <li>Docker Containers <span>Reproducible</span></li>
+            <li>Open-Source DCO <span>Compliant</span></li>
+          </ul>
         </div>
       </div>
     </section>
 
     <!-- Footer -->
     <footer>
-      <div>© 2026 Raj Gahoi. Built for high performance & scale.</div>
-      <div class="footer-links">
-        <a href="mailto:gahoiraj01@gmail.com">gahoiraj01@gmail.com</a>
-        <a href="https://github.com/RajGahoi" target="_blank">GitHub</a>
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank">Upwork Profile</a>
+      <div>
+        <div class="colophon-big">Let's build something<br>exceptional.</div>
+        <p style="color: var(--muted); font-size: 14px;">Available for high-stakes software engineering contracts worldwide.</p>
+      </div>
+
+      <div class="social-links">
+        <a href="mailto:gahoiraj01@gmail.com" class="social-link">Email</a>
+        <a href="https://github.com/RajGahoi" target="_blank" class="social-link">GitHub</a>
+        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="social-link">Upwork Profile ↗</a>
       </div>
     </footer>
   </div>
