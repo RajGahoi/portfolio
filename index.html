@@ -3,767 +3,1153 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raj Gahoi — Systems & Full-Stack Engineer</title>
-  
-  <!-- Inter & Geist font families (The Linear / Vercel / Apple standard) -->
+  <title>Raj Gahoi · Systems & Full-Stack Engineer · Distributed Topologies</title>
+  <meta name="description" content="Raj Gahoi builds distributed memory caching, 16K cluster slot routing, non-destructive binary byte parsers, and resilient full-stack applications.">
+  <link rel="canonical" href="https://rajgahoi.github.io/portfolio/">
+
+  <!-- Elegant Japanese/Geist typography stack matching tryingtobenikhil.space -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Shippori+Mincho:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
+    /* ==========================================================================
+       "夕暮れの村" Dusk Indigo & Sumi Ink Aesthetic
+       Washi-white typography, lantern gold accents, vermilion seals, axon hairlines
+       ========================================================================== */
     :root {
-      --bg: #090a0f;
-      --card-bg: rgba(18, 20, 29, 0.65);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-hover-border: rgba(255, 255, 255, 0.2);
-      --text: #ededed;
-      --text-muted: #8a8f98;
-      --text-dim: #5c6068;
-      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --bg: #0e0d0f;              /* 墨 Sumi Ink background */
+      --bg-1: #151417;            /* Raised card surfaces */
+      --bg-2: #1c1b1f;            /* Elevated code / terminal containers */
+      --fg: #f1ebdd;              /* 胡粉 Washi White text */
+      --fg-rgb: 241, 235, 221;
+      --w-rgb: 236, 228, 210;     /* Hairlines and subtle washes */
+      --accent: #e4ad62;          /* 提灯 Lantern Gold highlight */
+      --accent-rgb: 228, 173, 98;
+      --accent-ink: #1a1206;      /* High-contrast text on accent pill */
+      --accent-3: #8fa6c2;        /* 藍鼠 Indigo Grey */
+      --shu: #d4553b;             /* 朱 Vermilion red for authentic seals */
+      --shu-rgb: 212, 85, 59;
+
+      --fg-2: rgba(var(--fg-rgb), 0.72);
+      --fg-3: rgba(var(--fg-rgb), 0.44);
+      --fg-4: rgba(var(--fg-rgb), 0.22);
+      --line: rgba(var(--w-rgb), 0.08);
+      --line-2: rgba(var(--w-rgb), 0.12);
+      --line-3: rgba(var(--w-rgb), 0.22);
+
+      --sans: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --serif: 'Shippori Mincho', 'Yu Mincho', Georgia, serif;
+      --mono: 'Geist Mono', ui-monospace, Menlo, monospace;
+
+      --max: 1140px;
+      --pad: 32px;
+      --r: 16px;
+      --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 96px; }
 
     body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: var(--font-sans);
-      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
-      line-height: 1.6;
       overflow-x: hidden;
     }
 
-    /* Subtle luxury radial beam at top center (Linear-style) */
-    .hero-glow-beam {
+    /* Subtle Film Grain Noise Texture */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 0.98 0 0 0 0 0.94 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .wrap {
+      position: relative;
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 0 var(--pad);
+    }
+
+    ::selection { background: var(--accent); color: var(--accent-ink); }
+    a { color: inherit; text-decoration: none; }
+    code { font-family: var(--mono); font-size: 0.88em; background: var(--bg-2); border: 1px solid var(--line-2); padding: 2px 7px; border-radius: 6px; }
+
+    /* Interactive Live LED dot */
+    .led {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(var(--accent-rgb), 0.2);
+      animation: ledPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes ledPulse {
+      50% { box-shadow: 0 0 0 6px rgba(var(--accent-rgb), 0.03); }
+    }
+
+    /* Vermilion Hanko Seal */
+    .seal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: 1px solid var(--shu);
+      color: var(--shu);
+      font-family: var(--serif);
+      font-size: 13px;
+      line-height: 1;
+      background: rgba(var(--shu-rgb), 0.08);
+      user-select: none;
+    }
+
+    .seal--lg {
+      width: 38px;
+      height: 38px;
+      font-size: 18px;
+      border-radius: 6px;
+    }
+
+    /* Axon Hairline Section Dividers */
+    .axon {
       position: absolute;
       top: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 1000px;
-      height: 480px;
-      background: radial-gradient(50% 50% at 50% 0%, rgba(99, 102, 241, 0.18) 0%, rgba(168, 85, 247, 0.08) 50%, transparent 100%);
-      pointer-events: none;
-      z-index: 0;
+      width: min(var(--max) - 2 * var(--pad), 100% - 2 * var(--pad));
+      height: 1px;
+      background: var(--line-2);
+    }
+    .axon::before, .axon::after {
+      content: '';
+      position: absolute;
+      top: -3px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1px solid var(--line-3);
+    }
+    .axon::before { left: 0; }
+    .axon::after { right: 0; }
+    .axon i {
+      position: absolute;
+      top: -1px;
+      left: 0;
+      width: 80px;
+      height: 3px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, transparent, var(--accent));
+      animation: axonRun 4.5s var(--ease) infinite;
+    }
+    @keyframes axonRun {
+      0% { left: 0; opacity: 0; }
+      10%, 75% { opacity: 1; }
+      85%, 100% { left: calc(100% - 80px); opacity: 0; }
     }
 
-    .container {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 0 32px;
-      position: relative;
-      z-index: 10;
-    }
-
-    /* Linear Clean Navigation Bar */
-    header {
+    /* Capsule Navigation Bar (tryingtobenikhil.space signature) */
+    .nav {
       position: fixed;
-      top: 0;
+      top: 16px;
       left: 0;
       right: 0;
       z-index: 100;
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      background: rgba(9, 10, 15, 0.75);
-      border-bottom: 1px solid var(--card-border);
+      padding: 0 16px;
+      pointer-events: none;
     }
-
-    .nav-inner {
-      max-width: 1080px;
+    .nav__capsule {
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      max-width: 100%;
       margin: 0 auto;
-      padding: 18px 32px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      height: 48px;
+      padding: 0 8px 0 16px;
+      border-radius: 999px;
+      background: rgba(16, 16, 18, 0.75);
+      border: 1px solid var(--line-2);
+      -webkit-backdrop-filter: blur(20px) saturate(140%);
+      backdrop-filter: blur(20px) saturate(140%);
+      box-shadow: 0 12px 32px -16px rgba(0, 0, 0, 0.9);
     }
 
-    .brand-group {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      text-decoration: none;
-      color: var(--text);
-    }
-
-    .brand-title {
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-    }
-
-    .status-badge {
+    .brand {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      font-size: 12px;
-      color: #34d399;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      padding: 2px 10px;
-      border-radius: 100px;
-      font-family: var(--font-mono);
-    }
-
-    .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #10b981;
-      box-shadow: 0 0 8px #10b981;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-
-    .nav-link {
-      color: var(--text-muted);
-      text-decoration: none;
+      gap: 10px;
+      padding-right: 14px;
+      border-right: 1px solid var(--line-2);
       font-size: 14px;
       font-weight: 500;
-      transition: color 0.2s;
-    }
-
-    .nav-link:hover {
-      color: var(--text);
-    }
-
-    .hire-btn-pill {
-      background: #ffffff;
-      color: #000000;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 8px 18px;
-      border-radius: 100px;
-      text-decoration: none;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .hire-btn-pill:hover {
-      background: #e4e4e7;
-      transform: translateY(-1px);
-    }
-
-    /* Hero Section (Understated, Whispered Authority) */
-    .hero {
-      padding-top: 160px;
-      padding-bottom: 70px;
-    }
-
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: #a78bfa;
-      background: rgba(167, 139, 250, 0.1);
-      border: 1px solid rgba(167, 139, 250, 0.2);
-      padding: 4px 12px;
-      border-radius: 100px;
-      margin-bottom: 24px;
-    }
-
-    .hero-title {
-      font-size: clamp(40px, 5.5vw, 68px);
-      font-weight: 600;
-      line-height: 1.1;
-      letter-spacing: -0.035em;
-      color: #ffffff;
-      margin-bottom: 24px;
-      max-width: 860px;
-    }
-
-    .hero-title .gradient-span {
-      background: linear-gradient(180deg, #ffffff 0%, #9ba1a6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-subtitle {
-      font-size: 18px;
-      color: var(--text-muted);
-      max-width: 640px;
-      line-height: 1.6;
-      margin-bottom: 36px;
-      font-weight: 400;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .btn-main {
-      background: #ffffff;
-      color: #000000;
-      font-size: 14px;
-      font-weight: 600;
-      padding: 12px 26px;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-main:hover {
-      background: #e2e8f0;
-      transform: translateY(-1px);
-    }
-
-    .btn-sub {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text);
-      border: 1px solid var(--card-border);
-      font-size: 14px;
-      font-weight: 500;
-      padding: 12px 24px;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-
-    .btn-sub:hover {
-      background: rgba(255, 255, 255, 0.08);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    /* Tabular KPI Strip */
-    .metric-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-top: 60px;
-      padding-top: 36px;
-      border-top: 1px solid var(--card-border);
-    }
-
-    .metric-num {
-      font-size: 28px;
-      font-weight: 600;
-      letter-spacing: -0.03em;
-      color: #fff;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .metric-label {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    /* Section Styling */
-    section {
-      padding: 80px 0;
-      border-top: 1px solid var(--card-border);
-    }
-
-    .section-header {
-      margin-bottom: 40px;
-    }
-
-    .section-eyebrow {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: #818cf8;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-bottom: 8px;
-    }
-
-    .section-heading {
-      font-size: 30px;
-      font-weight: 600;
-      letter-spacing: -0.025em;
-      color: #ffffff;
-    }
-
-    /* About Me (Story & Philosophy) */
-    .about-layout {
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 32px;
-    }
-
-    .about-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 32px;
-      backdrop-filter: blur(12px);
-    }
-
-    .about-card h3 {
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: #fff;
-      margin-bottom: 16px;
-    }
-
-    .about-card p {
-      color: var(--text-muted);
-      font-size: 15px;
-      line-height: 1.7;
-      margin-bottom: 16px;
-    }
-
-    .about-card p:last-child {
-      margin-bottom: 0;
-    }
-
-    .highlight {
-      color: #f1f5f9;
-      font-weight: 500;
-    }
-
-    .principle-item {
-      padding: 14px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .principle-item:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .principle-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-
-    .principle-desc {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
-
-    /* Projects (Linear Table / Card Index) */
-    .project-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .project-row {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 24px 28px;
-      text-decoration: none;
-      color: inherit;
-      display: grid;
-      grid-template-columns: 48px 1.4fr 2fr 120px;
-      align-items: center;
-      gap: 24px;
-      transition: all 0.2s ease;
-      backdrop-filter: blur(10px);
-    }
-
-    .project-row:hover {
-      border-color: var(--card-hover-border);
-      background: rgba(24, 27, 38, 0.8);
-      transform: translateY(-2px);
-    }
-
-    .proj-idx {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--text-dim);
-    }
-
-    .proj-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #ffffff;
-      letter-spacing: -0.015em;
-    }
-
-    .proj-org {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 3px;
-    }
-
-    .proj-summary {
-      font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.5;
-    }
-
-    .proj-cta {
-      text-align: right;
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: #a78bfa;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 4px;
-      transition: transform 0.2s;
-    }
-
-    .project-row:hover .proj-cta {
-      transform: translateX(3px);
-    }
-
-    /* Technical Stack Matrix */
-    .stack-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .stack-box {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 24px;
-    }
-
-    .stack-box h4 {
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 16px;
       letter-spacing: -0.01em;
     }
 
-    .tag-cloud {
+    .nav__links {
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+      gap: 2px;
     }
-
-    .tech-tag {
-      font-family: var(--font-mono);
+    .nav__links a {
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 13.5px;
+      color: var(--fg-3);
+      transition: color 0.2s, background-color 0.2s;
+    }
+    .nav__links a i {
+      font-family: var(--serif);
+      font-style: normal;
+      color: var(--accent);
+      margin-right: 5px;
       font-size: 12px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--card-border);
-      color: #cbd5e1;
-      padding: 5px 12px;
-      border-radius: 6px;
+    }
+    .nav__links a:hover {
+      color: var(--fg);
+      background: rgba(var(--w-rgb), 0.05);
     }
 
-    /* Upwork Direct Callout */
-    .hire-card {
-      background: linear-gradient(180deg, rgba(24, 27, 40, 0.7) 0%, rgba(15, 17, 24, 0.9) 100%);
-      border: 1px solid var(--card-hover-border);
-      border-radius: 16px;
-      padding: 44px 40px;
-      display: flex;
-      justify-content: space-between;
+    .nav__time {
+      display: inline-flex;
       align-items: center;
-      margin-top: 60px;
+      gap: 8px;
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--fg-3);
+    }
+    .nav__time b { font-weight: 400; color: var(--fg-2); }
+
+    .nav__hire {
+      background: var(--fg);
+      color: var(--bg);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 14px;
+      border-radius: 999px;
+      transition: all 0.2s;
+    }
+    .nav__hire:hover {
+      background: var(--accent);
+      color: var(--accent-ink);
     }
 
-    .hire-card-info h3 {
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      color: #fff;
-      margin-bottom: 8px;
-    }
-
-    .hire-card-info p {
-      font-size: 15px;
-      color: var(--text-muted);
-      max-width: 540px;
-    }
-
-    /* Minimal Footer */
-    footer {
-      border-top: 1px solid var(--card-border);
-      padding: 40px 0;
-      display: flex;
-      justify-content: space-between;
+    /* Buttons */
+    .btn {
+      display: inline-flex;
       align-items: center;
-      color: var(--text-dim);
+      gap: 10px;
+      height: 46px;
+      padding: 0 22px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font: 500 14.5px/1 var(--sans);
+      white-space: nowrap;
+      transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    .btn--primary {
+      background: var(--fg);
+      color: var(--bg);
+    }
+    .btn--primary:hover {
+      background: var(--accent);
+      color: var(--accent-ink);
+    }
+    .btn--ghost {
+      border-color: var(--line-3);
+      color: var(--fg);
+      background: rgba(var(--w-rgb), 0.02);
+    }
+    .btn--ghost:hover {
+      border-color: var(--fg-3);
+      background: rgba(var(--w-rgb), 0.06);
+    }
+    .btn--sm {
+      height: 36px;
+      padding: 0 14px;
       font-size: 13px;
+      border-radius: 8px;
     }
 
-    .footer-links {
-      display: flex;
-      gap: 20px;
-    }
-
-    .footer-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-size: 13px;
+    .textlink {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font: 500 14px/1 var(--sans);
+      color: var(--fg-2);
       transition: color 0.2s;
     }
+    .textlink:hover { color: var(--accent); }
 
-    .footer-links a:hover {
-      color: #fff;
+    /* Section Headings */
+    .section {
+      position: relative;
+      padding: 110px 0;
+    }
+    .shead {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 50px;
+      max-width: 820px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font: 400 13px/1 var(--mono);
+      color: var(--fg-2);
+    }
+    .tag em {
+      font-family: var(--serif);
+      font-style: normal;
+      color: var(--fg-3);
+      margin-left: 4px;
+    }
+    .tag span::after {
+      content: '';
+      display: inline-block;
+      width: 16px;
+      height: 1px;
+      margin-left: 10px;
+      vertical-align: middle;
+      background: var(--line-3);
+    }
+    .shead__title {
+      font-size: clamp(32px, 3.8vw, 48px);
+      font-weight: 450;
+      line-height: 1.1;
+      letter-spacing: -0.035em;
+    }
+    .shead__title .dim { color: var(--fg-3); }
+    .shead__desc { color: var(--fg-2); font-size: 16.5px; max-width: 38em; }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 140px 0 60px;
+    }
+    .hero__grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
+      gap: 48px;
+      align-items: center;
     }
 
+    .hero__title {
+      font-size: clamp(40px, 4.4vw, 62px);
+      font-weight: 500;
+      line-height: 1.05;
+      letter-spacing: -0.045em;
+      margin-bottom: 28px;
+    }
+    .hero__title .line { display: block; }
+    .hero__title .hero__sub { font-weight: 400; color: var(--fg-2); font-size: clamp(24px, 2.5vw, 36px); margin-top: 6px; }
+    .hero__key { color: var(--accent); }
+
+    .hero__lede {
+      font-size: 17.5px;
+      color: var(--fg-2);
+      max-width: 38em;
+      line-height: 1.65;
+      margin-bottom: 34px;
+    }
+
+    .hero__actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    /* Japanese Calligraphic Seal Card in Hero */
+    .hero__jp-card {
+      justify-self: end;
+      width: 100%;
+      max-width: 250px;
+      border-radius: var(--r);
+      border: 1px solid var(--line-2);
+      background: var(--bg-1);
+      overflow: hidden;
+      box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.9);
+    }
+    .portrait__bar, .portrait__foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 38px;
+      padding: 0 14px;
+      font: 400 11.5px/1 var(--mono);
+      color: var(--fg-2);
+      border-bottom: 1px solid var(--line);
+    }
+    .portrait__foot {
+      border-bottom: none;
+      border-top: 1px solid var(--line);
+      color: var(--fg-3);
+    }
+    .jp-canvas-wrap {
+      padding: 32px 20px;
+      text-align: center;
+      background: #09090b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .jp-big-kanji {
+      font-family: var(--serif);
+      font-size: 48px;
+      color: var(--fg);
+      line-height: 1;
+      letter-spacing: 4px;
+    }
+    .jp-sub-kana {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 2px;
+    }
+
+    /* Facts Row Strip */
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      margin-top: 72px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line-2);
+    }
+    .facts dt { font: 400 11px/1 var(--mono); color: var(--fg-3); margin-bottom: 8px; }
+    .facts dd { font-size: 16px; color: var(--fg); font-weight: 450; }
+
+    /* About Section */
+    .about {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+      gap: 60px;
+      align-items: start;
+    }
+    .about__text > p { font-size: 17px; line-height: 1.7; color: var(--fg-2); }
+    .about__text > p + p { margin-top: 18px; }
+    .about__text > p:first-child { font-size: 21px; line-height: 1.5; color: var(--fg); letter-spacing: -0.015em; }
+
+    /* Interactive Temperature Radio Buttons (just like tryingtobenikhil) */
+    .temp {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--fg-3);
+    }
+    .temp__opts {
+      display: inline-flex;
+      border: 1px solid var(--line-2);
+      border-radius: 999px;
+      padding: 2px;
+      background: var(--bg-1);
+    }
+    .temp__btn {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      color: var(--fg-3);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .temp__btn.is-active {
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-weight: 500;
+    }
+
+    /* Tech Stack Plaques Board */
+    .stack {
+      margin-top: 40px;
+      border-top: 1px solid var(--line);
+    }
+    .stack__row {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 16px;
+      align-items: center;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .stack__k { font: 400 12px/1 var(--mono); color: var(--fg-3); }
+    .pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pills li {
+      font: 400 12px/1 var(--mono);
+      color: var(--fg-2);
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line-2);
+      background: rgba(var(--w-rgb), 0.02);
+      transition: border-color 0.2s;
+    }
+    .pills li:hover { border-color: var(--accent); color: var(--fg); }
+
+    /* Meishi Namecard / Info Box */
+    .info {
+      border-radius: var(--r);
+      border: 1px solid var(--line-2);
+      background: var(--bg-1);
+      overflow: hidden;
+    }
+    .info__bar {
+      display: flex;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      font: 400 12px/1 var(--mono);
+      color: var(--fg-2);
+    }
+    .info dl {
+      padding: 8px 18px 12px;
+      font: 400 13px/1.4 var(--mono);
+    }
+    .info dl div {
+      display: grid;
+      grid-template-columns: 90px 1fr;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--line);
+    }
+    .info dl div:last-child { border-bottom: none; }
+    .info dt { color: var(--fg-3); }
+    .info dd { color: var(--fg); }
+    .info dd a:hover { color: var(--accent); }
+
+    /* Work / Feature Article Showcase */
+    .feature {
+      display: grid;
+      grid-template-columns: 1.25fr 0.75fr;
+      margin-bottom: 24px;
+      border-radius: 18px;
+      border: 1px solid var(--line-2);
+      background: linear-gradient(180deg, rgba(var(--w-rgb), 0.02), rgba(var(--w-rgb), 0.005));
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .feature:hover { border-color: var(--line-3); }
+    .feature--flip .feature__info { order: 2; }
+    .feature__info {
+      padding: 38px 40px 34px;
+      display: flex;
+      flex-direction: column;
+    }
+    .feature__top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+    .feature__kicker {
+      font: 400 12px/1 var(--mono);
+      color: var(--accent);
+    }
+    .feature__meta {
+      font: 400 12px/1 var(--mono);
+      color: var(--fg-3);
+    }
+    .feature__name {
+      margin-top: 14px;
+      font-size: clamp(28px, 2.6vw, 36px);
+      font-weight: 500;
+      letter-spacing: -0.035em;
+    }
+    .feature__tagline {
+      margin-top: 10px;
+      font-size: 16.5px;
+      line-height: 1.5;
+      color: var(--fg);
+      max-width: 28em;
+    }
+    .feature__text {
+      margin-top: 10px;
+      font-size: 14.5px;
+      color: var(--fg-2);
+      max-width: 38em;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 24px;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .metrics > div { padding: 14px 14px 14px 0; }
+    .metrics > div + div { padding-left: 14px; border-left: 1px solid var(--line); }
+    .metrics dd {
+      font-size: 22px;
+      font-weight: 500;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+    }
+    .metrics dt {
+      margin-top: 6px;
+      font-size: 12px;
+      line-height: 1.4;
+      color: var(--fg-3);
+    }
+
+    .feature__links {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: auto;
+      padding-top: 26px;
+    }
+
+    /* Live Interactive Canvas in Feature Card */
+    .feature__viz {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding: 24px 24px 26px;
+      border-left: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.3);
+    }
+    .feature--flip .feature__viz {
+      border-left: none;
+      border-right: 1px solid var(--line);
+    }
+    .viz__head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font: 400 11px/1 var(--mono);
+      color: var(--fg-3);
+    }
+
+    /* Slot Heatmap Simulation Matrix (8x4 = 32 blocks) */
+    .slot-matrix {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 4px;
+      aspect-ratio: 1;
+      max-width: 220px;
+      margin: auto;
+    }
+    .slot-cell {
+      border-radius: 3px;
+      border: 1px solid var(--line-2);
+      transition: background-color 0.4s, border-color 0.4s;
+    }
+    .slot-cell.active-gold { background: var(--accent); border-color: transparent; }
+    .slot-cell.active-dim { background: rgba(var(--accent-rgb), 0.35); border-color: transparent; }
+    .slot-cell.active-indigo { background: rgba(var(--fg-rgb), 0.7); border-color: transparent; }
+
+    /* Interactive Terminal Output */
+    .term {
+      border-radius: 10px;
+      border: 1px solid var(--line);
+      background: rgba(0, 0, 0, 0.45);
+      overflow-x: auto;
+      padding: 14px;
+      font: 400 11.5px/1.8 var(--mono);
+      color: var(--fg-2);
+    }
+    .term .p { color: var(--accent); }
+    .term .ok { color: #34d399; }
+    .term .m { color: var(--fg-4); }
+
+    /* Curated Works List */
+    .works-list {
+      margin-top: 40px;
+      border-top: 1px solid var(--line-2);
+    }
+    .work-row {
+      display: grid;
+      grid-template-columns: 80px 1.6fr 2fr auto;
+      gap: 20px;
+      align-items: baseline;
+      padding: 22px 0;
+      border-bottom: 1px solid var(--line);
+      transition: color 0.2s;
+    }
+    .work-row:hover .work-row__title { color: var(--accent); }
+    .work-row__idx { font: 400 13px/1 var(--mono); color: var(--fg-3); }
+    .work-row__title { font-size: 17px; font-weight: 500; letter-spacing: -0.015em; color: var(--fg); }
+    .work-row__org { font: 400 12px/1 var(--mono); color: var(--fg-3); margin-top: 4px; }
+    .work-row__desc { font-size: 14px; color: var(--fg-2); line-height: 1.5; }
+    .work-row__link { font: 400 13px/1 var(--mono); color: var(--accent); }
+
+    /* Contact Section & Footer */
+    .contact { padding-bottom: 90px; }
+    .contact__title {
+      font-size: clamp(36px, 5vw, 68px);
+      font-weight: 450;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      max-width: 14em;
+      margin-top: 24px;
+    }
+    .contact__lede { font-size: 18px; color: var(--fg-2); margin-top: 24px; max-width: 34em; }
+
+    .mail-row {
+      display: flex;
+      gap: 14px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .elsewhere {
+      max-width: 44em;
+      margin-top: 64px;
+      padding-top: 28px;
+      border-top: 1px solid var(--line-2);
+      font-size: 18px;
+      line-height: 1.7;
+      color: var(--fg-2);
+    }
+    .elsewhere a b {
+      font-weight: 500;
+      color: var(--fg);
+      border-bottom: 1px solid rgba(var(--accent-rgb), 0.45);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .elsewhere a:hover b { color: var(--accent); border-color: var(--accent); }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      padding: 32px 0 48px;
+    }
+    .footer__inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font: 400 12px/1.4 var(--mono);
+      color: var(--fg-3);
+    }
+    .footer__inner a { color: var(--fg-2); transition: color 0.2s; }
+    .footer__inner a:hover { color: var(--accent); }
+
     @media (max-width: 860px) {
-      .project-row { grid-template-columns: 1fr; gap: 12px; padding: 20px; }
-      .proj-cta { justify-content: flex-start; }
-      .about-layout { grid-template-columns: 1fr; }
-      .stack-grid { grid-template-columns: 1fr; }
-      .metric-grid { grid-template-columns: repeat(2, 1fr); }
-      .hire-card { flex-direction: column; gap: 24px; align-items: flex-start; padding: 32px 24px; }
-      .nav-links { gap: 16px; }
+      .hero__grid { grid-template-columns: 1fr; }
+      .hero__jp-card { justify-self: start; }
+      .facts { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+      .about { grid-template-columns: 1fr; }
+      .feature { grid-template-columns: 1fr; }
+      .work-row { grid-template-columns: 1fr; gap: 8px; }
+      .nav__links { display: none; }
     }
   </style>
 </head>
 <body>
-  <div class="hero-glow-beam"></div>
 
-  <!-- Header -->
-  <header>
-    <div class="nav-inner">
-      <a href="#" class="brand-group">
-        <span class="brand-title">Raj Gahoi</span>
-        <span class="status-badge">
-          <span class="dot"></span>
-          Available for contract
-        </span>
+  <!-- Navigation Capsule -->
+  <header class="nav">
+    <div class="nav__capsule">
+      <a href="#top" class="brand">
+        <span class="seal">ラ</span>
+        <span>Raj Gahoi</span>
       </a>
-      <nav class="nav-links">
-        <a href="#about" class="nav-link">About</a>
-        <a href="#projects" class="nav-link">Projects</a>
-        <a href="#stack" class="nav-link">Stack</a>
-        <a href="https://github.com/RajGahoi" target="_blank" class="nav-link">GitHub ↗</a>
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="hire-btn-pill">
-          Hire on Upwork
-        </a>
+
+      <nav class="nav__links">
+        <a href="#about"><i>序</i>About</a>
+        <a href="#work"><i>匠</i>Work</a>
+        <a href="#stack"><i>道</i>Stack</a>
+        <a href="#contact"><i>縁</i>Contact</a>
       </nav>
+
+      <span class="nav__time">
+        <span>IST</span> <b id="ist-time">--:--</b>
+      </span>
+
+      <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="nav__hire">
+        Hire on Upwork ↗
+      </a>
     </div>
   </header>
 
-  <main class="container">
+  <main class="wrap">
     <!-- Hero Section -->
-    <section class="hero">
-      <div class="hero-eyebrow">
-        <span>Distributed Systems & Full-Stack</span>
+    <section class="hero" id="top">
+      <div class="hero__grid">
+        <div class="hero__copy">
+          <p class="tag"><span class="seal">一</span>Raj Gahoi<em lang="ja">システム設計</em></p>
+
+          <h1 class="hero__title">
+            <span class="line">Raj Gahoi.</span>
+            <span class="line hero__sub">Distributed systems &amp; high-concurrency web.</span>
+            <span class="line hero__sub">Mapping clusters at <span class="hero__key">16,384 slots.</span></span>
+          </h1>
+
+          <p class="hero__lede">
+            Full-stack engineer contributing to core open-source infrastructure (Linux Foundation / Valkey) and engineering resilient client applications with zero regression tolerance.
+          </p>
+
+          <div class="hero__actions">
+            <a class="btn btn--primary" href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank">
+              Hire on Upwork <span aria-hidden="true">↗</span>
+            </a>
+            <a class="btn btn--ghost" href="https://github.com/RajGahoi" target="_blank">
+              GitHub Repositories <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Authentic Seal / Stamp Badge -->
+        <div class="hero__jp-card">
+          <div class="portrait__bar">
+            <span><i class="led"></i>raj.exe</span>
+            <span style="color: var(--accent);">active</span>
+          </div>
+          <div class="jp-canvas-wrap">
+            <div class="seal seal--lg">ラ</div>
+            <div class="jp-big-kanji">技術</div>
+            <div class="jp-sub-kana">SYSTEMS · CRAFT</div>
+          </div>
+          <div class="portrait__foot">
+            <span>Jaipur · UTC+5:30</span>
+            <span style="color: var(--fg-2);">0.00 err</span>
+          </div>
+        </div>
       </div>
 
-      <h1 class="hero-title">
-        Engineering reliable systems with <span class="gradient-span">clarity and precision.</span>
-      </h1>
+      <!-- Facts Row -->
+      <dl class="facts">
+        <div>
+          <dt>cluster slots</dt>
+          <dd>16,384 mapped</dd>
+        </div>
+        <div>
+          <dt>ci verification</dt>
+          <dd>100% green rate</dd>
+        </div>
+        <div>
+          <dt>regression policy</dt>
+          <dd>0.00 tolerance</dd>
+        </div>
+        <div>
+          <dt>direct contract</dt>
+          <dd><a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" style="color: var(--accent);">Upwork Verified ↗</a></dd>
+        </div>
+      </dl>
+    </section>
 
-      <p class="hero-subtitle">
-        I am Raj Gahoi, a full-stack engineer contributing to open-source infrastructure (Valkey cluster topologies, low-level binary protocols) and building resilient web applications.
+    <!-- Section 1: About Me -->
+    <section class="section" id="about">
+      <div class="axon"><i></i></div>
+      <header class="shead">
+        <p class="tag"><span class="seal">序</span>About<em lang="ja">自己紹介</em></p>
+        <h2 class="shead__title">Deterministic logic decides, <span class="dim">not guesswork or bloated dependencies.</span></h2>
+        <p class="shead__desc">How I approach engineering, system scale, and personal standards.</p>
+      </header>
+
+      <div class="about">
+        <div class="about__text">
+          <!-- Interactive Temperature Toggle (0.0 formal / 0.7 me / 1.4 raw) -->
+          <div class="temp">
+            <span>voice temperature</span>
+            <div class="temp__opts">
+              <button class="temp__btn" data-t="0">0.0 <small>formal</small></button>
+              <button class="temp__btn is-active" data-t="1">0.7 <small>me</small></button>
+              <button class="temp__btn" data-t="2">1.4 <small>unfiltered</small></button>
+            </div>
+          </div>
+
+          <p id="bio-p1">
+            Zero data corruption over convenient hacks. Rigorous automated tests over manual smoke checks. Shipped, reproducible code over architecture slides.
+          </p>
+          <p id="bio-p2">
+            I dive one layer beneath the surface: constructing the <strong style="color: var(--fg);">CRC16 hash slot router</strong> instead of relying on default sharding, designing non-destructive binary byte-parsers to prevent truncation, and squashing asynchronous race conditions in enterprise client apps.
+          </p>
+          <p id="bio-p3">
+            Open-source contributor to <a href="https://github.com/valkey-io/valkey-admin" target="_blank" style="color: var(--accent); border-bottom: 1px solid var(--line-3);">Valkey Admin</a> and active Expensify bounty engineer. Available for select high-stakes contracts worldwide.
+          </p>
+
+          <!-- Skills board hung like Dojo plaques -->
+          <div class="stack">
+            <div class="stack__row">
+              <span class="stack__k">systems</span>
+              <ul class="pills">
+                <li>Valkey / Redis Clusters</li>
+                <li>CRC16 Hash Sharding</li>
+                <li>Binary Framing</li>
+                <li>GLIDE 2.4 Driver</li>
+              </ul>
+            </div>
+            <div class="stack__row">
+              <span class="stack__k">full-stack</span>
+              <ul class="pills">
+                <li>React 19 &amp; Next.js</li>
+                <li>React Native &amp; Expo</li>
+                <li>TypeScript (Strict)</li>
+                <li>Node.js (Async I/O)</li>
+              </ul>
+            </div>
+            <div class="stack__row">
+              <span class="stack__k">reliability</span>
+              <ul class="pills">
+                <li>Jest Unit Testing</li>
+                <li>GitHub Actions CI Matrix</li>
+                <li>Docker Containers</li>
+                <li>DCO Compliance</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Meishi Business Card -->
+        <div class="info">
+          <div class="info__bar">
+            <span>名刺 <span style="color: var(--fg-3);">raj --info</span></span>
+            <span style="color: var(--accent);">v2026</span>
+          </div>
+          <dl>
+            <div><dt>location</dt><dd>India (UTC+5:30)</dd></div>
+            <div><dt>focus</dt><dd>Distributed Caching &amp; Full-Stack</dd></div>
+            <div><dt>bounties</dt><dd>Active Expensify Contributor</dd></div>
+            <div><dt>upwork</dt><dd><a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank">~014898525b9c53fc32 ↗</a></dd></div>
+            <div><dt>github</dt><dd><a href="https://github.com/RajGahoi" target="_blank">@RajGahoi ↗</a></dd></div>
+            <div><dt>status</dt><dd style="color: #34d399;">Available for contracts</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Production Work -->
+    <section class="section" id="work">
+      <div class="axon"><i></i></div>
+      <header class="shead">
+        <p class="tag"><span class="seal">二</span>Work<em lang="ja">作品</em></p>
+        <h2 class="shead__title">Tested against real traffic. <span class="dim">No black boxes left unopened.</span></h2>
+        <p class="shead__desc">Deep systems engineering and production pull requests.</p>
+      </header>
+
+      <!-- Feature 1: Valkey Cluster Heatmap -->
+      <article class="feature">
+        <div class="feature__info">
+          <div class="feature__top">
+            <p class="feature__kicker">Linux Foundation · Distributed Systems</p>
+            <span class="feature__meta">Pull Request #579</span>
+          </div>
+          <h3 class="feature__name">Valkey 16K Cluster Heatmap</h3>
+          <p class="feature__tagline">Full 16,384-slot CRC16 XMODEM hash distribution engine for Valkey Big Keys in cluster topologies.</p>
+          <p class="feature__text">Engineered interactive route selection and GLIDE 2.4 client routing, giving operators clear visibility into hot shards without degrading node throughput.</p>
+
+          <dl class="metrics">
+            <div><dd>16,384</dd><dt>cluster slots<br>mapped</dt></div>
+            <div><dd>0.00%</dd><dt>slot collision<br>tolerance</dt></div>
+            <div><dd>100%</dd><dt>CI suite pass<br>clean lint</dt></div>
+          </dl>
+
+          <div class="feature__links">
+            <a class="btn btn--primary btn--sm" href="https://github.com/valkey-io/valkey-admin/pull/579" target="_blank">
+              Review PR #579 ↗
+            </a>
+            <a class="textlink" href="https://github.com/valkey-io/valkey-admin" target="_blank">
+              valkey-admin repository →
+            </a>
+          </div>
+        </div>
+
+        <div class="feature__viz">
+          <div class="viz__head">
+            <span>cluster slot pool · 32 shards</span>
+            <span><i class="led"></i>live</span>
+          </div>
+          <!-- Animated Slot Matrix -->
+          <div class="slot-matrix" id="slotGrid">
+            <!-- 32 Grid Cells dynamically toggled -->
+            <div class="slot-cell active-gold"></div><div class="slot-cell"></div><div class="slot-cell active-dim"></div><div class="slot-cell"></div>
+            <div class="slot-cell"></div><div class="slot-cell active-indigo"></div><div class="slot-cell"></div><div class="slot-cell active-gold"></div>
+            <div class="slot-cell active-dim"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell active-indigo"></div>
+            <div class="slot-cell"></div><div class="slot-cell active-gold"></div><div class="slot-cell active-dim"></div><div class="slot-cell"></div>
+            <div class="slot-cell"></div><div class="slot-cell active-indigo"></div><div class="slot-cell"></div><div class="slot-cell active-gold"></div>
+            <div class="slot-cell active-gold"></div><div class="slot-cell"></div><div class="slot-cell active-dim"></div><div class="slot-cell"></div>
+            <div class="slot-cell"></div><div class="slot-cell active-indigo"></div><div class="slot-cell"></div><div class="slot-cell active-gold"></div>
+            <div class="slot-cell active-dim"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell active-indigo"></div>
+          </div>
+          <div class="term">
+            <div><span class="p">$</span> valkey-cli --cluster check 127.0.0.1:7000</div>
+            <div>[OK] All 16,384 slots covered across 3 masters.</div>
+            <div><span class="ok">100% tests passed</span>, 0 failures.</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Feature 2: Binary Byte Parser -->
+      <article class="feature feature--flip">
+        <div class="feature__info">
+          <div class="feature__top">
+            <p class="feature__kicker">Byte Buffer Protocols · Memory Safety</p>
+            <span class="feature__meta">Pull Request #578</span>
+          </div>
+          <h3 class="feature__name">Non-Destructive Binary Parser</h3>
+          <p class="feature__tagline">Eliminated collection key truncation across nested Hash, List, Set, and Zset structures.</p>
+          <p class="feature__text">Implemented non-destructive binary byte-level detection and zero-copy binary streaming, preserving raw payload fidelity for heterogeneous Valkey deployments.</p>
+
+          <dl class="metrics">
+            <div><dd>0</dd><dt>byte truncation<br>errors</dt></div>
+            <div><dd>Zero</dd><dt>unnecessary<br>memory copies</dt></div>
+            <div><dd>4</dd><dt>nested collection<br>types supported</dt></div>
+          </dl>
+
+          <div class="feature__links">
+            <a class="btn btn--primary btn--sm" href="https://github.com/valkey-io/valkey-admin/pull/578" target="_blank">
+              Review PR #578 ↗
+            </a>
+          </div>
+        </div>
+
+        <div class="feature__viz">
+          <div class="viz__head">
+            <span>binary buffer protocol</span>
+            <span>node:buffer</span>
+          </div>
+          <div class="term" style="margin: auto; width: 100%;">
+            <div><span class="p">const</span> isUtf8 = Buffer.isUtf8(rawBytes);</div>
+            <div><span class="p">if</span> (!isUtf8) {</div>
+            <div>&nbsp;&nbsp;<span class="p">return</span> sliceZeroCopyHex(rawBytes, 0, 64);</div>
+            <div>} <span class="m">// 0% data loss across arbitrary payloads</span></div>
+          </div>
+        </div>
+      </article>
+
+      <!-- More Works List Index -->
+      <div class="works-list">
+        <a href="https://github.com/RajGahoi/App/tree/fix/104307-arrow-nav-split-delete" target="_blank" class="work-row">
+          <span class="work-row__idx">03</span>
+          <div>
+            <div class="work-row__title">Expensify Navigation Core</div>
+            <div class="work-row__org">Enterprise React Native Ecosystem</div>
+          </div>
+          <div class="work-row__desc">
+            Resolved asynchronous race conditions in split transaction deletions with defensive Onyx state selectors.
+          </div>
+          <div class="work-row__link">Issue #104307 ↗</div>
+        </a>
+
+        <a href="https://github.com/valkey-io/valkey-admin/pull/577" target="_blank" class="work-row">
+          <span class="work-row__idx">04</span>
+          <div>
+            <div class="work-row__title">Cluster Topology Telemetry</div>
+            <div class="work-row__org">Valkey Admin Storage</div>
+          </div>
+          <div class="work-row__desc">
+            Surfaced real-time INFO metrics and CPU/memory utilization telemetry across heterogeneous cluster shards.
+          </div>
+          <div class="work-row__link">PR #577 ↗</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Section 3: Contact & Colophon -->
+    <section class="section contact" id="contact">
+      <div class="axon"><i></i></div>
+      <p class="tag"><span class="seal">三</span>Contact<em lang="ja">便り</em></p>
+      <h2 class="contact__title">
+        If you're looking for high-scale craft, <span style="color: var(--accent);">let's build together.</span>
+      </h2>
+      <p class="contact__lede">
+        Email is direct. Direct contracts on Upwork are pre-configured with zero onboarding friction.
       </p>
 
-      <div class="hero-actions">
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn-main">
-          Start Contract on Upwork ↗
+      <div class="mail-row">
+        <a class="btn btn--primary" href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank">
+          Initiate Contract on Upwork ↗
         </a>
-        <a href="https://github.com/RajGahoi" target="_blank" class="btn-sub">
-          View GitHub Profile
+        <a class="btn btn--ghost" href="mailto:gahoiraj01@gmail.com">
+          gahoiraj01@gmail.com
         </a>
       </div>
 
-      <!-- Metrics -->
-      <div class="metric-grid">
-        <div>
-          <div class="metric-num">16,384</div>
-          <div class="metric-label">Cluster slots routed</div>
-        </div>
-        <div>
-          <div class="metric-num">100%</div>
-          <div class="metric-label">Automated CI green rate</div>
-        </div>
-        <div>
-          <div class="metric-num">0.00</div>
-          <div class="metric-label">Regression tolerance</div>
-        </div>
-        <div>
-          <div class="metric-num">15+</div>
-          <div class="metric-label">Public open-source PRs</div>
-        </div>
+      <div class="elsewhere">
+        Elsewhere: 
+        <a href="https://github.com/RajGahoi" target="_blank"><b>GitHub</b></a> · 
+        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank"><b>Upwork Profile</b></a> · 
+        <a href="mailto:gahoiraj01@gmail.com"><b>Direct Email</b></a>
       </div>
     </section>
-
-    <!-- SECTION: ABOUT -->
-    <section id="about">
-      <div class="section-header">
-        <div class="section-eyebrow">Background</div>
-        <h2 class="section-heading">About Me</h2>
-      </div>
-
-      <div class="about-layout">
-        <div class="about-card">
-          <h3>The Engineer Behind the Code</h3>
-          <p>
-            I am a full-stack software engineer based in India with a focus on distributed caching, high-throughput backend services, and bulletproof client-side state synchronization.
-          </p>
-          <p>
-            My recent open-source work includes implementing the <span class="highlight">CRC16 XMODEM cluster slot engine</span> for the Linux Foundation's Valkey ecosystem, eliminating memory truncation across nested structures via non-destructive byte parsing, and eliminating asynchronous race conditions in <span class="highlight">Expensify's enterprise React Native application</span>.
-          </p>
-          <p>
-            I prioritize clarity over noise, strict typing, automated test coverage, and codebases designed for longevity.
-          </p>
-        </div>
-
-        <div class="about-card">
-          <h3>Core Standards</h3>
-          <div class="principle-item">
-            <div class="principle-title">Defensive State Handling</div>
-            <div class="principle-desc">Zero race conditions in asynchronous navigation and optimistic cache lifecycles.</div>
-          </div>
-          <div class="principle-item">
-            <div class="principle-title">Non-Destructive Parsing</div>
-            <div class="principle-desc">Preserve byte-level integrity across arbitrary binary buffers and nested data sets.</div>
-          </div>
-          <div class="principle-item">
-            <div class="principle-title">Deterministic CI Testing</div>
-            <div class="principle-desc">Every commit is backed by rigorous unit and integration regression suites.</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SECTION: PROJECTS -->
-    <section id="projects">
-      <div class="section-header">
-        <div class="section-eyebrow">Selected Work</div>
-        <h2 class="section-heading">Production Contributions</h2>
-      </div>
-
-      <div class="project-list">
-        <!-- PR 579 -->
-        <a href="https://github.com/valkey-io/valkey-admin/pull/579" target="_blank" class="project-row">
-          <div class="proj-idx">01</div>
-          <div>
-            <div class="proj-title">Valkey Cluster Heatmap</div>
-            <div class="proj-org">Linux Foundation · Valkey</div>
-          </div>
-          <div class="proj-summary">
-            Engineered the 16,384-slot CRC16 hash tag distribution engine for Valkey Big Keys in cluster mode, enabling interactive route selection with GLIDE 2.4.
-          </div>
-          <div class="proj-cta">PR #579 ↗</div>
-        </a>
-
-        <!-- PR 578 -->
-        <a href="https://github.com/valkey-io/valkey-admin/pull/578" target="_blank" class="project-row">
-          <div class="proj-idx">02</div>
-          <div>
-            <div class="proj-title">Binary Protocol Parser</div>
-            <div class="proj-org">Valkey Admin Storage</div>
-          </div>
-          <div class="proj-summary">
-            Prevented collection key truncation by designing zero-copy binary byte-level detection across nested Hash, List, Set, and Zset storage structures.
-          </div>
-          <div class="proj-cta">PR #578 ↗</div>
-        </a>
-
-        <!-- Expensify 104307 -->
-        <a href="https://github.com/RajGahoi/App/tree/fix/104307-arrow-nav-split-delete" target="_blank" class="project-row">
-          <div class="proj-idx">03</div>
-          <div>
-            <div class="proj-title">Expensify Navigation Core</div>
-            <div class="proj-org">Enterprise React Native</div>
-          </div>
-          <div class="proj-summary">
-            Resolved asynchronous race conditions and stale carousel navigation in expense carousels with defensive Onyx selectors and 100% Jest coverage.
-          </div>
-          <div class="proj-cta">Issue #104307 ↗</div>
-        </a>
-
-        <!-- PR 577 -->
-        <a href="https://github.com/valkey-io/valkey-admin/pull/577" target="_blank" class="project-row">
-          <div class="proj-idx">04</div>
-          <div>
-            <div class="proj-title">Cluster Topology Telemetry</div>
-            <div class="proj-org">Valkey Shard Diagnostics</div>
-          </div>
-          <div class="proj-summary">
-            Surfaced real-time INFO metrics and CPU/memory utilization telemetry for replica nodes across heterogeneous cluster shards.
-          </div>
-          <div class="proj-cta">PR #577 ↗</div>
-        </a>
-      </div>
-    </section>
-
-    <!-- SECTION: STACK -->
-    <section id="stack">
-      <div class="section-header">
-        <div class="section-eyebrow">Capabilities</div>
-        <h2 class="section-heading">Technical Arsenal</h2>
-      </div>
-
-      <div class="stack-grid">
-        <div class="stack-box">
-          <h4>Distributed & Systems</h4>
-          <div class="tag-cloud">
-            <span class="tech-tag">Valkey / Redis Clusters</span>
-            <span class="tech-tag">CRC16 Routing</span>
-            <span class="tech-tag">GLIDE 2.4 Driver</span>
-            <span class="tech-tag">Binary Framing</span>
-            <span class="tech-tag">Memory Profiling</span>
-          </div>
-        </div>
-
-        <div class="stack-box">
-          <h4>Modern Full-Stack</h4>
-          <div class="tag-cloud">
-            <span class="tech-tag">React 19 & Next.js</span>
-            <span class="tech-tag">React Native & Expo</span>
-            <span class="tech-tag">TypeScript</span>
-            <span class="tech-tag">Node.js</span>
-            <span class="tech-tag">Tailwind CSS</span>
-          </div>
-        </div>
-
-        <div class="stack-box">
-          <h4>Testing & Operations</h4>
-          <div class="tag-cloud">
-            <span class="tech-tag">Jest Unit Testing</span>
-            <span class="tech-tag">GitHub Actions CI</span>
-            <span class="tech-tag">Docker</span>
-            <span class="tech-tag">Linux / Bash</span>
-            <span class="tech-tag">DCO Standards</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Upwork Direct Callout Card -->
-      <div class="hire-card">
-        <div class="hire-card-info">
-          <h3>Available for Select Contracts</h3>
-          <p>
-            Open for software architecture, systems engineering, and full-stack development contracts directly on Upwork or via direct engagement.
-          </p>
-        </div>
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn-main">
-          Hire Raj on Upwork ↗
-        </a>
-      </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-      <div>© 2026 Raj Gahoi. All rights reserved.</div>
-      <div class="footer-links">
-        <a href="mailto:gahoiraj01@gmail.com">Email</a>
-        <a href="https://github.com/RajGahoi" target="_blank">GitHub</a>
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank">Upwork</a>
-      </div>
-    </footer>
   </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <div>© 2026 Raj Gahoi · Distributed Systems &amp; Full-Stack</div>
+      <div>
+        <a href="#top">back to top ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts: Live Clock & Interactive Voice Switcher -->
+  <script>
+    // Live IST Clock
+    function updateClock() {
+      const now = new Date();
+      const options = { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false };
+      const timeStr = now.toLocaleTimeString('en-GB', options);
+      const clockEl = document.getElementById('ist-time');
+      if (clockEl) clockEl.textContent = timeStr;
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+
+    // Voice Temperature Switcher
+    const tempP1 = document.getElementById('bio-p1');
+    const tempP2 = document.getElementById('bio-p2');
+    const tempBtns = document.querySelectorAll('.temp__btn');
+
+    const voices = {
+      '0': {
+        p1: "Adherence to deterministic state validation over speculative optimizations. Rigorous test coverage over subjective assessment. Shipped, reproducible software over theoretical specifications.",
+        p2: "Specializing in distributed memory management, CRC16 hash tag sharding algorithms, and low-latency client-server synchronization across large-scale enterprise codebases."
+      },
+      '1': {
+        p1: "Zero data corruption over convenient hacks. Rigorous automated tests over manual smoke checks. Shipped, reproducible code over architecture slides.",
+        p2: "I dive one layer beneath the surface: constructing the CRC16 hash slot router instead of relying on default sharding, designing non-destructive binary byte-parsers to prevent truncation, and squashing asynchronous race conditions in enterprise client apps."
+      },
+      '2': {
+        p1: "If the unit tests don't catch it, production will. I despise silent byte truncation, race conditions, and 'works on my machine' shrugs.",
+        p2: "I'd rather spend 12 hours debugging buffer pointers and CRC16 bitwise masks in Valkey than ship a fragile wrapper that crashes when real traffic hits."
+      }
+    };
+
+    tempBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tempBtns.forEach(b => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+        const t = btn.dataset.t;
+        if (voices[t]) {
+          tempP1.textContent = voices[t].p1;
+          tempP2.textContent = voices[t].p2;
+        }
+      });
+    });
+
+    // Subtly animate the slot matrix cells
+    const cells = document.querySelectorAll('.slot-cell');
+    setInterval(() => {
+      const idx = Math.floor(Math.random() * cells.length);
+      cells[idx].classList.toggle('active-gold');
+    }, 1200);
+  </script>
 </body>
 </html>
