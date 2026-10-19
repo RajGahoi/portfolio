@@ -3,23 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RAJ GAHOI — Creative Developer & Systems Architect</title>
+  <title>RAJ GAHOI // CREATIVE SYSTEMS ARCHITECT</title>
   
+  <!-- CDNs for Three.js, GSAP, and Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
   
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
   <style>
     :root {
-      --bg: #0a0a0c;
-      --surface: #121216;
-      --surface-hover: #1a1a20;
-      --border: rgba(255, 255, 255, 0.08);
-      --border-light: rgba(255, 255, 255, 0.16);
-      --text: #ffffff;
-      --text-muted: #9494a0;
-      --accent-glow: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
-      --gradient-accent: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+      --bg: #030305;
+      --card-bg: rgba(16, 16, 24, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-glow: rgba(99, 102, 241, 0.4);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-cyan: #06b6d4;
+      --accent-purple: #8b5cf6;
+      --accent-pink: #ec4899;
+      --accent-green: #10b981;
       --font-display: 'Syne', sans-serif;
       --font-body: 'Plus Jakarta Sans', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
@@ -29,153 +35,160 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      cursor: none; /* Custom interactive studio cursor */
-    }
-
-    html {
-      scroll-behavior: smooth;
     }
 
     body {
       background-color: var(--bg);
-      color: var(--text);
+      color: var(--text-main);
       font-family: var(--font-body);
       overflow-x: hidden;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Ambient dynamic glow backdrops */
-    .ambient-bg {
-      position: fixed;
-      inset: 0;
-      background: 
-        radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 85% 75%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.03) 0%, transparent 60%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Grain Film Texture */
-    .noise {
-      position: fixed;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.025'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 999;
-    }
-
-    /* Creative Studio Custom Cursor */
-    .cursor-dot {
-      width: 8px;
-      height: 8px;
-      background: #fff;
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 10000;
-      transform: translate(-50%, -50%);
-      transition: opacity 0.2s, transform 0.05s;
-    }
-
-    .cursor-ring {
-      width: 44px;
-      height: 44px;
-      border: 1.5px solid rgba(255, 255, 255, 0.4);
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
-                  height 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
-                  background-color 0.3s, 
-                  border-color 0.3s;
-    }
-
-    .cursor-ring.active {
-      width: 80px;
-      height: 80px;
-      background-color: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(4px);
-      border-color: #fff;
-    }
-
-    .cursor-ring.text-hover {
-      width: 90px;
-      height: 90px;
-      background-color: #ffffff;
-      mix-blend-mode: difference;
-      border: none;
-    }
-
-    /* Header Nav */
-    header {
+    /* 3D WebGL Canvas Layer (Fixed full background) */
+    #webgl-canvas {
       position: fixed;
       top: 0;
       left: 0;
-      right: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Film grain noise */
+    .grain-overlay {
+      position: fixed;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Interactive Fluid Cursor */
+    .custom-cursor {
+      width: 10px;
+      height: 10px;
+      background: #fff;
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, background-color 0.2s, opacity 0.2s;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+    }
+
+    .cursor-follower {
+      width: 44px;
+      height: 44px;
+      border: 1.5px solid rgba(255, 255, 255, 0.35);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.08s ease-out, width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s;
+    }
+
+    body:hover .custom-cursor { opacity: 1; }
+    
+    .cursor-hover .custom-cursor {
+      width: 60px;
+      height: 60px;
+      background: rgba(255, 255, 255, 0.95);
+      mix-blend-mode: difference;
+    }
+
+    .cursor-hover .cursor-follower {
+      width: 80px;
+      height: 80px;
+      border-color: rgba(99, 102, 241, 0.8);
+      background: rgba(99, 102, 241, 0.1);
+      backdrop-filter: blur(2px);
+    }
+
+    /* Content Overlay */
+    .content-container {
+      position: relative;
+      z-index: 10;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* Floating Futuristic Nav */
+    header {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 80px);
+      max-width: 1360px;
       z-index: 100;
-      padding: 24px 48px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 14px 28px;
+      background: rgba(10, 10, 18, 0.7);
       backdrop-filter: blur(20px);
-      background: rgba(10, 10, 12, 0.65);
-      border-bottom: 1px solid var(--border);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 100px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
 
-    .logo {
+    .brand-logo {
       font-family: var(--font-display);
       font-weight: 800;
-      font-size: 20px;
+      font-size: 18px;
       letter-spacing: -0.5px;
+      color: #fff;
+      text-decoration: none;
       display: flex;
       align-items: center;
       gap: 12px;
-      text-decoration: none;
-      color: #fff;
     }
 
-    .status-badge {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      padding: 4px 10px;
-      background: rgba(16, 185, 129, 0.1);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: #34d399;
-      border-radius: 100px;
-      display: flex;
+    .badge-live {
+      display: inline-flex;
       align-items: center;
       gap: 6px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 100px;
     }
 
-    .pulse {
+    .pulsing-dot {
       width: 6px;
       height: 6px;
-      background: #34d399;
+      background: #10b981;
       border-radius: 50%;
-      box-shadow: 0 0 10px #34d399;
-      animation: pulseAnim 2s infinite;
+      box-shadow: 0 0 10px #10b981;
+      animation: pulse 1.8s infinite;
     }
 
-    @keyframes pulseAnim {
+    @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.4; transform: scale(0.8); }
+      50% { opacity: 0.4; transform: scale(0.7); }
     }
 
-    .nav-links {
+    .nav-actions {
       display: flex;
       align-items: center;
-      gap: 32px;
+      gap: 20px;
     }
 
     .nav-link {
-      font-size: 13px;
-      font-weight: 600;
       color: var(--text-muted);
       text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 13px;
       transition: color 0.2s;
     }
 
@@ -183,508 +196,425 @@
       color: #fff;
     }
 
-    .cta-pill {
+    .cta-button {
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: #fff;
       font-family: var(--font-mono);
       font-size: 12px;
       font-weight: 600;
-      background: #fff;
-      color: #000;
-      padding: 10px 22px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 10px 24px;
       border-radius: 100px;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
     }
 
-    .cta-pill:hover {
+    .cta-button:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-    }
-
-    /* Container */
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0 48px;
-      position: relative;
-      z-index: 10;
+      box-shadow: 0 8px 30px rgba(168, 85, 247, 0.6);
     }
 
     /* Hero Section */
-    .hero {
-      min-height: 90vh;
+    .hero-section {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       padding-top: 140px;
-      padding-bottom: 80px;
-      position: relative;
+      padding-bottom: 60px;
     }
 
-    .hero-tag {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: #a855f7;
-      margin-bottom: 24px;
+    .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 24px;
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      padding: 6px 16px;
+      border-radius: 100px;
+      width: fit-content;
     }
 
     .hero-title {
       font-family: var(--font-display);
-      font-size: clamp(48px, 8vw, 110px);
+      font-size: clamp(48px, 8.5vw, 120px);
       font-weight: 800;
       line-height: 0.95;
       letter-spacing: -0.04em;
-      margin-bottom: 36px;
       text-transform: uppercase;
+      margin-bottom: 32px;
     }
 
-    .gradient-text {
-      background: var(--gradient-accent);
+    .gradient-word {
+      background: linear-gradient(135deg, #06b6d4 0%, #a855f7 50%, #ec4899 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 40px rgba(168, 85, 247, 0.3));
     }
 
-    .hero-sub {
-      font-size: clamp(18px, 2vw, 24px);
-      max-width: 720px;
+    .hero-tagline {
+      font-size: clamp(18px, 2.2vw, 24px);
+      font-weight: 400;
       color: var(--text-muted);
+      max-width: 760px;
       margin-bottom: 48px;
       line-height: 1.5;
     }
 
-    .hero-meta-grid {
-      display: grid;
-      grid-template-columns: repeat(3, auto);
-      gap: 40px;
-      align-items: center;
-      width: fit-content;
-      margin-bottom: 60px;
-    }
-
-    .meta-stat-num {
-      font-family: var(--font-display);
-      font-size: 38px;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .meta-stat-label {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .hero-actions {
+    .hero-buttons {
       display: flex;
       gap: 20px;
       align-items: center;
       flex-wrap: wrap;
     }
 
-    .btn-studio-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
+    .btn-epic {
+      background: #ffffff;
+      color: #000000;
       font-family: var(--font-mono);
       font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      letter-spacing: 1.5px;
-      font-weight: 600;
-      background: #fff;
-      color: #000;
-      padding: 18px 38px;
+      padding: 18px 40px;
       border-radius: 100px;
       text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 40px rgba(255, 255, 255, 0.25);
     }
 
-    .btn-studio-primary:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 35px rgba(255, 255, 255, 0.25);
+    .btn-epic:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 15px 50px rgba(255, 255, 255, 0.45);
     }
 
-    .btn-studio-ghost {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
+    .btn-glass {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
       font-family: var(--font-mono);
       font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
       font-weight: 600;
-      background: transparent;
-      color: #fff;
-      padding: 18px 38px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 18px 36px;
       border-radius: 100px;
-      border: 1px solid var(--border-light);
       text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(10px);
       transition: all 0.3s;
     }
 
-    .btn-studio-ghost:hover {
-      background: rgba(255, 255, 255, 0.08);
+    .btn-glass:hover {
+      background: rgba(255, 255, 255, 0.12);
       border-color: #fff;
       transform: translateY(-3px);
     }
 
-    /* Horizontal Showcase Slider Section */
-    .slider-section {
-      padding: 120px 0 80px;
-      position: relative;
+    /* Live Telemetry KPI Ticker */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin: 80px 0 140px;
     }
 
-    .section-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 40px;
+    .kpi-card {
+      background: rgba(16, 16, 26, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 28px 24px;
+      backdrop-filter: blur(16px);
+      transition: all 0.3s;
+    }
+
+    .kpi-card:hover {
+      border-color: var(--card-border-glow);
+      transform: translateY(-4px);
+      background: rgba(20, 20, 36, 0.8);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .kpi-val {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+      letter-spacing: -1px;
+    }
+
+    .kpi-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Interactive 3D Holographic Project Showcase */
+    .showcase-section {
+      padding: 60px 0 140px;
     }
 
     .section-eyebrow {
       font-family: var(--font-mono);
-      font-size: 12px;
-      color: #6366f1;
+      font-size: 13px;
+      color: var(--accent-cyan);
       text-transform: uppercase;
       letter-spacing: 2px;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
 
-    .section-heading {
+    .section-headline {
       font-family: var(--font-display);
-      font-size: clamp(32px, 4vw, 54px);
+      font-size: clamp(36px, 5vw, 64px);
       font-weight: 800;
-      letter-spacing: -1px;
+      letter-spacing: -1.5px;
+      margin-bottom: 60px;
     }
 
-    .slider-controls {
-      display: flex;
-      gap: 12px;
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
     }
 
-    .slider-arrow-btn {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-    }
-
-    .slider-arrow-btn:hover {
-      background: #fff;
-      color: #000;
-      border-color: #fff;
-      transform: scale(1.08);
-    }
-
-    /* Horizontal Cards Slider Track */
-    .cards-slider {
-      display: flex;
-      gap: 32px;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding-bottom: 40px;
-      scrollbar-width: none; /* Hide default scrollbar */
-      -ms-overflow-style: none;
-    }
-
-    .cards-slider::-webkit-scrollbar {
-      display: none;
+    /* 3D Tilt Card Container */
+    .tilt-card-wrapper {
+      perspective: 1000px;
     }
 
     .project-card {
-      flex: 0 0 540px;
-      scroll-snap-align: start;
-      background: var(--surface);
-      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(20, 20, 32, 0.85) 0%, rgba(12, 12, 20, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 28px;
-      padding: 36px;
+      padding: 40px;
+      min-height: 520px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      height: 600px;
       position: relative;
       overflow: hidden;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s;
       text-decoration: none;
       color: inherit;
     }
 
     .project-card:hover {
-      transform: translateY(-8px);
-      border-color: var(--border-light);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.6);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 50px rgba(99, 102, 241, 0.2);
     }
 
-    .project-card::before {
+    /* Card Glow Gradient on Top Border */
+    .project-card::after {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 4px;
-      background: var(--gradient-accent);
+      height: 3px;
+      background: linear-gradient(90deg, #06b6d4, #8b5cf6, #ec4899);
       opacity: 0;
       transition: opacity 0.3s;
     }
 
-    .project-card:hover::before {
+    .project-card:hover::after {
       opacity: 1;
     }
 
-    .card-top {
+    .card-meta-row {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
       margin-bottom: 24px;
+      transform: translateZ(30px);
     }
 
-    .card-idx {
+    .card-num {
       font-family: var(--font-mono);
       font-size: 13px;
-      color: var(--text-muted);
-      border: 1px solid var(--border);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(6, 182, 212, 0.3);
       padding: 4px 12px;
       border-radius: 100px;
+      background: rgba(6, 182, 212, 0.08);
     }
 
-    .card-status-pill {
+    .card-ecosystem {
       font-family: var(--font-mono);
-      font-size: 11px;
-      color: #a855f7;
+      font-size: 12px;
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    /* Floating UI Mockup Canvas inside Card */
-    .card-mockup {
-      height: 240px;
-      background: #08080a;
-      border: 1px solid var(--border);
-      border-radius: 18px;
+    /* Interactive Visual Screen Simulation */
+    .card-display-sim {
+      height: 200px;
+      background: rgba(6, 6, 12, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
       margin-bottom: 28px;
       position: relative;
       overflow: hidden;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      padding: 16px;
-      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8);
+      transform: translateZ(40px);
     }
 
-    .project-card:hover .card-mockup {
-      transform: scale(1.02);
-    }
-
-    .mockup-header {
+    .sim-bar {
       display: flex;
-      align-items: center;
       gap: 6px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
-    .mock-dot {
-      width: 8px;
-      height: 8px;
+    .sim-dot {
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background: #2a2a32;
+      background: #334155;
     }
 
-    .mock-dot.red { background: #ef4444; }
-    .mock-dot.yellow { background: #f59e0b; }
-    .mock-dot.green { background: #10b981; }
+    .sim-dot.red { background: #ef4444; }
+    .sim-dot.yellow { background: #f59e0b; }
+    .sim-dot.green { background: #10b981; }
 
-    /* Interactive visuals inside mockup */
-    .mockup-heatmap-grid {
+    /* Valkey Slot Visualizer Simulation */
+    .slot-visual-grid {
       display: grid;
       grid-template-columns: repeat(16, 1fr);
-      gap: 4px;
+      gap: 3px;
       height: 100%;
       align-content: center;
     }
 
-    .heatmap-cell {
-      height: 14px;
+    .slot-cell {
+      height: 12px;
       border-radius: 2px;
-      background: rgba(255, 255, 255, 0.05);
-      transition: background 0.3s;
+      background: rgba(255, 255, 255, 0.04);
+      transition: all 0.4s;
     }
 
-    .project-card:hover .heatmap-cell.hot {
-      background: #ec4899;
-      box-shadow: 0 0 8px #ec4899;
+    .project-card:hover .slot-cell:nth-child(3n) {
+      background: #06b6d4;
+      box-shadow: 0 0 8px #06b6d4;
     }
 
-    .project-card:hover .heatmap-cell.med {
+    .project-card:hover .slot-cell:nth-child(5n) {
       background: #a855f7;
+      box-shadow: 0 0 8px #a855f7;
     }
 
-    .project-card:hover .heatmap-cell.low {
-      background: #6366f1;
+    .project-card:hover .slot-cell:nth-child(7n) {
+      background: #ec4899;
+      box-shadow: 0 0 10px #ec4899;
     }
 
-    /* Mockup Terminal Code */
-    .mockup-code {
+    /* Code Terminal Simulation */
+    .sim-terminal {
       font-family: var(--font-mono);
       font-size: 11px;
-      color: #9494a0;
+      color: #94a3b8;
       line-height: 1.6;
     }
 
-    .mockup-code span.key { color: #60a5fa; }
-    .mockup-code span.str { color: #34d399; }
-    .mockup-code span.fn { color: #f472b6; }
+    .sim-terminal .hl-var { color: #38bdf8; }
+    .sim-terminal .hl-fn { color: #f472b6; }
+    .sim-terminal .hl-str { color: #4ade80; }
 
-    .card-info h3 {
+    .card-title {
       font-family: var(--font-display);
-      font-size: 24px;
+      font-size: 28px;
       font-weight: 700;
       letter-spacing: -0.5px;
       margin-bottom: 12px;
+      transform: translateZ(35px);
     }
 
-    .card-info p {
-      font-size: 14px;
+    .card-desc {
       color: var(--text-muted);
+      font-size: 15px;
       line-height: 1.6;
       margin-bottom: 24px;
+      transform: translateZ(25px);
     }
 
-    .card-footer {
+    .card-bottom-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px solid var(--border);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
       padding-top: 20px;
+      transform: translateZ(30px);
     }
 
-    .card-tags {
+    .tech-pill-group {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
-    .tag-item {
+    .tech-pill {
       font-family: var(--font-mono);
       font-size: 11px;
-      color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.04);
+      color: #cbd5e1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       padding: 4px 10px;
       border-radius: 6px;
     }
 
-    .card-arrow {
+    .card-link-arrow {
       font-family: var(--font-mono);
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       color: #fff;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: transform 0.2s;
+      transition: color 0.2s, transform 0.2s;
     }
 
-    .project-card:hover .card-arrow {
+    .project-card:hover .card-link-arrow {
+      color: var(--accent-cyan);
       transform: translateX(4px);
-      color: #ec4899;
     }
 
-    /* Skills & Architecture Studio Bento */
-    .studio-bento {
-      padding: 100px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .bento-grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 24px;
-      margin-top: 50px;
-    }
-
-    .bento-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 36px;
-      position: relative;
-      overflow: hidden;
-      transition: all 0.3s;
-    }
-
-    .bento-box:hover {
-      border-color: var(--border-light);
-      transform: translateY(-4px);
-    }
-
-    .bento-span-8 { grid-column: span 8; }
-    .bento-span-4 { grid-column: span 4; }
-    .bento-span-6 { grid-column: span 6; }
-    .bento-span-12 { grid-column: span 12; }
-
-    .box-title {
-      font-family: var(--font-display);
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-
-    .box-desc {
-      color: var(--text-muted);
-      font-size: 15px;
-      margin-bottom: 24px;
-    }
-
-    .pill-cloud {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .pill-item {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--border);
-      padding: 8px 16px;
-      border-radius: 100px;
-      transition: all 0.2s;
-    }
-
-    .pill-item:hover {
-      background: #fff;
-      color: #000;
-      border-color: #fff;
-      transform: scale(1.05);
-    }
-
-    /* Upwork Client Banner */
-    .hire-banner {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+    /* Upwork Direct Contract Glass Banner */
+    .contract-banner {
+      background: linear-gradient(135deg, rgba(20, 20, 36, 0.8) 0%, rgba(99, 102, 241, 0.15) 100%);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 32px;
-      padding: 60px 48px;
+      padding: 64px 50px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin: 80px 0 120px;
-      position: relative;
-      overflow: hidden;
+      margin: 80px 0 140px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
     }
 
-    .hire-text h2 {
+    .contract-info h2 {
       font-family: var(--font-display);
       font-size: clamp(32px, 3.5vw, 48px);
       font-weight: 800;
@@ -692,22 +622,22 @@
       margin-bottom: 14px;
     }
 
-    .hire-text p {
+    .contract-info p {
       color: var(--text-muted);
       font-size: 16px;
-      max-width: 580px;
+      max-width: 600px;
     }
 
     /* Footer */
     footer {
-      border-top: 1px solid var(--border);
-      padding: 60px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 50px 0 60px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .footer-left {
+    .footer-brand {
       font-size: 14px;
       color: var(--text-muted);
     }
@@ -729,349 +659,282 @@
       color: #fff;
     }
 
-    @media (max-width: 992px) {
-      .bento-span-8, .bento-span-4, .bento-span-6 { grid-column: span 12; }
-      .project-card { flex: 0 0 88vw; height: auto; }
-      .hero-title { font-size: 44px; }
-      .hire-banner { flex-direction: column; gap: 30px; align-items: flex-start; padding: 40px 28px; }
-      header { padding: 20px 24px; }
-      .container { padding: 0 24px; }
+    @media (max-width: 960px) {
+      .projects-grid { grid-template-columns: 1fr; }
+      .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+      .contract-banner { flex-direction: column; gap: 32px; align-items: flex-start; padding: 40px 28px; }
+      header { width: calc(100% - 32px); padding: 12px 20px; }
+      .content-container { padding: 0 24px; }
+      .custom-cursor, .cursor-follower { display: none !important; }
       * { cursor: auto !important; }
-      .cursor-dot, .cursor-ring { display: none !important; }
     }
   </style>
 </head>
 <body>
-  <!-- Custom Creative Studio Interactive Cursors -->
-  <div class="cursor-dot" id="cursorDot"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
+  <!-- Custom Fluid Dual Cursor -->
+  <div class="custom-cursor" id="cursorDot"></div>
+  <div class="cursor-follower" id="cursorRing"></div>
 
-  <!-- Ambient Dynamic Atmosphere -->
-  <div class="ambient-bg"></div>
-  <div class="noise"></div>
+  <!-- Background Grain Texture -->
+  <div class="grain-overlay"></div>
 
-  <!-- Header -->
+  <!-- Real-Time Interactive Three.js WebGL Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Floating Glass Navbar -->
   <header>
-    <a href="#" class="logo">
+    <a href="#" class="brand-logo">
       RAJ GAHOI
-      <span class="status-badge">
-        <span class="pulse"></span>
+      <span class="badge-live">
+        <span class="pulsing-dot"></span>
         AVAILABLE FOR HIRE
       </span>
     </a>
-    <nav class="nav-links">
-      <a href="#work" class="nav-link">Selected Work</a>
-      <a href="#architecture" class="nav-link">Architecture</a>
+    <nav class="nav-actions">
+      <a href="#projects" class="nav-link">Work</a>
       <a href="https://github.com/RajGahoi" target="_blank" class="nav-link">GitHub ↗</a>
-      <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="cta-pill">
+      <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="cta-button">
         Hire on Upwork ↗
       </a>
     </nav>
   </header>
 
-  <main class="container">
+  <!-- Main Scrollable Content -->
+  <div class="content-container">
     <!-- Hero Section -->
-    <section class="hero">
-      <div class="hero-tag">
-        <span>✦</span> Systems Engineer & Full-Stack Architect
+    <section class="hero-section">
+      <div class="hero-badge">
+        ✦ Systems Engineer & Creative Architect
       </div>
+
       <h1 class="hero-title">
-        High-scale systems.<br>
-        <span class="gradient-text">Award-grade craft.</span>
+        Distributed <span class="gradient-word">Power</span>.<br>
+        Pixel <span class="gradient-word">Perfection</span>.
       </h1>
-      <p class="hero-sub">
-        Pairing deep systems performance (Valkey cluster topologies, low-level binary protocols) with fluid modern web applications built for zero downtime and effortless scale.
+
+      <p class="hero-tagline">
+        Specializing in high-performance distributed systems (Valkey 16K cluster topologies, binary byte streaming) and engineering ultra-responsive full-stack experiences with zero regression tolerance.
       </p>
 
-      <div class="hero-meta-grid">
-        <div>
-          <div class="meta-stat-num">16K</div>
-          <div class="meta-stat-label">Cluster Slots Mapped</div>
-        </div>
-        <div>
-          <div class="meta-stat-num">100%</div>
-          <div class="meta-stat-label">CI Green Rate</div>
-        </div>
-        <div>
-          <div class="meta-stat-num">0.00</div>
-          <div class="meta-stat-label">Regression Tolerance</div>
-        </div>
-      </div>
-
-      <div class="hero-actions">
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn-studio-primary">
-          Start Contract on Upwork ↗
+      <div class="hero-buttons">
+        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn-epic">
+          Initiate Contract on Upwork ↗
         </a>
-        <a href="https://github.com/RajGahoi" target="_blank" class="btn-studio-ghost">
-          Explore GitHub Repository
+        <a href="https://github.com/RajGahoi" target="_blank" class="btn-glass">
+          Inspect GitHub Repositories
         </a>
       </div>
     </section>
 
-    <!-- Horizontal Showcase Slider -->
-    <section class="slider-section" id="work">
-      <div class="section-header-row">
-        <div>
-          <div class="section-eyebrow">// 01 · CURATED PRODUCTION WORK</div>
-          <h2 class="section-heading">Featured Engineering</h2>
-        </div>
-        <div class="slider-controls">
-          <button class="slider-arrow-btn" id="prevBtn" title="Scroll Left">←</button>
-          <button class="slider-arrow-btn" id="nextBtn" title="Scroll Right">→</button>
-        </div>
+    <!-- Telemetry KPI Strip -->
+    <div class="kpi-strip">
+      <div class="kpi-card">
+        <div class="kpi-val">16,384</div>
+        <div class="kpi-label">Cluster Slots Mapped</div>
       </div>
-
-      <!-- Scrollable Cards Track -->
-      <div class="cards-slider" id="cardsSlider">
-        <!-- Card 1: Valkey Cluster Heatmap -->
-        <a href="https://github.com/valkey-io/valkey-admin/pull/579" target="_blank" class="project-card">
-          <div class="card-top">
-            <span class="card-idx">01</span>
-            <span class="card-status-pill">Valkey / Linux Foundation</span>
-          </div>
-          
-          <div class="card-mockup">
-            <div class="mockup-header">
-              <span class="mock-dot red"></span>
-              <span class="mock-dot yellow"></span>
-              <span class="mock-dot green"></span>
-            </div>
-            <!-- Interactive Visual Slot Heatmap Simulation -->
-            <div class="mockup-heatmap-grid">
-              <div class="heatmap-cell hot"></div>
-              <div class="heatmap-cell low"></div>
-              <div class="heatmap-cell med"></div>
-              <div class="heatmap-cell hot"></div>
-              <div class="heatmap-cell low"></div>
-              <div class="heatmap-cell low"></div>
-              <div class="heatmap-cell med"></div>
-              <div class="heatmap-cell hot"></div>
-              <div class="heatmap-cell low"></div>
-              <div class="heatmap-cell med"></div>
-              <div class="heatmap-cell hot"></div>
-              <div class="heatmap-cell low"></div>
-              <div class="heatmap-cell hot"></div>
-              <div class="heatmap-cell med"></div>
-              <div class="heatmap-cell low"></div>
-              <div class="heatmap-cell hot"></div>
-              <div class="heatmap-cell med"></div>
-              <div class="heatmap-cell hot"></div>
-              <div class="heatmap-cell low"></div>
-              <div class="heatmap-cell med"></div>
-              <div class="heatmap-cell hot"></div>
-              <div class="heatmap-cell low"></div>
-              <div class="heatmap-cell low"></div>
-              <div class="heatmap-cell med"></div>
-              <div class="heatmap-cell hot"></div>
-              <div class="heatmap-cell low"></div>
-              <div class="heatmap-cell med"></div>
-              <div class="heatmap-cell hot"></div>
-              <div class="heatmap-cell low"></div>
-              <div class="heatmap-cell hot"></div>
-              <div class="heatmap-cell med"></div>
-              <div class="heatmap-cell low"></div>
-            </div>
-          </div>
-
-          <div class="card-info">
-            <h3>Valkey 16K Cluster Heatmap</h3>
-            <p>Engineered full CRC16 XMODEM hash tag distribution engine for Valkey Big Keys in cluster mode. Integrated interactive route selection with GLIDE 2.4 client routing.</p>
-          </div>
-
-          <div class="card-footer">
-            <div class="card-tags">
-              <span class="tag-item">React</span>
-              <span class="tag-item">CRC16</span>
-              <span class="tag-item">GLIDE</span>
-            </div>
-            <div class="card-arrow">PR #579 ↗</div>
-          </div>
-        </a>
-
-        <!-- Card 2: Binary Byte Parser -->
-        <a href="https://github.com/valkey-io/valkey-admin/pull/578" target="_blank" class="project-card">
-          <div class="card-top">
-            <span class="card-idx">02</span>
-            <span class="card-status-pill">Systems Buffer Protocol</span>
-          </div>
-          
-          <div class="card-mockup">
-            <div class="mockup-header">
-              <span class="mock-dot red"></span>
-              <span class="mock-dot yellow"></span>
-              <span class="mock-dot green"></span>
-            </div>
-            <div class="mockup-code">
-              <div><span class="fn">const</span> isBinary = <span class="key">Buffer</span>.<span class="fn">isUtf8</span>(buf);</div>
-              <div><span class="fn">if</span> (!isBinary) {</div>
-              <div>&nbsp;&nbsp;<span class="str">decodeRawHex</span>(buf.slice(0, 32));</div>
-              <div>} <span class="fn">return</span> streamSafe;</div>
-            </div>
-          </div>
-
-          <div class="card-info">
-            <h3>Non-Destructive Binary Parser</h3>
-            <p>Eliminated collection key truncation across nested Hash, List, Set, and Zset storage structures by designing byte-level detection and zero-copy slicing.</p>
-          </div>
-
-          <div class="card-footer">
-            <div class="card-tags">
-              <span class="tag-item">Node.js</span>
-              <span class="tag-item">Buffers</span>
-              <span class="tag-item">V8 Memory</span>
-            </div>
-            <div class="card-arrow">PR #578 ↗</div>
-          </div>
-        </a>
-
-        <!-- Card 3: Expensify React Native Core -->
-        <a href="https://github.com/RajGahoi/App/tree/fix/104307-arrow-nav-split-delete" target="_blank" class="project-card">
-          <div class="card-top">
-            <span class="card-idx">03</span>
-            <span class="card-status-pill">Enterprise React Native</span>
-          </div>
-          
-          <div class="card-mockup">
-            <div class="mockup-header">
-              <span class="mock-dot red"></span>
-              <span class="mock-dot yellow"></span>
-              <span class="mock-dot green"></span>
-            </div>
-            <div class="mockup-code">
-              <div><span class="key">Onyx</span>.<span class="fn">connect</span>({</div>
-              <div>&nbsp;&nbsp;<span class="str">key</span>: ONYXKEYS.TRANSACTIONS,</div>
-              <div>&nbsp;&nbsp;<span class="str">callback</span>: syncNavCarouselState</div>
-              <div>}); // 0 race conditions</div>
-            </div>
-          </div>
-
-          <div class="card-info">
-            <h3>Expensify State Sync Core</h3>
-            <p>Resolved asynchronous race conditions and stale carousel navigation in multi-screen expense transactions with automated Jest unit testing suites.</p>
-          </div>
-
-          <div class="card-footer">
-            <div class="card-tags">
-              <span class="tag-item">React Native</span>
-              <span class="tag-item">Onyx ORM</span>
-              <span class="tag-item">Jest CI</span>
-            </div>
-            <div class="card-arrow">Issue #104307 ↗</div>
-          </div>
-        </a>
-
-        <!-- Card 4: Cluster Topology Telemetry -->
-        <a href="https://github.com/valkey-io/valkey-admin/pull/577" target="_blank" class="project-card">
-          <div class="card-top">
-            <span class="card-idx">04</span>
-            <span class="card-status-pill">Telemetry Engine</span>
-          </div>
-          
-          <div class="card-mockup">
-            <div class="mockup-header">
-              <span class="mock-dot red"></span>
-              <span class="mock-dot yellow"></span>
-              <span class="mock-dot green"></span>
-            </div>
-            <div class="mockup-code">
-              <div><span class="fn">async</span> <span class="key">getClusterNodesInfo</span>() {</div>
-              <div>&nbsp;&nbsp;<span class="fn">return</span> shardNodes.map(node => ({</div>
-              <div>&nbsp;&nbsp;&nbsp;&nbsp;cpu: node.used_cpu_sys,</div>
-              <div>&nbsp;&nbsp;&nbsp;&nbsp;slots: node.slotRange</div>
-              <div>&nbsp;&nbsp;}));</div>
-            </div>
-          </div>
-
-          <div class="card-info">
-            <h3>Cluster Topology Telemetry</h3>
-            <p>Surfaced real-time INFO metrics and CPU/memory utilization telemetry for replica nodes across heterogeneous Valkey cluster shards.</p>
-          </div>
-
-          <div class="card-footer">
-            <div class="card-tags">
-              <span class="tag-item">Distributed</span>
-              <span class="tag-item">Monitoring</span>
-              <span class="tag-item">TypeScript</span>
-            </div>
-            <div class="card-arrow">PR #577 ↗</div>
-          </div>
-        </a>
+      <div class="kpi-card">
+        <div class="kpi-val">100%</div>
+        <div class="kpi-label">CI Verification Rate</div>
       </div>
-    </section>
+      <div class="kpi-card">
+        <div class="kpi-val">0.00</div>
+        <div class="kpi-label">Regression Tolerance</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-val">24/7</div>
+        <div class="kpi-label">Autonomous Daemon Sync</div>
+      </div>
+    </div>
 
-    <!-- Architecture & Capability Bento Grid -->
-    <section class="studio-bento" id="architecture">
-      <div class="section-eyebrow">// 02 · ARCHITECTURAL CAPABILITY</div>
-      <h2 class="section-heading">Systems & Stack Foundation</h2>
+    <!-- 3D Interactive Project Showcase -->
+    <section class="showcase-section" id="projects">
+      <div class="section-eyebrow">// 01 · CURATED PRODUCTION CODE</div>
+      <h2 class="section-headline">Engineered for Massive Scale</h2>
 
-      <div class="bento-grid">
-        <!-- Box 1: Core Systems -->
-        <div class="bento-box bento-span-8">
-          <div class="box-title">Distributed Systems & Data Infrastructure</div>
-          <p class="box-desc">Architecting robust distributed memory caching, cluster topologies, and binary packet parsers designed to withstand high concurrency and packet fragmentation.</p>
-          <div class="pill-cloud">
-            <span class="pill-item">Valkey / Redis Clusters</span>
-            <span class="pill-item">CRC16 Hash Slot Routing</span>
-            <span class="pill-item">Binary Protocols & Framing</span>
-            <span class="pill-item">AWS ElastiCache</span>
-            <span class="pill-item">GLIDE 2.4 Driver</span>
-            <span class="pill-item">V8 & jemalloc Profiling</span>
-          </div>
+      <div class="projects-grid">
+        <!-- Project 01: Valkey Cluster Heatmap -->
+        <div class="tilt-card-wrapper">
+          <a href="https://github.com/valkey-io/valkey-admin/pull/579" target="_blank" class="project-card" data-tilt>
+            <div>
+              <div class="card-meta-row">
+                <span class="card-num">01</span>
+                <span class="card-ecosystem">Valkey / Linux Foundation</span>
+              </div>
+
+              <!-- Interactive Simulated Heatmap Canvas -->
+              <div class="card-display-sim">
+                <div class="sim-bar">
+                  <span class="sim-dot red"></span>
+                  <span class="sim-dot yellow"></span>
+                  <span class="sim-dot green"></span>
+                </div>
+                <div class="slot-visual-grid">
+                  <!-- 32 Grid Cells representing cluster hash slot heatmap -->
+                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
+                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
+                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
+                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
+                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
+                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
+                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
+                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
+                </div>
+              </div>
+
+              <h3 class="card-title">Valkey 16K Cluster Heatmap</h3>
+              <p class="card-desc">
+                Engineered the CRC16 XMODEM hash distribution engine for Valkey Big Keys in cluster topologies. Enabled interactive slot routing and GLIDE 2.4 client integration.
+              </p>
+            </div>
+
+            <div class="card-bottom-row">
+              <div class="tech-pill-group">
+                <span class="tech-pill">React 19</span>
+                <span class="tech-pill">CRC16 Engine</span>
+                <span class="tech-pill">GLIDE 2.4</span>
+              </div>
+              <div class="card-link-arrow">PR #579 ↗</div>
+            </div>
+          </a>
         </div>
 
-        <!-- Box 2: Quality & CI -->
-        <div class="bento-box bento-span-4">
-          <div class="box-title">Zero Regression CI</div>
-          <p class="box-desc">Automated testing pipelines maintaining absolute reliability across heterogeneous production deployments.</p>
-          <div class="pill-cloud">
-            <span class="pill-item">Jest & Mocking</span>
-            <span class="pill-item">GitHub Actions Matrix</span>
-            <span class="pill-item">Docker Containers</span>
-            <span class="pill-item">Strict ESLint & DCO</span>
-          </div>
+        <!-- Project 02: Non-Destructive Binary Parser -->
+        <div class="tilt-card-wrapper">
+          <a href="https://github.com/valkey-io/valkey-admin/pull/578" target="_blank" class="project-card" data-tilt>
+            <div>
+              <div class="card-meta-row">
+                <span class="card-num">02</span>
+                <span class="card-ecosystem">Byte Buffer Protocols</span>
+              </div>
+
+              <div class="card-display-sim">
+                <div class="sim-bar">
+                  <span class="sim-dot red"></span>
+                  <span class="sim-dot yellow"></span>
+                  <span class="sim-dot green"></span>
+                </div>
+                <div class="sim-terminal">
+                  <div><span class="hl-var">const</span> isUtf8 = <span class="hl-fn">Buffer.isUtf8</span>(rawBytes);</div>
+                  <div><span class="hl-fn">if</span> (!isUtf8) {</div>
+                  <div>&nbsp;&nbsp;<span class="hl-var">return</span> <span class="hl-fn">sliceZeroCopyHex</span>(rawBytes, 0, 64);</div>
+                  <div>} <span class="hl-str">// 0% data corruption across nested hashes</span></div>
+                </div>
+              </div>
+
+              <h3 class="card-title">Non-Destructive Binary Parser</h3>
+              <p class="card-desc">
+                Eliminated collection key truncation across nested Hash, List, Set, and Zset storage structures by designing byte-level detection and zero-copy binary streaming.
+              </p>
+            </div>
+
+            <div class="card-bottom-row">
+              <div class="tech-pill-group">
+                <span class="tech-pill">Node.js Buffers</span>
+                <span class="tech-pill">Zero-Copy</span>
+                <span class="tech-pill">V8 Memory</span>
+              </div>
+              <div class="card-link-arrow">PR #578 ↗</div>
+            </div>
+          </a>
         </div>
 
-        <!-- Box 3: Modern Full-Stack -->
-        <div class="bento-box bento-span-6">
-          <div class="box-title">Modern Full-Stack Applications</div>
-          <p class="box-desc">Next-generation UI frameworks with sub-millisecond response latencies and seamless offline synchronization.</p>
-          <div class="pill-cloud">
-            <span class="pill-item">React 19 & Next.js</span>
-            <span class="pill-item">React Native & Expo</span>
-            <span class="pill-item">TypeScript (Strict)</span>
-            <span class="pill-item">Tailwind CSS & Radix</span>
-          </div>
+        <!-- Project 03: Expensify React Native Core -->
+        <div class="tilt-card-wrapper">
+          <a href="https://github.com/RajGahoi/App/tree/fix/104307-arrow-nav-split-delete" target="_blank" class="project-card" data-tilt>
+            <div>
+              <div class="card-meta-row">
+                <span class="card-num">03</span>
+                <span class="card-ecosystem">Enterprise React Native</span>
+              </div>
+
+              <div class="card-display-sim">
+                <div class="sim-bar">
+                  <span class="sim-dot red"></span>
+                  <span class="sim-dot yellow"></span>
+                  <span class="sim-dot green"></span>
+                </div>
+                <div class="sim-terminal">
+                  <div><span class="hl-var">Onyx</span>.<span class="hl-fn">connect</span>({</div>
+                  <div>&nbsp;&nbsp;key: <span class="hl-str">ONYXKEYS.TRANSACTIONS</span>,</div>
+                  <div>&nbsp;&nbsp;callback: <span class="hl-fn">syncNavStateWithCarousel</span></div>
+                  <div>}); <span class="hl-str">// Eliminated async navigation race conditions</span></div>
+                </div>
+              </div>
+
+              <h3 class="card-title">Expensify Navigation Core</h3>
+              <p class="card-desc">
+                Fixed race conditions and asynchronous Onyx state desynchronization in multi-screen expense transactions with 100% automated Jest regression coverage.
+              </p>
+            </div>
+
+            <div class="card-bottom-row">
+              <div class="tech-pill-group">
+                <span class="tech-pill">React Native</span>
+                <span class="tech-pill">Onyx ORM</span>
+                <span class="tech-pill">Jest CI</span>
+              </div>
+              <div class="card-link-arrow">Issue #104307 ↗</div>
+            </div>
+          </a>
         </div>
 
-        <!-- Box 4: High-Performance Backend -->
-        <div class="bento-box bento-span-6">
-          <div class="box-title">High-Throughput Backends</div>
-          <p class="box-desc">Low-latency REST and GraphQL servers engineered with asynchronous event loops and defensive database access.</p>
-          <div class="pill-cloud">
-            <span class="pill-item">Node.js (Async I/O)</span>
-            <span class="pill-item">Python & FastAPI</span>
-            <span class="pill-item">PostgreSQL & Prisma</span>
-            <span class="pill-item">GraphQL Endpoints</span>
-          </div>
+        <!-- Project 04: Cluster Topology Telemetry -->
+        <div class="tilt-card-wrapper">
+          <a href="https://github.com/valkey-io/valkey-admin/pull/577" target="_blank" class="project-card" data-tilt>
+            <div>
+              <div class="card-meta-row">
+                <span class="card-num">04</span>
+                <span class="card-ecosystem">Distributed Telemetry</span>
+              </div>
+
+              <div class="card-display-sim">
+                <div class="sim-bar">
+                  <span class="sim-dot red"></span>
+                  <span class="sim-dot yellow"></span>
+                  <span class="sim-dot green"></span>
+                </div>
+                <div class="sim-terminal">
+                  <div><span class="hl-fn">async function</span> <span class="hl-var">pollClusterMetrics</span>() {</div>
+                  <div>&nbsp;&nbsp;<span class="hl-var">const</span> nodes = <span class="hl-fn">await</span> client.info(<span class="hl-str">'cluster'</span>);</div>
+                  <div>&nbsp;&nbsp;<span class="hl-var">return</span> <span class="hl-fn">mapTelemetryByShard</span>(nodes);</div>
+                  <div>}</div>
+                </div>
+              </div>
+
+              <h3 class="card-title">Cluster Topology Telemetry</h3>
+              <p class="card-desc">
+                Surfaced real-time INFO metrics and CPU/memory utilization telemetry for replica nodes across heterogeneous Valkey cluster shards.
+              </p>
+            </div>
+
+            <div class="card-bottom-row">
+              <div class="tech-pill-group">
+                <span class="tech-pill">Distributed Caching</span>
+                <span class="tech-pill">Telemetry</span>
+                <span class="tech-pill">TypeScript</span>
+              </div>
+              <div class="card-link-arrow">PR #577 ↗</div>
+            </div>
+          </a>
         </div>
       </div>
     </section>
 
-    <!-- Upwork Direct Contract Callout Banner -->
-    <div class="hire-banner">
-      <div class="hire-text">
-        <h2>Ready to build something world-class?</h2>
-        <p>Available for select high-stakes engineering contracts, bounty engagements, and technical architecture consulting directly through Upwork or private contract.</p>
+    <!-- Upwork Direct Contract Glass Banner -->
+    <div class="contract-banner">
+      <div class="contract-info">
+        <h2>Ready to build something extraordinary?</h2>
+        <p>Available for select high-stakes engineering contracts, enterprise code audits, and technical leadership engagements directly through Upwork.</p>
       </div>
-      <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn-studio-primary">
+      <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn-epic">
         Hire Raj on Upwork ↗
       </a>
     </div>
 
     <!-- Footer -->
     <footer>
-      <div class="footer-left">
-        © 2026 Raj Gahoi · Systems & Creative Engineering.
+      <div class="footer-brand">
+        © 2026 Raj Gahoi · Systems Architecture & Creative Engineering.
       </div>
       <div class="footer-links">
         <a href="mailto:gahoiraj01@gmail.com">Email</a>
@@ -1079,55 +942,177 @@
         <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank">Upwork Profile ↗</a>
       </div>
     </footer>
-  </main>
+  </div>
 
+  <!-- Interactive 3D Three.js & Cursor Script -->
   <script>
-    // Creative Studio Cursor Tracker with Fluid Interpolation
+    // -------------------------------------------------------------------------
+    // 1. THREE.JS INTERACTIVE 3D PARTICLE WAVE SCENE
+    // -------------------------------------------------------------------------
+    const canvas = document.getElementById('webgl-canvas');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x030305, 0.0018);
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 3000);
+    camera.position.z = 1000;
+    camera.position.y = 200;
+
+    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Particle Constellation Geometry
+    const particleCount = 2400;
+    const geometry = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+
+    const color1 = new THREE.Color(0x06b6d4); // Cyan
+    const color2 = new THREE.Color(0x8b5cf6); // Purple
+    const color3 = new THREE.Color(0xec4899); // Pink
+
+    for (let i = 0; i < particleCount; i++) {
+      // Create a wide wave plane
+      positions[i * 3] = (Math.random() - 0.5) * 3000;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 1200;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 2000;
+
+      // Color interpolation
+      const mixedColor = color1.clone().lerp(color2, Math.random()).lerp(color3, Math.random() * 0.5);
+      colors[i * 3] = mixedColor.r;
+      colors[i * 3 + 1] = mixedColor.g;
+      colors[i * 3 + 2] = mixedColor.b;
+    }
+
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    // Generate glowing circular sprite
+    const spriteCanvas = document.createElement('canvas');
+    spriteCanvas.width = 64;
+    spriteCanvas.height = 64;
+    const spriteCtx = spriteCanvas.getContext('2d');
+    const grad = spriteCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grad.addColorStop(0, 'rgba(255,255,255,1)');
+    grad.addColorStop(0.3, 'rgba(255,255,255,0.8)');
+    grad.addColorStop(0.7, 'rgba(139,92,246,0.3)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    spriteCtx.fillStyle = grad;
+    spriteCtx.fillRect(0, 0, 64, 64);
+    const texture = new THREE.CanvasTexture(spriteCanvas);
+
+    const material = new THREE.PointsMaterial({
+      size: 16,
+      map: texture,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.85,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+
+    const particles = new THREE.Points(geometry, material);
+    scene.add(particles);
+
+    // Mouse Tracking for 3D Camera Parallax
+    let mouseX = 0;
+    let mouseY = 0;
+    let targetX = 0;
+    let targetY = 0;
+    const windowHalfX = window.innerWidth / 2;
+    const windowHalfY = window.innerHeight / 2;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX - windowHalfX);
+      mouseY = (e.clientY - windowHalfY);
+    });
+
+    // Handle Resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // 3D Animation Render Loop
+    let clock = new THREE.Clock();
+    function animate3D() {
+      requestAnimationFrame(animate3D);
+
+      const elapsed = clock.getElapsedTime();
+      targetX = mouseX * 0.4;
+      targetY = mouseY * 0.3;
+
+      camera.position.x += (targetX - camera.position.x) * 0.05;
+      camera.position.y += (-targetY + 200 - camera.position.y) * 0.05;
+      camera.lookAt(0, 0, 0);
+
+      // Subtle wave movement
+      const posAttr = geometry.attributes.position;
+      for (let i = 0; i < particleCount; i++) {
+        const x = posAttr.getX(i);
+        const y = posAttr.getY(i);
+        posAttr.setY(i, y + Math.sin(elapsed * 1.5 + x * 0.003) * 0.4);
+      }
+      posAttr.needsUpdate = true;
+
+      particles.rotation.y = elapsed * 0.03;
+
+      renderer.render(scene, camera);
+    }
+    animate3D();
+
+    // -------------------------------------------------------------------------
+    // 2. SMOOTH FLUID CURSOR
+    // -------------------------------------------------------------------------
     const dot = document.getElementById('cursorDot');
     const ring = document.getElementById('cursorRing');
-    let mouseX = 0, mouseY = 0;
     let ringX = 0, ringY = 0;
+    let curX = 0, curY = 0;
 
     window.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      dot.style.left = `${mouseX}px`;
-      dot.style.top = `${mouseY}px`;
+      curX = e.clientX;
+      curY = e.clientY;
+      dot.style.left = `${curX}px`;
+      dot.style.top = `${curY}px`;
     });
 
-    function animateCursor() {
-      ringX += (mouseX - ringX) * 0.15;
-      ringY += (mouseY - ringY) * 0.15;
+    function renderCursor() {
+      ringX += (curX - ringX) * 0.15;
+      ringY += (curY - ringY) * 0.15;
       ring.style.left = `${ringX}px`;
       ring.style.top = `${ringY}px`;
-      requestAnimationFrame(animateCursor);
+      requestAnimationFrame(renderCursor);
     }
-    requestAnimationFrame(animateCursor);
+    renderCursor();
 
-    // Interactive Hover States for Links & Buttons
-    const interactiveElements = document.querySelectorAll('a, button, .project-card, .pill-item');
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', () => ring.classList.add('active'));
-      el.addEventListener('mouseleave', () => ring.classList.remove('active'));
+    const interactives = document.querySelectorAll('a, button, .project-card, .kpi-card');
+    interactives.forEach(item => {
+      item.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+      item.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
     });
 
-    const textElements = document.querySelectorAll('.hero-title, .section-heading, .meta-stat-num');
-    textElements.forEach(el => {
-      el.addEventListener('mouseenter', () => ring.classList.add('text-hover'));
-      el.addEventListener('mouseleave', () => ring.classList.remove('text-hover'));
-    });
+    // -------------------------------------------------------------------------
+    // 3. 3D TILT EFFECT ON PROJECT CARDS
+    // -------------------------------------------------------------------------
+    const cards = document.querySelectorAll('.project-card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
 
-    // Horizontal Card Slider Navigation
-    const slider = document.getElementById('cardsSlider');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
+        const rotateX = ((y - centerY) / centerY) * -12;
+        const rotateY = ((x - centerX) / centerX) * 12;
 
-    prevBtn.addEventListener('click', () => {
-      slider.scrollBy({ left: -560, behavior: 'smooth' });
-    });
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+      });
 
-    nextBtn.addEventListener('click', () => {
-      slider.scrollBy({ left: 560, behavior: 'smooth' });
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+      });
     });
   </script>
 </body>
