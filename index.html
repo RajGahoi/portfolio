@@ -3,21 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Raj Gahoi | Full-Stack & Systems Engineer</title>
+  <title>Raj Gahoi — Full-Stack & Core Systems Engineer</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --bg: #0a0b0e;
-      --card-bg: #12141a;
-      --card-border: #1e222d;
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --primary: #10b981;
-      --primary-glow: rgba(16, 185, 129, 0.15);
-      --accent: #3b82f6;
-      --accent-purple: #8b5cf6;
+      --bg: #030712;
+      --card-bg: rgba(17, 24, 39, 0.65);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-hover: rgba(56, 189, 248, 0.4);
+      --text-main: #f9fafb;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-rgb: 56, 189, 248;
+      --emerald: #10b981;
+      --purple: #a855f7;
+      --rose: #f43f5e;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
     * {
@@ -29,494 +34,716 @@
     body {
       background-color: var(--bg);
       color: var(--text-main);
-      font-family: 'Inter', -apple-system, sans-serif;
-      line-height: 1.6;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
       overflow-x: hidden;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* Ambient Glow Background Orbs */
+    .glow-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.45;
+    }
+
+    .orb-1 {
+      top: -100px;
+      left: 15%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #0284c7 0%, transparent 70%);
+    }
+
+    .orb-2 {
+      top: 400px;
+      right: 5%;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+    }
+
+    .orb-3 {
+      bottom: 200px;
+      left: 10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #059669 0%, transparent 70%);
+    }
+
+    /* Canvas Grid Background */
+    .grid-overlay {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      mask-image: radial-gradient(ellipse at 50% 30%, black 40%, transparent 80%);
+      -webkit-mask-image: radial-gradient(ellipse at 50% 30%, black 40%, transparent 80%);
+      pointer-events: none;
+      z-index: 1;
     }
 
     .container {
-      max-width: 1100px;
+      position: relative;
+      z-index: 2;
+      max-width: 1160px;
       margin: 0 auto;
-      padding: 40px 24px 80px;
+      padding: 30px 24px 100px;
     }
 
-    /* Header & Hero */
+    /* Navbar */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 40px;
-      border-bottom: 1px solid var(--card-border);
-      margin-bottom: 60px;
+      padding: 16px 28px;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 40px;
+      margin-bottom: 70px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     }
 
-    .logo {
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar-ring {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-weight: 800;
-      font-size: 20px;
+      color: #000;
+      font-size: 14px;
+    }
+
+    .logo-text {
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.3px;
+    }
+
+    .nav-items {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .nav-link:hover {
+      color: #fff;
+    }
+
+    /* Status Pill */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 600;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      margin-bottom: 24px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 12px #10b981;
+      animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      max-width: 880px;
+      margin: 0 auto 90px;
+    }
+
+    .hero h1 {
+      font-size: 64px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #ffffff 10%, #38bdf8 55%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 19px;
+      color: #94a3b8;
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 0 auto 36px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .btn {
+      padding: 14px 32px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-glow {
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      color: #030712;
+      font-weight: 700;
+      box-shadow: 0 10px 30px -5px rgba(56, 189, 248, 0.45);
+    }
+
+    .btn-glow:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 35px -5px rgba(56, 189, 248, 0.65);
+    }
+
+    .btn-glass {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: #fff;
+      backdrop-filter: blur(12px);
+    }
+
+    .btn-glass:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Stats Ribbon */
+    .stats-ribbon {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(20px);
+      margin-bottom: 90px;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 8px 16px;
+      border-right: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .stat-item:last-child {
+      border-right: none;
+    }
+
+    .stat-number {
+      font-family: var(--font-mono);
+      font-size: 38px;
+      font-weight: 800;
+      background: linear-gradient(180deg, #fff 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+    }
+
+    .stat-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Section Headers */
+    .section-head {
+      margin-bottom: 40px;
+    }
+
+    .section-tag {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .section-title {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    /* Bento Grid for Projects */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+      margin-bottom: 100px;
+    }
+
+    .bento-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 36px;
+      backdrop-filter: blur(20px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bento-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.3), transparent);
+    }
+
+    .bento-card:hover {
+      border-color: var(--card-border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+    }
+
+    .bento-card.span-7 { grid-column: span 7; }
+    .bento-card.span-5 { grid-column: span 5; }
+    .bento-card.span-12 { grid-column: span 12; }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .badge-pill {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.2px;
+    }
+
+    .badge-cyan { background: rgba(56, 189, 248, 0.12); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .badge-purple { background: rgba(168, 85, 247, 0.12); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .badge-emerald { background: rgba(16, 185, 129, 0.12); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    .card-title {
+      font-size: 24px;
+      font-weight: 700;
       letter-spacing: -0.5px;
+      margin-bottom: 14px;
+      line-height: 1.3;
+    }
+
+    .card-text {
+      color: var(--text-muted);
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .tag {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      color: #cbd5e1;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .action-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #38bdf8;
+      text-decoration: none;
+      transition: gap 0.2s;
+    }
+
+    .action-link:hover {
+      gap: 12px;
+      text-decoration: underline;
+    }
+
+    /* Terminal Showcase Box */
+    .terminal-box {
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 18px 22px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .terminal-line {
+      display: flex;
+      gap: 10px;
+    }
+
+    .term-prompt { color: #38bdf8; }
+    .term-cmd { color: #f8fafc; font-weight: 600; }
+    .term-res { color: #34d399; }
+
+    /* Tech Stack Grid */
+    .skills-section {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 48px;
+      backdrop-filter: blur(20px);
+      margin-bottom: 90px;
+    }
+
+    .skills-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 36px;
+    }
+
+    .skill-block h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 20px;
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .logo-badge {
-      background: var(--primary);
-      color: #000;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 20px;
-      text-transform: uppercase;
-    }
-
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      margin-left: 24px;
-      font-size: 14px;
-      font-weight: 500;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover {
-      color: var(--primary);
-    }
-
-    .hero {
-      margin-bottom: 70px;
-    }
-
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--primary-glow);
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: var(--primary);
-      padding: 6px 14px;
-      border-radius: 30px;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 24px;
-    }
-
-    .pulse {
-      width: 8px;
-      height: 8px;
-      background: var(--primary);
+    .skill-block h3 span {
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      box-shadow: 0 0 10px var(--primary);
     }
 
-    .hero h1 {
-      font-size: 52px;
-      font-weight: 800;
-      letter-spacing: -1.5px;
-      line-height: 1.15;
-      margin-bottom: 20px;
-    }
+    .h-cyan { background: #38bdf8; box-shadow: 0 0 10px #38bdf8; }
+    .h-purple { background: #a855f7; box-shadow: 0 0 10px #a855f7; }
+    .h-emerald { background: #10b981; box-shadow: 0 0 10px #10b981; }
 
-    .hero h1 span {
-      background: linear-gradient(135deg, #10b981 0%, #3b82f6 50%, #8b5cf6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero p {
-      font-size: 18px;
-      color: var(--text-muted);
-      max-width: 680px;
-      line-height: 1.7;
-      margin-bottom: 32px;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .btn {
-      padding: 12px 26px;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: #000;
-    }
-
-    .btn-primary:hover {
-      background: #0ea371;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
-    }
-
-    .btn-outline {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-    }
-
-    .btn-outline:hover {
-      border-color: var(--text-muted);
-      transform: translateY(-2px);
-    }
-
-    /* Metrics Grid */
-    .metrics-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-bottom: 80px;
-    }
-
-    .metric-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 24px;
-      border-radius: 12px;
-    }
-
-    .metric-num {
-      font-size: 36px;
-      font-weight: 800;
-      color: var(--text-main);
-      font-family: 'JetBrains Mono', monospace;
-      margin-bottom: 6px;
-    }
-
-    .metric-label {
-      color: var(--text-muted);
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
-    }
-
-    /* Section Styling */
-    .section-title {
-      font-size: 26px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 12px;
-    }
-
-    .section-desc {
-      color: var(--text-muted);
-      font-size: 15px;
-      margin-bottom: 32px;
-    }
-
-    /* Projects Grid */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-      margin-bottom: 80px;
-    }
-
-    .project-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: all 0.25s ease;
-    }
-
-    .project-card:hover {
-      border-color: rgba(16, 185, 129, 0.4);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .project-tag {
-      display: inline-block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--accent);
-      background: rgba(59, 130, 246, 0.1);
-      padding: 4px 10px;
-      border-radius: 6px;
-      margin-bottom: 16px;
-    }
-
-    .project-title {
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      line-height: 1.35;
-    }
-
-    .project-body {
-      color: var(--text-muted);
-      font-size: 14px;
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
-    .tech-stack {
+    .skills-badge-wrap {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 24px;
+      gap: 10px;
     }
 
-    .tech-pill {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      background: #181c25;
-      color: #94a3b8;
-      padding: 4px 8px;
-      border-radius: 4px;
-      border: 1px solid #232936;
-    }
-
-    .project-link {
-      color: var(--primary);
-      text-decoration: none;
+    .skill-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      padding: 8px 16px;
+      border-radius: 12px;
       font-size: 14px;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      color: #e2e8f0;
+      font-weight: 500;
+      transition: all 0.2s;
     }
 
-    .project-link:hover {
-      text-decoration: underline;
-    }
-
-    /* Skills Showcase */
-    .skills-container {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 14px;
-      padding: 36px;
-      margin-bottom: 80px;
-    }
-
-    .skills-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 30px;
-    }
-
-    .skill-col h4 {
-      font-size: 16px;
-      font-weight: 600;
-      color: var(--text-main);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .skill-list {
-      list-style: none;
-    }
-
-    .skill-list li {
-      color: var(--text-muted);
-      font-size: 14px;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .skill-list li::before {
-      content: "▹";
-      color: var(--primary);
+    .skill-item:hover {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
     }
 
     /* Footer */
     footer {
       border-top: 1px solid var(--card-border);
-      padding-top: 40px;
+      padding-top: 50px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       color: var(--text-muted);
-      font-size: 13px;
+      font-size: 14px;
     }
 
-    @media (max-width: 768px) {
-      .hero h1 { font-size: 38px; }
-      header { flex-direction: column; gap: 20px; align-items: flex-start; }
-      .nav-links a { margin-left: 0; margin-right: 16px; }
-      footer { flex-direction: column; gap: 16px; align-items: flex-start; }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: #fff;
+    }
+
+    @media (max-width: 900px) {
+      .hero h1 { font-size: 44px; }
+      .bento-card.span-7, .bento-card.span-5 { grid-column: span 12; }
+      .stats-ribbon { grid-template-columns: repeat(2, 1fr); }
+      .stat-item:nth-child(2) { border-right: none; }
+      header { flex-direction: column; gap: 16px; border-radius: 20px; }
     }
   </style>
 </head>
 <body>
+  <!-- Ambient Glow Orbs -->
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+  <div class="grid-overlay"></div>
+
   <div class="container">
+    <!-- Navbar -->
     <header>
-      <div class="logo">
-        RAJ GAHOI
-        <span class="logo-badge">Available for Hire</span>
+      <div class="logo-container">
+        <div class="avatar-ring">RG</div>
+        <div class="logo-text">Raj Gahoi</div>
       </div>
-      <nav class="nav-links">
-        <a href="#projects">Contributions</a>
-        <a href="#skills">Skills</a>
-        <a href="https://github.com/RajGahoi" target="_blank">GitHub</a>
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank">Upwork</a>
-        <a href="mailto:gahoiraj01@gmail.com">Contact</a>
+      <nav class="nav-items">
+        <a href="#work" class="nav-link">Production Work</a>
+        <a href="#skills" class="nav-link">Stack</a>
+        <a href="https://github.com/RajGahoi" target="_blank" class="nav-link">GitHub</a>
+        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="nav-link">Upwork Profile</a>
+        <a href="mailto:gahoiraj01@gmail.com" class="nav-link">Contact</a>
       </nav>
     </header>
 
+    <!-- Hero -->
     <section class="hero">
-      <div class="hero-tag">
-        <div class="pulse"></div>
-        Core Systems & Full-Stack Engineer
+      <div class="status-badge">
+        <div class="pulse-dot"></div>
+        Available for High-Impact Contracts & Bounties
       </div>
-      <h1>Building Scalable Systems & <span>High-Performance</span> Software.</h1>
-      <p>
-        Competitive programmer and software engineer specializing in distributed caching architectures (Valkey), production React Native/TypeScript ecosystems, and robust backend engineering.
+      <h1>
+        Engineering <span class="gradient-text">High-Throughput</span> Distributed Systems & Modern Apps.
+      </h1>
+      <p class="hero-subtitle">
+        Software Engineer specializing in distributed caching architectures (Valkey / Redis clusters), enterprise state synchronization, and reactive TypeScript/React Native codebases.
       </p>
-      <div class="hero-actions">
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn btn-primary">Hire on Upwork</a>
-        <a href="https://github.com/RajGahoi" target="_blank" class="btn btn-outline">Explore GitHub</a>
+      <div class="hero-buttons">
+        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn btn-glow">
+          Hire Me on Upwork ↗
+        </a>
+        <a href="https://github.com/RajGahoi" target="_blank" class="btn btn-glass">
+          Review GitHub Commits ↗
+        </a>
       </div>
     </section>
 
-    <!-- Metrics -->
-    <div class="metrics-bar">
-      <div class="metric-card">
-        <div class="metric-num">15+</div>
-        <div class="metric-label">Open-Source PRs</div>
+    <!-- Stats Ribbon -->
+    <div class="stats-ribbon">
+      <div class="stat-item">
+        <div class="stat-number">15+</div>
+        <div class="stat-desc">Production Pull Requests</div>
       </div>
-      <div class="metric-card">
-        <div class="metric-num">100%</div>
-        <div class="metric-label">Green CI & Verification</div>
+      <div class="stat-item">
+        <div class="stat-number">16,384</div>
+        <div class="stat-desc">Cluster Slots Mapped</div>
       </div>
-      <div class="metric-card">
-        <div class="metric-num">Distributed</div>
-        <div class="metric-label">Cluster Architecture</div>
+      <div class="stat-item">
+        <div class="stat-number">100%</div>
+        <div class="stat-desc">CI Verification & Pass</div>
       </div>
-      <div class="metric-card">
-        <div class="metric-num">TypeScript</div>
-        <div class="metric-label">React Native & Node.js</div>
+      <div class="stat-item">
+        <div class="stat-number">0-Downtime</div>
+        <div class="stat-desc">Non-Destructive Parsers</div>
       </div>
     </div>
 
-    <!-- Featured Projects -->
-    <section id="projects">
-      <h2 class="section-title">Major Production Contributions</h2>
-      <p class="section-desc">Selected high-visibility contributions to core open-source infrastructure and enterprise applications.</p>
+    <!-- Featured Engineering Showcase (Bento Grid) -->
+    <section id="work">
+      <div class="section-head">
+        <span class="section-tag">// SELECTED WORK</span>
+        <h2 class="section-title">Core Systems & Open-Source Infrastructure</h2>
+      </div>
 
-      <div class="projects-grid">
-        <!-- Valkey Heatmap -->
-        <div class="project-card">
+      <div class="bento-grid">
+        <!-- Card 1: Heatmap (Span 7) -->
+        <div class="bento-card span-7">
           <div>
-            <span class="project-tag">Distributed Systems · UI</span>
-            <h3 class="project-title">Valkey Admin: Cluster Slot Heatmap (PR #579)</h3>
-            <p class="project-body">
-              Designed and implemented a 16,384-slot CRC16 hash tag distribution heatmap for Big Keys in cluster mode. Integrated interactive key browser routing and seamless selection synchronization.
+            <div class="card-meta">
+              <span class="badge-pill badge-cyan">Distributed Systems · Linux Foundation</span>
+              <span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);">PR #579</span>
+            </div>
+            <h3 class="card-title">Valkey Admin: Cluster Slot Heatmap for Big Keys</h3>
+            <p class="card-text">
+              Engineered a full 16,384-slot CRC16 XMODEM hash tag distribution engine for Valkey in cluster mode. Features visual hot-spot detection, cluster node routing, and seamless Key Browser navigation.
             </p>
-            <div class="tech-stack">
-              <span class="tech-pill">TypeScript</span>
-              <span class="tech-pill">React</span>
-              <span class="tech-pill">CRC16 XMODEM</span>
-              <span class="tech-pill">GLIDE 2.4</span>
+            <div class="terminal-box">
+              <div class="terminal-line"><span class="term-prompt">$</span> <span class="term-cmd">valkey-admin cluster-slots --analyze</span></div>
+              <div class="terminal-line"><span class="term-res">✓ [CRC16 HashTag Extracted]</span> 16384 slots mapped cleanly</div>
+              <div class="terminal-line"><span class="term-res">✓ [Coverage]</span> 100% CI passes (ESLint, Integration, CodeRabbit)</div>
+            </div>
+            <div class="tech-tags">
+              <span class="tag">TypeScript</span>
+              <span class="tag">React 19</span>
+              <span class="tag">CRC16 XMODEM</span>
+              <span class="tag">GLIDE 2.4</span>
+              <span class="tag">Radix UI</span>
             </div>
           </div>
-          <a href="https://github.com/valkey-io/valkey-admin/pull/579" target="_blank" class="project-link">View Pull Request →</a>
+          <a href="https://github.com/valkey-io/valkey-admin/pull/579" target="_blank" class="action-link">
+            Explore Pull Request #579 →
+          </a>
         </div>
 
-        <!-- Valkey Binary Keys -->
-        <div class="project-card">
+        <!-- Card 2: Binary Collections (Span 5) -->
+        <div class="bento-card span-5">
           <div>
-            <span class="project-tag">Core Architecture</span>
-            <h3 class="project-title">Collection Binary Elements Parser (PR #578)</h3>
-            <p class="project-body">
-              Engineered non-destructive binary detection and rendering for nested Hash, List, Set, and Zset collections in Valkey key browser without truncating or corrupting raw payloads.
+            <div class="card-meta">
+              <span class="badge-pill badge-purple">Core Architecture</span>
+              <span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);">PR #578</span>
+            </div>
+            <h3 class="card-title">Collection Binary Elements Parser</h3>
+            <p class="card-text">
+              Solved collection key truncation in Valkey Admin by implementing a non-destructive binary detection engine across nested Hash, List, Set, and Zset structures.
             </p>
-            <div class="tech-stack">
-              <span class="tech-pill">Node.js</span>
-              <span class="tech-pill">Buffer Parsing</span>
-              <span class="tech-pill">React</span>
-              <span class="tech-pill">Redux Toolkit</span>
+            <div class="tech-tags">
+              <span class="tag">Node.js</span>
+              <span class="tag">Buffer Streaming</span>
+              <span class="tag">Redux Toolkit</span>
             </div>
           </div>
-          <a href="https://github.com/valkey-io/valkey-admin/pull/578" target="_blank" class="project-link">View Pull Request →</a>
+          <a href="https://github.com/valkey-io/valkey-admin/pull/578" target="_blank" class="action-link">
+            Explore Pull Request #578 →
+          </a>
         </div>
 
-        <!-- Expensify Carousel Lifecycle -->
-        <div class="project-card">
+        <!-- Card 3: Expensify Lifecycle (Span 12) -->
+        <div class="bento-card span-12">
           <div>
-            <span class="project-tag">Enterprise React Native</span>
-            <h3 class="project-title">Expensify/App: Carousel Navigation Lifecycle</h3>
-            <p class="project-body">
-              Resolved complex split transaction race conditions and stale Onyx key state in navigation headers. Authored verified defensive selectors and regression test coverage.
+            <div class="card-meta">
+              <span class="badge-pill badge-emerald">Enterprise React Native Ecosystem</span>
+              <span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-muted);">Issue #104307</span>
+            </div>
+            <h3 class="card-title">Expensify/App: Carousel Navigation & Stale State Resolution</h3>
+            <p class="card-text">
+              Identified and resolved an asynchronous race condition in navigation headers caused by split transaction deletions. Implemented defensive Onyx selectors and decoupled container transactions from carousel sibling resolvers.
             </p>
-            <div class="tech-stack">
-              <span class="tech-pill">React Native</span>
-              <span class="tech-pill">Onyx ORM</span>
-              <span class="tech-pill">TypeScript</span>
-              <span class="tech-pill">Jest</span>
+            <div class="tech-tags">
+              <span class="tag">React Native</span>
+              <span class="tag">Onyx ORM</span>
+              <span class="tag">Jest Unit Testing</span>
+              <span class="tag">Mobile Web & Native</span>
             </div>
           </div>
-          <a href="https://github.com/Expensify/App/issues/104307" target="_blank" class="project-link">View Issue Resolution →</a>
+          <a href="https://github.com/RajGahoi/App/tree/fix/104307-arrow-nav-split-delete" target="_blank" class="action-link">
+            Review Verified Fix Branch on GitHub →
+          </a>
         </div>
       </div>
     </section>
 
-    <!-- Technical Skills -->
+    <!-- Technical Arsenal -->
     <section id="skills">
-      <h2 class="section-title">Core Competencies</h2>
-      <p class="section-desc">Technologies and architectural domains where I deliver immediate, production-grade results.</p>
+      <div class="section-head">
+        <span class="section-tag">// TECHNICAL STACK</span>
+        <h2 class="section-title">Core Competencies & Stack</h2>
+      </div>
 
-      <div class="skills-container">
-        <div class="skills-grid">
-          <div class="skill-col">
-            <h4>Frontend Engineering</h4>
-            <ul class="skill-list">
-              <li>React 19 & Next.js</li>
-              <li>React Native & Expo</li>
-              <li>TypeScript / Modern ESNext</li>
-              <li>Tailwind CSS & Radix UI</li>
-              <li>Redux Toolkit / State Machines</li>
-            </ul>
+      <div class="skills-section">
+        <div class="skills-row">
+          <div class="skill-block">
+            <h3><span class="h-cyan"></span> Frontend Engineering</h3>
+            <div class="skills-badge-wrap">
+              <div class="skill-item">React 19 & Next.js</div>
+              <div class="skill-item">React Native & Expo</div>
+              <div class="skill-item">TypeScript (Strict)</div>
+              <div class="skill-item">Tailwind CSS</div>
+              <div class="skill-item">Radix & Shadcn UI</div>
+              <div class="skill-item">Redux Toolkit</div>
+            </div>
           </div>
-          <div class="skill-col">
-            <h4>Backend & Systems</h4>
-            <ul class="skill-list">
-              <li>Node.js & Express</li>
-              <li>Valkey / Redis Clusters</li>
-              <li>Python / FastAPI</li>
-              <li>REST & GraphQL APIs</li>
-              <li>PostgreSQL & SQLite</li>
-            </ul>
+
+          <div class="skill-block">
+            <h3><span class="h-purple"></span> Backend & Systems</h3>
+            <div class="skills-badge-wrap">
+              <div class="skill-item">Node.js & Express</div>
+              <div class="skill-item">Valkey / Redis Clusters</div>
+              <div class="skill-item">Python & FastAPI</div>
+              <div class="skill-item">GraphQL & REST APIs</div>
+              <div class="skill-item">PostgreSQL & SQLite</div>
+              <div class="skill-item">Buffer & Binary Parsers</div>
+            </div>
           </div>
-          <div class="skill-col">
-            <h4>DevOps & Quality</h4>
-            <ul class="skill-list">
-              <li>Jest & Automated Test Suites</li>
-              <li>GitHub Actions & CI/CD</li>
-              <li>Docker & Containerization</li>
-              <li>Performance & Memory Profiling</li>
-              <li>Linux Shell & Scripting</li>
-            </ul>
+
+          <div class="skill-block">
+            <h3><span class="h-emerald"></span> Quality & DevOps</h3>
+            <div class="skills-badge-wrap">
+              <div class="skill-item">Jest & Automated Tests</div>
+              <div class="skill-item">GitHub Actions / CI/CD</div>
+              <div class="skill-item">Docker Containers</div>
+              <div class="skill-item">Memory Profiling</div>
+              <div class="skill-item">Linux / Bash</div>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- Footer -->
     <footer>
-      <div>© 2026 Raj Gahoi. All rights reserved.</div>
-      <div>
-        <a href="mailto:gahoiraj01@gmail.com" style="color: inherit; text-decoration: none; margin-right: 16px;">gahoiraj01@gmail.com</a>
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" style="color: var(--primary); text-decoration: none;">Upwork Profile</a>
+      <div>© 2026 Raj Gahoi. Built for high performance & scale.</div>
+      <div class="footer-links">
+        <a href="mailto:gahoiraj01@gmail.com">gahoiraj01@gmail.com</a>
+        <a href="https://github.com/RajGahoi" target="_blank">GitHub</a>
+        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank">Upwork Profile</a>
       </div>
     </footer>
   </div>
