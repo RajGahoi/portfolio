@@ -3,38 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RAJ GAHOI // CREATIVE SYSTEMS ARCHITECT</title>
+  <title>Raj Gahoi — Full-Stack Engineer & Systems Specialist</title>
   
-  <!-- CDNs for Three.js, GSAP, and Fonts -->
+  <!-- CDNs: Fonts, Three.js, GSAP -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Outfit:wght@400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
   <style>
     :root {
-      --bg: #030305;
-      --card-bg: rgba(16, 16, 24, 0.75);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-border-glow: rgba(99, 102, 241, 0.4);
+      --bg: #07070b;
+      --card-bg: rgba(18, 18, 28, 0.7);
+      --card-hover: rgba(28, 28, 44, 0.85);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(147, 51, 234, 0.5);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --accent-cyan: #06b6d4;
-      --accent-purple: #8b5cf6;
-      --accent-pink: #ec4899;
-      --accent-green: #10b981;
-      --font-display: 'Syne', sans-serif;
+      --text-dim: #64748b;
+      --font-display: 'Outfit', sans-serif;
       --font-body: 'Plus Jakarta Sans', sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
+      --font-mono: 'Fira Code', monospace;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
@@ -46,8 +46,8 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* 3D WebGL Canvas Layer (Fixed full background) */
-    #webgl-canvas {
+    /* 3D WebGL Canvas */
+    #hero-canvas {
       position: fixed;
       top: 0;
       left: 0;
@@ -57,138 +57,137 @@
       pointer-events: none;
     }
 
-    /* Film grain noise */
-    .grain-overlay {
+    /* Ambient dynamic color glows */
+    .glow-orb {
       position: fixed;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 2;
-    }
-
-    /* Interactive Fluid Cursor */
-    .custom-cursor {
-      width: 10px;
-      height: 10px;
-      background: #fff;
       border-radius: 50%;
-      position: fixed;
+      filter: blur(140px);
       pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: width 0.2s, height 0.2s, background-color 0.2s, opacity 0.2s;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+      z-index: 0;
+      opacity: 0.45;
+      animation: floatGlow 14s infinite alternate ease-in-out;
     }
 
-    .cursor-follower {
-      width: 44px;
-      height: 44px;
-      border: 1.5px solid rgba(255, 255, 255, 0.35);
-      border-radius: 50%;
-      position: fixed;
-      pointer-events: none;
-      z-index: 9998;
-      transform: translate(-50%, -50%);
-      transition: transform 0.08s ease-out, width 0.3s cubic-bezier(0.16, 1, 0.3, 1), height 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s;
+    .glow-1 {
+      top: 5%;
+      left: 10%;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, #6366f1, transparent 70%);
     }
 
-    body:hover .custom-cursor { opacity: 1; }
-    
-    .cursor-hover .custom-cursor {
-      width: 60px;
-      height: 60px;
-      background: rgba(255, 255, 255, 0.95);
-      mix-blend-mode: difference;
+    .glow-2 {
+      top: 45%;
+      right: 5%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #ec4899, transparent 70%);
+      animation-delay: -5s;
     }
 
-    .cursor-hover .cursor-follower {
-      width: 80px;
-      height: 80px;
-      border-color: rgba(99, 102, 241, 0.8);
-      background: rgba(99, 102, 241, 0.1);
-      backdrop-filter: blur(2px);
+    .glow-3 {
+      bottom: 5%;
+      left: 20%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #06b6d4, transparent 70%);
+      animation-delay: -9s;
     }
 
-    /* Content Overlay */
-    .content-container {
-      position: relative;
-      z-index: 10;
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: 0 40px;
+    @keyframes floatGlow {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(40px, 30px) scale(1.1); }
+      100% { transform: translate(-30px, -40px) scale(0.95); }
     }
 
-    /* Floating Futuristic Nav */
+    /* Floating Navigation */
     header {
       position: fixed;
-      top: 24px;
+      top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      width: calc(100% - 80px);
-      max-width: 1360px;
+      width: calc(100% - 48px);
+      max-width: 1240px;
       z-index: 100;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 14px 28px;
-      background: rgba(10, 10, 18, 0.7);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: rgba(12, 12, 20, 0.65);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 100px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
     }
 
-    .brand-logo {
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 18px;
-      letter-spacing: -0.5px;
-      color: #fff;
-      text-decoration: none;
+    .brand {
       display: flex;
       align-items: center;
       gap: 12px;
+      text-decoration: none;
+      color: #fff;
     }
 
-    .badge-live {
+    .avatar-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-family: var(--font-display);
+      font-size: 15px;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-status {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(16, 185, 129, 0.15);
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      color: #34d399;
       font-family: var(--font-mono);
       font-size: 11px;
+      color: #34d399;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
       padding: 3px 10px;
       border-radius: 100px;
     }
 
-    .pulsing-dot {
+    .status-ping {
       width: 6px;
       height: 6px;
       background: #10b981;
       border-radius: 50%;
-      box-shadow: 0 0 10px #10b981;
-      animation: pulse 1.8s infinite;
+      box-shadow: 0 0 8px #10b981;
+      animation: ping 2s infinite;
     }
 
-    @keyframes pulse {
+    @keyframes ping {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.4; transform: scale(0.7); }
     }
 
-    .nav-actions {
+    .nav-links {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 24px;
     }
 
     .nav-link {
+      font-size: 14px;
+      font-weight: 600;
       color: var(--text-muted);
       text-decoration: none;
-      font-family: var(--font-mono);
-      font-size: 13px;
       transition: color 0.2s;
     }
 
@@ -196,32 +195,39 @@
       color: #fff;
     }
 
-    .cta-button {
-      background: linear-gradient(135deg, #6366f1, #a855f7);
-      color: #fff;
+    .hire-pill {
       font-family: var(--font-mono);
       font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      padding: 10px 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      color: #fff;
+      padding: 10px 22px;
       border-radius: 100px;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+      transition: all 0.3s;
     }
 
-    .cta-button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 30px rgba(168, 85, 247, 0.6);
+    .hire-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(168, 85, 247, 0.7);
+    }
+
+    /* Layout Wrapper */
+    .wrapper {
+      position: relative;
+      z-index: 10;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 28px;
     }
 
     /* Hero Section */
-    .hero-section {
-      min-height: 100vh;
+    .hero {
+      min-height: 92vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -229,417 +235,559 @@
       padding-bottom: 60px;
     }
 
-    .hero-badge {
+    .hero-badge-tag {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       font-family: var(--font-mono);
       font-size: 13px;
-      color: var(--accent-cyan);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 24px;
-      background: rgba(6, 182, 212, 0.1);
-      border: 1px solid rgba(6, 182, 212, 0.25);
-      padding: 6px 16px;
+      font-weight: 600;
+      color: #c084fc;
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      padding: 6px 18px;
       border-radius: 100px;
       width: fit-content;
+      margin-bottom: 24px;
+      backdrop-filter: blur(10px);
     }
 
     .hero-title {
       font-family: var(--font-display);
-      font-size: clamp(48px, 8.5vw, 120px);
-      font-weight: 800;
-      line-height: 0.95;
+      font-size: clamp(44px, 7.5vw, 96px);
+      font-weight: 900;
+      line-height: 1.05;
       letter-spacing: -0.04em;
-      text-transform: uppercase;
-      margin-bottom: 32px;
+      margin-bottom: 24px;
     }
 
-    .gradient-word {
-      background: linear-gradient(135deg, #06b6d4 0%, #a855f7 50%, #ec4899 100%);
+    .gradient-vivid {
+      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 35%, #c084fc 70%, #f472b6 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 40px rgba(168, 85, 247, 0.3));
+      filter: drop-shadow(0 0 40px rgba(192, 132, 252, 0.3));
     }
 
-    .hero-tagline {
-      font-size: clamp(18px, 2.2vw, 24px);
-      font-weight: 400;
-      color: var(--text-muted);
-      max-width: 760px;
-      margin-bottom: 48px;
-      line-height: 1.5;
+    .hero-subtitle {
+      font-size: clamp(18px, 2.2vw, 23px);
+      color: #cbd5e1;
+      max-width: 720px;
+      margin-bottom: 40px;
+      line-height: 1.6;
     }
 
-    .hero-buttons {
+    .hero-actions {
       display: flex;
-      gap: 20px;
+      gap: 18px;
       align-items: center;
       flex-wrap: wrap;
+      margin-bottom: 60px;
     }
 
-    .btn-epic {
+    .btn-action-primary {
       background: #ffffff;
       color: #000000;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 18px 40px;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 18px 38px;
       border-radius: 100px;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 10px;
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 10px 40px rgba(255, 255, 255, 0.25);
     }
 
-    .btn-epic:hover {
+    .btn-action-primary:hover {
       transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 15px 50px rgba(255, 255, 255, 0.45);
+      box-shadow: 0 15px 45px rgba(255, 255, 255, 0.4);
     }
 
-    .btn-glass {
+    .btn-action-secondary {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #fff;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 18px 36px;
+      color: #ffffff;
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      padding: 18px 34px;
       border-radius: 100px;
       text-decoration: none;
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
       transition: all 0.3s;
     }
 
-    .btn-glass:hover {
+    .btn-action-secondary:hover {
       background: rgba(255, 255, 255, 0.12);
-      border-color: #fff;
+      border-color: #ffffff;
       transform: translateY(-3px);
     }
 
-    /* Live Telemetry KPI Ticker */
-    .kpi-strip {
+    /* Live Stat Cards */
+    .stat-strip {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-      margin: 80px 0 140px;
+      gap: 20px;
     }
 
-    .kpi-card {
-      background: rgba(16, 16, 26, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+    .stat-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 28px 24px;
+      padding: 24px;
       backdrop-filter: blur(16px);
       transition: all 0.3s;
     }
 
-    .kpi-card:hover {
-      border-color: var(--card-border-glow);
+    .stat-box:hover {
+      border-color: var(--border-focus);
       transform: translateY(-4px);
-      background: rgba(20, 20, 36, 0.8);
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
     }
 
-    .kpi-val {
+    .stat-val {
       font-family: var(--font-display);
-      font-size: 42px;
-      font-weight: 800;
+      font-size: 38px;
+      font-weight: 900;
       color: #fff;
-      margin-bottom: 6px;
-      letter-spacing: -1px;
+      line-height: 1;
+      margin-bottom: 8px;
     }
 
-    .kpi-label {
+    .stat-lbl {
       font-family: var(--font-mono);
       font-size: 12px;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
 
-    /* Interactive 3D Holographic Project Showcase */
-    .showcase-section {
-      padding: 60px 0 140px;
+    /* Section Styling */
+    section {
+      padding: 100px 0;
+      border-top: 1px solid var(--border);
     }
 
-    .section-eyebrow {
+    .section-tag {
       font-family: var(--font-mono);
       font-size: 13px;
-      color: var(--accent-cyan);
+      font-weight: 600;
+      color: #38bdf8;
       text-transform: uppercase;
       letter-spacing: 2px;
       margin-bottom: 12px;
+      display: block;
     }
 
-    .section-headline {
+    .section-title {
       font-family: var(--font-display);
-      font-size: clamp(36px, 5vw, 64px);
-      font-weight: 800;
-      letter-spacing: -1.5px;
-      margin-bottom: 60px;
+      font-size: clamp(34px, 4.5vw, 56px);
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
     }
 
+    .section-desc {
+      color: var(--text-muted);
+      font-size: 18px;
+      max-width: 680px;
+      margin-bottom: 50px;
+    }
+
+    /* ABOUT ME: Visual Interactive Bento Story */
+    .about-bento {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+    }
+
+    .about-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px;
+      backdrop-filter: blur(20px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .about-card:hover {
+      border-color: var(--border-focus);
+      background: var(--card-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
+    }
+
+    .about-span-7 { grid-column: span 7; }
+    .about-span-5 { grid-column: span 5; }
+    .about-span-4 { grid-column: span 4; }
+    .about-span-8 { grid-column: span 8; }
+
+    .about-headline {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: #fff;
+    }
+
+    .about-p {
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .about-p:last-child {
+      margin-bottom: 0;
+    }
+
+    .timeline-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .timeline-bullet {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #c084fc;
+      margin-top: 6px;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px #c084fc;
+    }
+
+    .timeline-content h4 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .timeline-content p {
+      font-size: 14px;
+      color: var(--text-dim);
+    }
+
+    .highlight-text {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    /* PROJECTS: 3D Holographic Showcase */
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 40px;
+      gap: 32px;
     }
 
-    /* 3D Tilt Card Container */
-    .tilt-card-wrapper {
-      perspective: 1000px;
-    }
-
-    .project-card {
-      background: linear-gradient(135deg, rgba(20, 20, 32, 0.85) 0%, rgba(12, 12, 20, 0.95) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+    .work-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
       border-radius: 28px;
-      padding: 40px;
-      min-height: 520px;
+      padding: 36px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      position: relative;
-      overflow: hidden;
-      transform-style: preserve-3d;
-      transition: transform 0.15s ease-out, border-color 0.3s, box-shadow 0.3s;
+      backdrop-filter: blur(20px);
       text-decoration: none;
       color: inherit;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .project-card:hover {
-      border-color: rgba(99, 102, 241, 0.6);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 50px rgba(99, 102, 241, 0.2);
+    .work-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(168, 85, 247, 0.6);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 50px rgba(168, 85, 247, 0.2);
     }
 
-    /* Card Glow Gradient on Top Border */
-    .project-card::after {
+    .work-card::after {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #06b6d4, #8b5cf6, #ec4899);
+      height: 4px;
+      background: linear-gradient(90deg, #38bdf8, #818cf8, #ec4899);
       opacity: 0;
       transition: opacity 0.3s;
     }
 
-    .project-card:hover::after {
+    .work-card:hover::after {
       opacity: 1;
     }
 
-    .card-meta-row {
+    .work-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 24px;
-      transform: translateZ(30px);
     }
 
-    .card-num {
+    .work-idx {
       font-family: var(--font-mono);
       font-size: 13px;
-      color: var(--accent-cyan);
-      border: 1px solid rgba(6, 182, 212, 0.3);
+      font-weight: 700;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
       padding: 4px 12px;
       border-radius: 100px;
-      background: rgba(6, 182, 212, 0.08);
     }
 
-    .card-ecosystem {
+    .work-badge {
       font-family: var(--font-mono);
       font-size: 12px;
-      color: var(--text-muted);
+      color: var(--text-dim);
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
     }
 
-    /* Interactive Visual Screen Simulation */
-    .card-display-sim {
+    /* Live Interactive Canvas Mockups */
+    .work-mockup {
       height: 200px;
-      background: rgba(6, 6, 12, 0.95);
+      background: #090910;
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
-      margin-bottom: 28px;
-      position: relative;
-      overflow: hidden;
+      border-radius: 18px;
       padding: 16px;
+      margin-bottom: 28px;
       display: flex;
       flex-direction: column;
+      position: relative;
+      overflow: hidden;
       box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.8);
-      transform: translateZ(40px);
+      transition: transform 0.3s;
     }
 
-    .sim-bar {
+    .work-card:hover .work-mockup {
+      transform: scale(1.02);
+    }
+
+    .mockup-controls {
       display: flex;
       gap: 6px;
       margin-bottom: 12px;
     }
 
-    .sim-dot {
-      width: 7px;
-      height: 7px;
+    .mac-dot {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: #334155;
     }
+    .mac-dot.r { background: #ef4444; }
+    .mac-dot.y { background: #f59e0b; }
+    .mac-dot.g { background: #10b981; }
 
-    .sim-dot.red { background: #ef4444; }
-    .sim-dot.yellow { background: #f59e0b; }
-    .sim-dot.green { background: #10b981; }
-
-    /* Valkey Slot Visualizer Simulation */
-    .slot-visual-grid {
+    /* Visual 16K Slot Heatmap Matrix */
+    .heatmap-interactive {
       display: grid;
       grid-template-columns: repeat(16, 1fr);
-      gap: 3px;
+      gap: 4px;
       height: 100%;
       align-content: center;
     }
 
-    .slot-cell {
+    .heat-cell {
       height: 12px;
       border-radius: 2px;
-      background: rgba(255, 255, 255, 0.04);
-      transition: all 0.4s;
+      background: rgba(255, 255, 255, 0.05);
+      transition: all 0.3s;
     }
 
-    .project-card:hover .slot-cell:nth-child(3n) {
-      background: #06b6d4;
-      box-shadow: 0 0 8px #06b6d4;
+    .work-card:hover .heat-cell:nth-child(2n) {
+      background: #38bdf8;
+      box-shadow: 0 0 6px #38bdf8;
+    }
+    .work-card:hover .heat-cell:nth-child(3n) {
+      background: #c084fc;
+      box-shadow: 0 0 8px #c084fc;
+    }
+    .work-card:hover .heat-cell:nth-child(5n) {
+      background: #f472b6;
+      box-shadow: 0 0 10px #f472b6;
     }
 
-    .project-card:hover .slot-cell:nth-child(5n) {
-      background: #a855f7;
-      box-shadow: 0 0 8px #a855f7;
-    }
-
-    .project-card:hover .slot-cell:nth-child(7n) {
-      background: #ec4899;
-      box-shadow: 0 0 10px #ec4899;
-    }
-
-    /* Code Terminal Simulation */
-    .sim-terminal {
+    /* Code Terminal Mockup */
+    .code-terminal {
       font-family: var(--font-mono);
-      font-size: 11px;
-      color: #94a3b8;
+      font-size: 12px;
       line-height: 1.6;
+      color: #94a3b8;
     }
 
-    .sim-terminal .hl-var { color: #38bdf8; }
-    .sim-terminal .hl-fn { color: #f472b6; }
-    .sim-terminal .hl-str { color: #4ade80; }
+    .code-terminal .c-kw { color: #38bdf8; }
+    .code-terminal .c-fn { color: #c084fc; }
+    .code-terminal .c-str { color: #4ade80; }
 
-    .card-title {
+    .work-title {
       font-family: var(--font-display);
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
+      font-size: 26px;
+      font-weight: 800;
       margin-bottom: 12px;
-      transform: translateZ(35px);
     }
 
-    .card-desc {
+    .work-desc {
       color: var(--text-muted);
       font-size: 15px;
       line-height: 1.6;
       margin-bottom: 24px;
-      transform: translateZ(25px);
     }
 
-    .card-bottom-row {
+    .work-footer {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 1px solid var(--border);
       padding-top: 20px;
-      transform: translateZ(30px);
     }
 
-    .tech-pill-group {
+    .tech-stack-row {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
 
-    .tech-pill {
+    .tech-badge {
       font-family: var(--font-mono);
       font-size: 11px;
       color: #cbd5e1;
       background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       padding: 4px 10px;
       border-radius: 6px;
     }
 
-    .card-link-arrow {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      font-weight: 700;
+    .work-arrow {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 800;
       color: #fff;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: color 0.2s, transform 0.2s;
+      transition: transform 0.2s, color 0.2s;
     }
 
-    .project-card:hover .card-link-arrow {
-      color: var(--accent-cyan);
+    .work-card:hover .work-arrow {
+      color: #38bdf8;
       transform: translateX(4px);
     }
 
-    /* Upwork Direct Contract Glass Banner */
-    .contract-banner {
-      background: linear-gradient(135deg, rgba(20, 20, 36, 0.8) 0%, rgba(99, 102, 241, 0.15) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+    /* TECHNICAL SKILLS MATRIX */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .skills-col {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      backdrop-filter: blur(16px);
+      transition: all 0.3s;
+    }
+
+    .skills-col:hover {
+      border-color: var(--border-focus);
+      transform: translateY(-4px);
+    }
+
+    .skills-col h3 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .skill-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .skill-pill {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 100px;
+      transition: all 0.2s;
+    }
+
+    .skill-pill:hover {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+      transform: scale(1.05);
+    }
+
+    /* DIRECT CONTRACT / HIRE BANNER */
+    .hire-box {
+      background: linear-gradient(135deg, rgba(30, 27, 75, 0.6) 0%, rgba(88, 28, 135, 0.4) 50%, rgba(131, 24, 67, 0.4) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 32px;
-      padding: 64px 50px;
+      padding: 64px 48px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin: 80px 0 140px;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+      margin: 80px 0 120px;
+      backdrop-filter: blur(24px);
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+      position: relative;
+      overflow: hidden;
     }
 
-    .contract-info h2 {
+    .hire-box-content h2 {
       font-family: var(--font-display);
       font-size: clamp(32px, 3.5vw, 48px);
-      font-weight: 800;
+      font-weight: 900;
       line-height: 1.1;
       margin-bottom: 14px;
     }
 
-    .contract-info p {
+    .hire-box-content p {
       color: var(--text-muted);
-      font-size: 16px;
+      font-size: 17px;
       max-width: 600px;
     }
 
     /* Footer */
     footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 50px 0 60px;
+      border-top: 1px solid var(--border);
+      padding: 60px 0 80px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .footer-brand {
+    .footer-left {
       font-size: 14px;
-      color: var(--text-muted);
+      color: var(--text-dim);
     }
 
     .footer-links {
@@ -660,281 +808,403 @@
     }
 
     @media (max-width: 960px) {
+      .hero-title { font-size: 42px; }
+      .stat-strip { grid-template-columns: repeat(2, 1fr); }
+      .about-span-7, .about-span-5, .about-span-4, .about-span-8 { grid-column: span 12; }
       .projects-grid { grid-template-columns: 1fr; }
-      .kpi-strip { grid-template-columns: repeat(2, 1fr); }
-      .contract-banner { flex-direction: column; gap: 32px; align-items: flex-start; padding: 40px 28px; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .hire-box { flex-direction: column; gap: 32px; align-items: flex-start; padding: 40px 28px; }
       header { width: calc(100% - 32px); padding: 12px 20px; }
-      .content-container { padding: 0 24px; }
-      .custom-cursor, .cursor-follower { display: none !important; }
-      * { cursor: auto !important; }
+      .wrapper { padding: 0 20px; }
     }
   </style>
 </head>
 <body>
-  <!-- Custom Fluid Dual Cursor -->
-  <div class="custom-cursor" id="cursorDot"></div>
-  <div class="cursor-follower" id="cursorRing"></div>
+  <!-- Ambient Atmospheric Dynamic Glowing Lights -->
+  <div class="glow-orb glow-1"></div>
+  <div class="glow-orb glow-2"></div>
+  <div class="glow-orb glow-3"></div>
 
-  <!-- Background Grain Texture -->
-  <div class="grain-overlay"></div>
+  <!-- Real-Time Interactive 3D Holographic Canvas (Three.js) -->
+  <canvas id="hero-canvas"></canvas>
 
-  <!-- Real-Time Interactive Three.js WebGL Canvas -->
-  <canvas id="webgl-canvas"></canvas>
-
-  <!-- Floating Glass Navbar -->
+  <!-- Navigation Bar -->
   <header>
-    <a href="#" class="brand-logo">
-      RAJ GAHOI
-      <span class="badge-live">
-        <span class="pulsing-dot"></span>
-        AVAILABLE FOR HIRE
-      </span>
+    <a href="#" class="brand">
+      <div class="avatar-icon">R</div>
+      <div>
+        <div class="brand-name">Raj Gahoi</div>
+        <div class="brand-status">
+          <span class="status-ping"></span>
+          AVAILABLE FOR HIRE
+        </div>
+      </div>
     </a>
-    <nav class="nav-actions">
+    <nav class="nav-links">
+      <a href="#about" class="nav-link">About</a>
       <a href="#projects" class="nav-link">Work</a>
+      <a href="#skills" class="nav-link">Stack</a>
       <a href="https://github.com/RajGahoi" target="_blank" class="nav-link">GitHub ↗</a>
-      <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="cta-button">
+      <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="hire-pill">
         Hire on Upwork ↗
       </a>
     </nav>
   </header>
 
-  <!-- Main Scrollable Content -->
-  <div class="content-container">
+  <main class="wrapper">
     <!-- Hero Section -->
-    <section class="hero-section">
-      <div class="hero-badge">
-        ✦ Systems Engineer & Creative Architect
+    <section class="hero">
+      <div class="hero-badge-tag">
+        ✦ FULL-STACK SYSTEMS ENGINEER & OPEN-SOURCE ARCHITECT
       </div>
 
       <h1 class="hero-title">
-        Distributed <span class="gradient-word">Power</span>.<br>
-        Pixel <span class="gradient-word">Perfection</span>.
+        Building high-scale systems with<br>
+        <span class="gradient-vivid">exceptional visual craft.</span>
       </h1>
 
-      <p class="hero-tagline">
-        Specializing in high-performance distributed systems (Valkey 16K cluster topologies, binary byte streaming) and engineering ultra-responsive full-stack experiences with zero regression tolerance.
+      <p class="hero-subtitle">
+        I'm <strong>Raj Gahoi</strong>, a software engineer who bridges deep low-level distributed infrastructure (Valkey cluster routing, byte protocol parsers) with modern, fluid full-stack web applications.
       </p>
 
-      <div class="hero-buttons">
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn-epic">
-          Initiate Contract on Upwork ↗
+      <div class="hero-actions">
+        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn-action-primary">
+          Start Contract on Upwork ↗
         </a>
-        <a href="https://github.com/RajGahoi" target="_blank" class="btn-glass">
-          Inspect GitHub Repositories
+        <a href="https://github.com/RajGahoi" target="_blank" class="btn-action-secondary">
+          Explore GitHub Profile [15 Repos]
         </a>
+      </div>
+
+      <!-- Live KPI Ticker Strip -->
+      <div class="stat-strip">
+        <div class="stat-box">
+          <div class="stat-val">16,384</div>
+          <div class="stat-lbl">Cluster Slots Mapped</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">100%</div>
+          <div class="stat-lbl">CI Verification Pass Rate</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">0.00</div>
+          <div class="stat-lbl">Regression Tolerance</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val">24/7</div>
+          <div class="stat-lbl">Autonomous Daemon Sync</div>
+        </div>
       </div>
     </section>
 
-    <!-- Telemetry KPI Strip -->
-    <div class="kpi-strip">
-      <div class="kpi-card">
-        <div class="kpi-val">16,384</div>
-        <div class="kpi-label">Cluster Slots Mapped</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-val">100%</div>
-        <div class="kpi-label">CI Verification Rate</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-val">0.00</div>
-        <div class="kpi-label">Regression Tolerance</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-val">24/7</div>
-        <div class="kpi-label">Autonomous Daemon Sync</div>
-      </div>
-    </div>
+    <!-- SECTION 1: ABOUT ME & STORY -->
+    <section id="about">
+      <span class="section-tag">// 01 · BACKGROUND & VALUES</span>
+      <h2 class="section-title">Who I Am & What I Build</h2>
+      <p class="section-desc">
+        A deep dive into my journey, core philosophy, and engineering standards.
+      </p>
 
-    <!-- 3D Interactive Project Showcase -->
-    <section class="showcase-section" id="projects">
-      <div class="section-eyebrow">// 01 · CURATED PRODUCTION CODE</div>
-      <h2 class="section-headline">Engineered for Massive Scale</h2>
+      <div class="about-bento">
+        <!-- Main Bio Box (Span 7) -->
+        <div class="about-card about-span-7">
+          <div class="about-headline">The Engineer Behind the Code</div>
+          <p class="about-p">
+            I am a full-stack engineer and open-source contributor based in India, driven by a passion for building software that operates reliably at extreme scale.
+          </p>
+          <p class="about-p">
+            Whether constructing a <span class="highlight-text">CRC16 XMODEM cluster slot distribution engine</span> for the Linux Foundation's Valkey ecosystem or solving subtle asynchronous race conditions in <span class="highlight-text">Expensify's multi-million user React Native app</span>, I hold myself to an uncompromising standard: zero data corruption, 100% automated test coverage, and seamless user experiences.
+          </p>
+          <p class="about-p">
+            I believe that backend performance and visual aesthetics shouldn't be separate disciplines — great software combines lightning-fast systems with intuitive, breathtaking design.
+          </p>
+        </div>
+
+        <!-- Working Philosophy (Span 5) -->
+        <div class="about-card about-span-5">
+          <div class="about-headline">Core Engineering Standards</div>
+          <ul class="timeline-list">
+            <li class="timeline-item">
+              <div class="timeline-bullet"></div>
+              <div class="timeline-content">
+                <h4>Defensive State Management</h4>
+                <p>Zero race conditions across asynchronous lifecycles and cache synchronization.</p>
+              </div>
+            </li>
+            <li class="timeline-item">
+              <div class="timeline-bullet"></div>
+              <div class="timeline-content">
+                <h4>Non-Destructive Parsing</h4>
+                <p>Preserve byte-level fidelity across arbitrary binary and nested data structures.</p>
+              </div>
+            </li>
+            <li class="timeline-item">
+              <div class="timeline-bullet"></div>
+              <div class="timeline-content">
+                <h4>Automated Regression Safety</h4>
+                <p>Every single pull request is backed by deterministic CI suites.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Quick Facts (Span 4) -->
+        <div class="about-card about-span-4">
+          <div class="about-headline">Quick Facts</div>
+          <p class="about-p"><strong>Location:</strong> India (UTC +5:30, available for worldwide async & sync contracts)</p>
+          <p class="about-p"><strong>Focus:</strong> Distributed caching, high-throughput Node.js/Python, React Native & modern web apps</p>
+          <p class="about-p"><strong>Availability:</strong> Direct contracts & client invitations on Upwork</p>
+        </div>
+
+        <!-- Autonomous Ecosystem (Span 8) -->
+        <div class="about-card about-span-8">
+          <div class="about-headline">Continuous Execution & Open Source Focus</div>
+          <p class="about-p">
+            I operate active engineering pipelines across major open-source ecosystems. My production pull requests are actively integrated into high-visibility repositories like <span class="highlight-text">valkey-io/valkey-admin</span>, solving critical bottlenecks in cluster telemetry, big-key memory diagnostics, and raw buffer serialization.
+          </p>
+          <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="https://github.com/RajGahoi" target="_blank" class="skill-pill" style="text-decoration:none; color:inherit;">
+              Explore 15+ Repositories on GitHub ↗
+            </a>
+            <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="skill-pill" style="text-decoration:none; color:inherit;">
+              View Verified Upwork Profile ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: PRODUCTION PROJECTS -->
+    <section id="projects">
+      <span class="section-tag">// 02 · FEATURED CODE</span>
+      <h2 class="section-title">Curated Production Work</h2>
+      <p class="section-desc">
+        Explore direct production code, pull requests, and verified architectural solutions.
+      </p>
 
       <div class="projects-grid">
-        <!-- Project 01: Valkey Cluster Heatmap -->
-        <div class="tilt-card-wrapper">
-          <a href="https://github.com/valkey-io/valkey-admin/pull/579" target="_blank" class="project-card" data-tilt>
-            <div>
-              <div class="card-meta-row">
-                <span class="card-num">01</span>
-                <span class="card-ecosystem">Valkey / Linux Foundation</span>
-              </div>
-
-              <!-- Interactive Simulated Heatmap Canvas -->
-              <div class="card-display-sim">
-                <div class="sim-bar">
-                  <span class="sim-dot red"></span>
-                  <span class="sim-dot yellow"></span>
-                  <span class="sim-dot green"></span>
-                </div>
-                <div class="slot-visual-grid">
-                  <!-- 32 Grid Cells representing cluster hash slot heatmap -->
-                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
-                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
-                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
-                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
-                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
-                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
-                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
-                  <div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div><div class="slot-cell"></div>
-                </div>
-              </div>
-
-              <h3 class="card-title">Valkey 16K Cluster Heatmap</h3>
-              <p class="card-desc">
-                Engineered the CRC16 XMODEM hash distribution engine for Valkey Big Keys in cluster topologies. Enabled interactive slot routing and GLIDE 2.4 client integration.
-              </p>
+        <!-- Work 01: Valkey Cluster Heatmap -->
+        <a href="https://github.com/valkey-io/valkey-admin/pull/579" target="_blank" class="work-card">
+          <div>
+            <div class="work-header">
+              <span class="work-idx">01</span>
+              <span class="work-badge">Linux Foundation / Valkey</span>
             </div>
 
-            <div class="card-bottom-row">
-              <div class="tech-pill-group">
-                <span class="tech-pill">React 19</span>
-                <span class="tech-pill">CRC16 Engine</span>
-                <span class="tech-pill">GLIDE 2.4</span>
+            <!-- Heatmap Simulation -->
+            <div class="work-mockup">
+              <div class="mockup-controls">
+                <span class="mac-dot r"></span>
+                <span class="mac-dot y"></span>
+                <span class="mac-dot g"></span>
               </div>
-              <div class="card-link-arrow">PR #579 ↗</div>
+              <div class="heatmap-interactive">
+                <div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+                <div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+                <div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+                <div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+                <div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+                <div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+                <div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+                <div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+              </div>
             </div>
-          </a>
+
+            <h3 class="work-title">Valkey 16K Cluster Heatmap</h3>
+            <p class="work-desc">
+              Engineered the CRC16 XMODEM hash distribution engine for Valkey Big Keys in cluster topologies. Enabled interactive slot routing and GLIDE 2.4 client routing across 16,384 shards.
+            </p>
+          </div>
+
+          <div class="work-footer">
+            <div class="tech-stack-row">
+              <span class="tech-badge">React 19</span>
+              <span class="tech-badge">CRC16 Engine</span>
+              <span class="tech-badge">GLIDE 2.4</span>
+            </div>
+            <div class="work-arrow">Review PR #579 ↗</div>
+          </div>
+        </a>
+
+        <!-- Work 02: Binary Parser -->
+        <a href="https://github.com/valkey-io/valkey-admin/pull/578" target="_blank" class="work-card">
+          <div>
+            <div class="work-header">
+              <span class="work-idx">02</span>
+              <span class="work-badge">Systems Buffer Protocol</span>
+            </div>
+
+            <!-- Terminal Simulation -->
+            <div class="work-mockup">
+              <div class="mockup-controls">
+                <span class="mac-dot r"></span>
+                <span class="mac-dot y"></span>
+                <span class="mac-dot g"></span>
+              </div>
+              <div class="code-terminal">
+                <div><span class="c-kw">const</span> isUtf8 = <span class="c-fn">Buffer.isUtf8</span>(rawBytes);</div>
+                <div><span class="c-kw">if</span> (!isUtf8) {</div>
+                <div>&nbsp;&nbsp;<span class="c-kw">return</span> <span class="c-fn">sliceZeroCopyHex</span>(rawBytes, 0, 64);</div>
+                <div>} <span class="c-str">// Zero data truncation across nested structures</span></div>
+              </div>
+            </div>
+
+            <h3 class="work-title">Non-Destructive Binary Parser</h3>
+            <p class="work-desc">
+              Eliminated collection key truncation across nested Hash, List, Set, and Zset storage structures by designing byte-level detection and zero-copy binary streaming.
+            </p>
+          </div>
+
+          <div class="work-footer">
+            <div class="tech-stack-row">
+              <span class="tech-badge">Node.js Buffers</span>
+              <span class="tech-badge">Zero-Copy</span>
+              <span class="tech-badge">V8 Profiling</span>
+            </div>
+            <div class="work-arrow">Review PR #578 ↗</div>
+          </div>
+        </a>
+
+        <!-- Work 03: Expensify React Native Core -->
+        <a href="https://github.com/RajGahoi/App/tree/fix/104307-arrow-nav-split-delete" target="_blank" class="work-card">
+          <div>
+            <div class="work-header">
+              <span class="work-idx">03</span>
+              <span class="work-badge">Enterprise React Native</span>
+            </div>
+
+            <div class="work-mockup">
+              <div class="mockup-controls">
+                <span class="mac-dot r"></span>
+                <span class="mac-dot y"></span>
+                <span class="mac-dot g"></span>
+              </div>
+              <div class="code-terminal">
+                <div><span class="c-kw">Onyx</span>.<span class="c-fn">connect</span>({</div>
+                <div>&nbsp;&nbsp;key: <span class="c-str">ONYXKEYS.TRANSACTIONS</span>,</div>
+                <div>&nbsp;&nbsp;callback: <span class="c-fn">syncNavStateWithCarousel</span></div>
+                <div>}); <span class="c-str">// Fixed asynchronous navigation race conditions</span></div>
+              </div>
+            </div>
+
+            <h3 class="work-title">Expensify Navigation Core</h3>
+            <p class="work-desc">
+              Fixed race conditions and asynchronous Onyx state desynchronization in multi-screen expense transactions with 100% automated Jest regression coverage.
+            </p>
+          </div>
+
+          <div class="work-footer">
+            <div class="tech-stack-row">
+              <span class="tech-badge">React Native</span>
+              <span class="tech-badge">Onyx ORM</span>
+              <span class="tech-badge">Jest CI</span>
+            </div>
+            <div class="work-arrow">Issue #104307 ↗</div>
+          </div>
+        </a>
+
+        <!-- Work 04: Cluster Topology Telemetry -->
+        <a href="https://github.com/valkey-io/valkey-admin/pull/577" target="_blank" class="work-card">
+          <div>
+            <div class="work-header">
+              <span class="work-idx">04</span>
+              <span class="work-badge">Distributed Telemetry</span>
+            </div>
+
+            <div class="work-mockup">
+              <div class="mockup-controls">
+                <span class="mac-dot r"></span>
+                <span class="mac-dot y"></span>
+                <span class="mac-dot g"></span>
+              </div>
+              <div class="code-terminal">
+                <div><span class="c-kw">async function</span> <span class="c-fn">pollClusterMetrics</span>() {</div>
+                <div>&nbsp;&nbsp;<span class="c-kw">const</span> nodes = <span class="c-fn">await</span> client.info(<span class="c-str">'cluster'</span>);</div>
+                <div>&nbsp;&nbsp;<span class="c-kw">return</span> <span class="c-fn">mapTelemetryByShard</span>(nodes);</div>
+                <div>}</div>
+              </div>
+            </div>
+
+            <h3 class="work-title">Cluster Topology Telemetry</h3>
+            <p class="work-desc">
+              Surfaced real-time INFO metrics and CPU/memory utilization telemetry for replica nodes across heterogeneous Valkey cluster shards.
+            </p>
+          </div>
+
+          <div class="work-footer">
+            <div class="tech-stack-row">
+              <span class="tech-badge">Distributed Systems</span>
+              <span class="tech-badge">Telemetry</span>
+              <span class="tech-badge">TypeScript</span>
+            </div>
+            <div class="work-arrow">Review PR #577 ↗</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- SECTION 3: TECHNICAL ARSENAL -->
+    <section id="skills">
+      <span class="section-tag">// 03 · TECHNICAL CAPABILITY</span>
+      <h2 class="section-title">Architectural Foundation</h2>
+      <p class="section-desc">
+        A breakdown of the technologies and paradigms I leverage daily.
+      </p>
+
+      <div class="skills-grid">
+        <div class="skills-col">
+          <h3>⚡ Distributed Systems</h3>
+          <div class="skill-pills">
+            <span class="skill-pill">Valkey / Redis Clusters</span>
+            <span class="skill-pill">CRC16 Sharding</span>
+            <span class="skill-pill">Binary Protocols</span>
+            <span class="skill-pill">GLIDE 2.4 Driver</span>
+            <span class="skill-pill">Memory Profiling</span>
+            <span class="skill-pill">High-Concurrency</span>
+          </div>
         </div>
 
-        <!-- Project 02: Non-Destructive Binary Parser -->
-        <div class="tilt-card-wrapper">
-          <a href="https://github.com/valkey-io/valkey-admin/pull/578" target="_blank" class="project-card" data-tilt>
-            <div>
-              <div class="card-meta-row">
-                <span class="card-num">02</span>
-                <span class="card-ecosystem">Byte Buffer Protocols</span>
-              </div>
-
-              <div class="card-display-sim">
-                <div class="sim-bar">
-                  <span class="sim-dot red"></span>
-                  <span class="sim-dot yellow"></span>
-                  <span class="sim-dot green"></span>
-                </div>
-                <div class="sim-terminal">
-                  <div><span class="hl-var">const</span> isUtf8 = <span class="hl-fn">Buffer.isUtf8</span>(rawBytes);</div>
-                  <div><span class="hl-fn">if</span> (!isUtf8) {</div>
-                  <div>&nbsp;&nbsp;<span class="hl-var">return</span> <span class="hl-fn">sliceZeroCopyHex</span>(rawBytes, 0, 64);</div>
-                  <div>} <span class="hl-str">// 0% data corruption across nested hashes</span></div>
-                </div>
-              </div>
-
-              <h3 class="card-title">Non-Destructive Binary Parser</h3>
-              <p class="card-desc">
-                Eliminated collection key truncation across nested Hash, List, Set, and Zset storage structures by designing byte-level detection and zero-copy binary streaming.
-              </p>
-            </div>
-
-            <div class="card-bottom-row">
-              <div class="tech-pill-group">
-                <span class="tech-pill">Node.js Buffers</span>
-                <span class="tech-pill">Zero-Copy</span>
-                <span class="tech-pill">V8 Memory</span>
-              </div>
-              <div class="card-link-arrow">PR #578 ↗</div>
-            </div>
-          </a>
+        <div class="skills-col">
+          <h3>💎 Modern Full-Stack</h3>
+          <div class="skill-pills">
+            <span class="skill-pill">React 19 & Next.js</span>
+            <span class="skill-pill">React Native & Expo</span>
+            <span class="skill-pill">TypeScript (Strict)</span>
+            <span class="skill-pill">Node.js (Async I/O)</span>
+            <span class="skill-pill">Python & FastAPI</span>
+            <span class="skill-pill">Tailwind CSS</span>
+          </div>
         </div>
 
-        <!-- Project 03: Expensify React Native Core -->
-        <div class="tilt-card-wrapper">
-          <a href="https://github.com/RajGahoi/App/tree/fix/104307-arrow-nav-split-delete" target="_blank" class="project-card" data-tilt>
-            <div>
-              <div class="card-meta-row">
-                <span class="card-num">03</span>
-                <span class="card-ecosystem">Enterprise React Native</span>
-              </div>
-
-              <div class="card-display-sim">
-                <div class="sim-bar">
-                  <span class="sim-dot red"></span>
-                  <span class="sim-dot yellow"></span>
-                  <span class="sim-dot green"></span>
-                </div>
-                <div class="sim-terminal">
-                  <div><span class="hl-var">Onyx</span>.<span class="hl-fn">connect</span>({</div>
-                  <div>&nbsp;&nbsp;key: <span class="hl-str">ONYXKEYS.TRANSACTIONS</span>,</div>
-                  <div>&nbsp;&nbsp;callback: <span class="hl-fn">syncNavStateWithCarousel</span></div>
-                  <div>}); <span class="hl-str">// Eliminated async navigation race conditions</span></div>
-                </div>
-              </div>
-
-              <h3 class="card-title">Expensify Navigation Core</h3>
-              <p class="card-desc">
-                Fixed race conditions and asynchronous Onyx state desynchronization in multi-screen expense transactions with 100% automated Jest regression coverage.
-              </p>
-            </div>
-
-            <div class="card-bottom-row">
-              <div class="tech-pill-group">
-                <span class="tech-pill">React Native</span>
-                <span class="tech-pill">Onyx ORM</span>
-                <span class="tech-pill">Jest CI</span>
-              </div>
-              <div class="card-link-arrow">Issue #104307 ↗</div>
-            </div>
-          </a>
-        </div>
-
-        <!-- Project 04: Cluster Topology Telemetry -->
-        <div class="tilt-card-wrapper">
-          <a href="https://github.com/valkey-io/valkey-admin/pull/577" target="_blank" class="project-card" data-tilt>
-            <div>
-              <div class="card-meta-row">
-                <span class="card-num">04</span>
-                <span class="card-ecosystem">Distributed Telemetry</span>
-              </div>
-
-              <div class="card-display-sim">
-                <div class="sim-bar">
-                  <span class="sim-dot red"></span>
-                  <span class="sim-dot yellow"></span>
-                  <span class="sim-dot green"></span>
-                </div>
-                <div class="sim-terminal">
-                  <div><span class="hl-fn">async function</span> <span class="hl-var">pollClusterMetrics</span>() {</div>
-                  <div>&nbsp;&nbsp;<span class="hl-var">const</span> nodes = <span class="hl-fn">await</span> client.info(<span class="hl-str">'cluster'</span>);</div>
-                  <div>&nbsp;&nbsp;<span class="hl-var">return</span> <span class="hl-fn">mapTelemetryByShard</span>(nodes);</div>
-                  <div>}</div>
-                </div>
-              </div>
-
-              <h3 class="card-title">Cluster Topology Telemetry</h3>
-              <p class="card-desc">
-                Surfaced real-time INFO metrics and CPU/memory utilization telemetry for replica nodes across heterogeneous Valkey cluster shards.
-              </p>
-            </div>
-
-            <div class="card-bottom-row">
-              <div class="tech-pill-group">
-                <span class="tech-pill">Distributed Caching</span>
-                <span class="tech-pill">Telemetry</span>
-                <span class="tech-pill">TypeScript</span>
-              </div>
-              <div class="card-link-arrow">PR #577 ↗</div>
-            </div>
-          </a>
+        <div class="skills-col">
+          <h3>🛡️ Quality & Cloud</h3>
+          <div class="skill-pills">
+            <span class="skill-pill">Jest & Automated Tests</span>
+            <span class="skill-pill">GitHub Actions CI/CD</span>
+            <span class="skill-pill">Docker Containers</span>
+            <span class="skill-pill">Linux Systems</span>
+            <span class="skill-pill">DCO Compliance</span>
+            <span class="skill-pill">Git Workflows</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Upwork Direct Contract Glass Banner -->
-    <div class="contract-banner">
-      <div class="contract-info">
-        <h2>Ready to build something extraordinary?</h2>
-        <p>Available for select high-stakes engineering contracts, enterprise code audits, and technical leadership engagements directly through Upwork.</p>
+    <!-- DIRECT UPWORK CALLOUT BANNER -->
+    <div class="hire-box">
+      <div class="hire-box-content">
+        <h2>Let's build something world-class together.</h2>
+        <p>Available for select high-stakes engineering contracts, enterprise audits, and full-stack software development directly on Upwork or private contract.</p>
       </div>
-      <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn-epic">
+      <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn-action-primary">
         Hire Raj on Upwork ↗
       </a>
     </div>
 
     <!-- Footer -->
     <footer>
-      <div class="footer-brand">
-        © 2026 Raj Gahoi · Systems Architecture & Creative Engineering.
+      <div class="footer-left">
+        © 2026 Raj Gahoi · Full-Stack Systems & Creative Engineering.
       </div>
       <div class="footer-links">
         <a href="mailto:gahoiraj01@gmail.com">Email</a>
@@ -942,43 +1212,49 @@
         <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank">Upwork Profile ↗</a>
       </div>
     </footer>
-  </div>
+  </main>
 
-  <!-- Interactive 3D Three.js & Cursor Script -->
+  <!-- 3D Three.js Interactive Torus Knot & Hologram Script -->
   <script>
-    // -------------------------------------------------------------------------
-    // 1. THREE.JS INTERACTIVE 3D PARTICLE WAVE SCENE
-    // -------------------------------------------------------------------------
-    const canvas = document.getElementById('webgl-canvas');
+    const canvas = document.getElementById('hero-canvas');
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x030305, 0.0018);
+    scene.fog = new THREE.FogExp2(0x07070b, 0.0015);
 
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 3000);
-    camera.position.z = 1000;
-    camera.position.y = 200;
+    camera.position.z = 800;
 
     const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Particle Constellation Geometry
-    const particleCount = 2400;
+    // 1. Centerpiece: Dynamic Wireframe Glowing Torus Knot
+    const torusGeo = new THREE.TorusKnotGeometry(160, 48, 128, 32);
+    const torusMat = new THREE.MeshBasicMaterial({
+      color: 0x8b5cf6,
+      wireframe: true,
+      transparent: true,
+      opacity: 0.28
+    });
+    const torusKnot = new THREE.Mesh(torusGeo, torusMat);
+    torusKnot.position.set(280, 40, -100);
+    scene.add(torusKnot);
+
+    // 2. Surrounding 3D Particle Constellation
+    const particleCount = 1800;
     const geometry = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
-    const color1 = new THREE.Color(0x06b6d4); // Cyan
-    const color2 = new THREE.Color(0x8b5cf6); // Purple
-    const color3 = new THREE.Color(0xec4899); // Pink
+    const color1 = new THREE.Color(0x38bdf8); // Cyan
+    const color2 = new THREE.Color(0xc084fc); // Purple
+    const color3 = new THREE.Color(0xf472b6); // Pink
 
     for (let i = 0; i < particleCount; i++) {
-      // Create a wide wave plane
-      positions[i * 3] = (Math.random() - 0.5) * 3000;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 1200;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 2000;
+      positions[i * 3] = (Math.random() - 0.5) * 2600;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 1600;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 1600;
 
-      // Color interpolation
-      const mixedColor = color1.clone().lerp(color2, Math.random()).lerp(color3, Math.random() * 0.5);
+      const mixedColor = color1.clone().lerp(color2, Math.random()).lerp(color3, Math.random() * 0.4);
       colors[i * 3] = mixedColor.r;
       colors[i * 3 + 1] = mixedColor.g;
       colors[i * 3 + 2] = mixedColor.b;
@@ -987,133 +1263,74 @@
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    // Generate glowing circular sprite
-    const spriteCanvas = document.createElement('canvas');
-    spriteCanvas.width = 64;
-    spriteCanvas.height = 64;
-    const spriteCtx = spriteCanvas.getContext('2d');
-    const grad = spriteCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    // Circular glowing particle texture
+    const pCanvas = document.createElement('canvas');
+    pCanvas.width = 64;
+    pCanvas.height = 64;
+    const pCtx = pCanvas.getContext('2d');
+    const grad = pCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
     grad.addColorStop(0, 'rgba(255,255,255,1)');
-    grad.addColorStop(0.3, 'rgba(255,255,255,0.8)');
-    grad.addColorStop(0.7, 'rgba(139,92,246,0.3)');
+    grad.addColorStop(0.3, 'rgba(192,132,252,0.8)');
+    grad.addColorStop(0.7, 'rgba(56,189,248,0.2)');
     grad.addColorStop(1, 'rgba(0,0,0,0)');
-    spriteCtx.fillStyle = grad;
-    spriteCtx.fillRect(0, 0, 64, 64);
-    const texture = new THREE.CanvasTexture(spriteCanvas);
+    pCtx.fillStyle = grad;
+    pCtx.fillRect(0, 0, 64, 64);
+    const pTexture = new THREE.CanvasTexture(pCanvas);
 
-    const material = new THREE.PointsMaterial({
-      size: 16,
-      map: texture,
+    const particleMaterial = new THREE.PointsMaterial({
+      size: 14,
+      map: pTexture,
       vertexColors: true,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.8,
       blending: THREE.AdditiveBlending,
       depthWrite: false
     });
 
-    const particles = new THREE.Points(geometry, material);
+    const particles = new THREE.Points(geometry, particleMaterial);
     scene.add(particles);
 
-    // Mouse Tracking for 3D Camera Parallax
-    let mouseX = 0;
-    let mouseY = 0;
-    let targetX = 0;
-    let targetY = 0;
-    const windowHalfX = window.innerWidth / 2;
-    const windowHalfY = window.innerHeight / 2;
+    // Mouse Tracking for Parallax
+    let mouseX = 0, mouseY = 0;
+    let targetX = 0, targetY = 0;
+    const halfX = window.innerWidth / 2;
+    const halfY = window.innerHeight / 2;
 
-    document.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX - windowHalfX);
-      mouseY = (e.clientY - windowHalfY);
+    window.addEventListener('mousemove', (e) => {
+      mouseX = (e.clientX - halfX);
+      mouseY = (e.clientY - halfY);
     });
 
-    // Handle Resize
     window.addEventListener('resize', () => {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // 3D Animation Render Loop
+    // Render loop
     let clock = new THREE.Clock();
-    function animate3D() {
-      requestAnimationFrame(animate3D);
-
+    function animate() {
+      requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
-      targetX = mouseX * 0.4;
-      targetY = mouseY * 0.3;
+
+      targetX = mouseX * 0.35;
+      targetY = mouseY * 0.25;
 
       camera.position.x += (targetX - camera.position.x) * 0.05;
-      camera.position.y += (-targetY + 200 - camera.position.y) * 0.05;
+      camera.position.y += (-targetY - camera.position.y) * 0.05;
       camera.lookAt(0, 0, 0);
 
-      // Subtle wave movement
-      const posAttr = geometry.attributes.position;
-      for (let i = 0; i < particleCount; i++) {
-        const x = posAttr.getX(i);
-        const y = posAttr.getY(i);
-        posAttr.setY(i, y + Math.sin(elapsed * 1.5 + x * 0.003) * 0.4);
-      }
-      posAttr.needsUpdate = true;
+      // Rotate 3D Torus Knot
+      torusKnot.rotation.x = elapsed * 0.25;
+      torusKnot.rotation.y = elapsed * 0.35;
 
-      particles.rotation.y = elapsed * 0.03;
+      // Rotate Particles
+      particles.rotation.y = elapsed * 0.04;
+      particles.rotation.x = Math.sin(elapsed * 0.2) * 0.05;
 
       renderer.render(scene, camera);
     }
-    animate3D();
-
-    // -------------------------------------------------------------------------
-    // 2. SMOOTH FLUID CURSOR
-    // -------------------------------------------------------------------------
-    const dot = document.getElementById('cursorDot');
-    const ring = document.getElementById('cursorRing');
-    let ringX = 0, ringY = 0;
-    let curX = 0, curY = 0;
-
-    window.addEventListener('mousemove', (e) => {
-      curX = e.clientX;
-      curY = e.clientY;
-      dot.style.left = `${curX}px`;
-      dot.style.top = `${curY}px`;
-    });
-
-    function renderCursor() {
-      ringX += (curX - ringX) * 0.15;
-      ringY += (curY - ringY) * 0.15;
-      ring.style.left = `${ringX}px`;
-      ring.style.top = `${ringY}px`;
-      requestAnimationFrame(renderCursor);
-    }
-    renderCursor();
-
-    const interactives = document.querySelectorAll('a, button, .project-card, .kpi-card');
-    interactives.forEach(item => {
-      item.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-      item.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-    });
-
-    // -------------------------------------------------------------------------
-    // 3. 3D TILT EFFECT ON PROJECT CARDS
-    // -------------------------------------------------------------------------
-    const cards = document.querySelectorAll('.project-card');
-    cards.forEach(card => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-
-        const rotateX = ((y - centerY) / centerY) * -12;
-        const rotateY = ((x - centerX) / centerX) * 12;
-
-        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-      });
-
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = `rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-      });
-    });
+    animate();
   </script>
 </body>
 </html>
