@@ -30,7 +30,7 @@
   <header class="nav" id="nav">
     <div class="nav__capsule">
       <a class="brand" href="#top" aria-label="Raj Gahoi, back to top">
-        <span class="seal" style="width:20px;height:20px;font-size:11px;margin-right:2px;">ラ</span>
+        <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true"><g class="enso"><path pathLength="1" d="M22.81 7.88A10.6 10.6 0 1 1 15.08 5.44" stroke-width="2"/><path pathLength="1" d="M22.81 7.88A10.6 10.6 0 0 1 10.7 25.18" stroke-width="2.7"/><path pathLength="1" d="M22.81 7.88A10.6 10.6 0 0 1 25.96 19.63" stroke-width="3.5"/></g></svg>
         <span>Raj Gahoi</span>
       </a>
 
@@ -130,6 +130,25 @@
           </div>
 
           <div class="about__side">
+            <!-- Woodblock Print Canvas Scroll -->
+            <figure class="portrait scroll" aria-label="Portrait of Raj Gahoi">
+              <span class="scroll__rod" aria-hidden="true"></span>
+              <div class="scroll__paper">
+                <div class="portrait__bar">
+                  <span><i class="led" aria-hidden="true"></i>肖像 · raj.exe</span>
+                  <span class="dim" data-print-status>online</span>
+                </div>
+                <div class="portrait__img" title="Pressed live as an indigo woodblock print. Touch it to see wet ink bleed.">
+                  <canvas id="print" aria-hidden="true"></canvas>
+                </div>
+                <figcaption class="portrait__foot">
+                  <span>Jaipur, IN</span>
+                  <span class="loss"><span>train/loss</span><svg viewBox="0 0 80 20" preserveAspectRatio="none" aria-hidden="true"><path id="loss-path" d=""/></svg><b id="loss-val">0.000</b></span>
+                </figcaption>
+              </div>
+              <span class="scroll__end" aria-hidden="true"><i class="scroll__roll"></i><span class="scroll__rod scroll__rod--end"></span></span>
+            </figure>
+
             <div class="info" data-reveal style="--d:.08s">
               <div class="info__bar"><span lang="ja">名刺 <span class="dim" lang="en">raj --info</span></span><span class="dim">v2026</span></div>
               <div class="meishi__side" aria-hidden="true"><span class="meishi__name">ラージ・ガホイ</span><span class="seal seal--name">ラ<br>ジ<br>ガ</span></div>
@@ -137,8 +156,8 @@
                 <div><dt>location</dt><dd>India (UTC+5:30)</dd></div>
                 <div><dt>focus</dt><dd>Distributed Caching &amp; Full-Stack</dd></div>
                 <div><dt>ecosystem</dt><dd>Linux Foundation / Valkey</dd></div>
-                <div><dt>leetcode</dt><dd><a href="https://leetcode.com/u/raj_gahoi/" target="_blank" rel="noopener">RajGahoi ↗</a></dd></div>
-                <div><dt>linkedin</dt><dd><a href="https://www.linkedin.com/in/rajgahoi0411/" target="_blank" rel="noopener">rajgahoi ↗</a></dd></div>
+                <div><dt>leetcode</dt><dd><a href="https://leetcode.com/u/raj_gahoi/" target="_blank" rel="noopener">raj_gahoi ↗</a></dd></div>
+                <div><dt>linkedin</dt><dd><a href="https://www.linkedin.com/in/rajgahoi0411/" target="_blank" rel="noopener">rajgahoi0411 ↗</a></dd></div>
                 <div><dt>upwork</dt><dd><a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" rel="noopener">~014898525b9c53fc32 ↗</a></dd></div>
                 <div><dt>github</dt><dd><a href="https://github.com/RajGahoi" target="_blank" rel="noopener">@RajGahoi ↗</a></dd></div>
                 <div><dt>status</dt><dd><span class="ok">● Available for contracts</span></dd></div>
@@ -254,12 +273,12 @@
               <div class="kv-grid" id="kv-grid">
                 <div class="kv-cell" data-s="0"></div><div class="kv-cell"></div><div class="kv-cell" data-s="1"></div><div class="kv-cell"></div>
                 <div class="kv-cell"></div><div class="kv-cell" data-s="2"></div><div class="kv-cell"></div><div class="kv-cell" data-s="0"></div>
-                <div class="kv-cell" data-s="1"></div><div class="kv-cell"></div><div class="kv-cell"></div><div class="kv-cell" data-s="2"></div>
+                <div class="kv-cell" data-s="1"></div><div class="kv-cell"></div><div class="kv-cell" data-s="2"></div><div class="kv-cell"></div>
                 <div class="kv-cell"></div><div class="kv-cell" data-s="0"></div><div class="kv-cell" data-s="1"></div><div class="kv-cell"></div>
                 <div class="kv-cell"></div><div class="kv-cell" data-s="2"></div><div class="kv-cell"></div><div class="kv-cell" data-s="0"></div>
                 <div class="kv-cell" data-s="0"></div><div class="kv-cell"></div><div class="kv-cell" data-s="1"></div><div class="kv-cell"></div>
                 <div class="kv-cell"></div><div class="kv-cell" data-s="2"></div><div class="kv-cell"></div><div class="kv-cell" data-s="0"></div>
-                <div class="kv-cell" data-s="1"></div><div class="kv-cell"></div><div class="kv-cell"></div><div class="kv-cell" data-s="2"></div>
+                <div class="kv-cell" data-s="1"></div><div class="kv-cell"></div><div class="kv-cell" data-s="2"></div><div class="kv-cell"></div>
               </div>
               <div class="kv-status kv-status--stack">
                 <span>shards <b data-k="run">3</b></span>
@@ -354,12 +373,21 @@
           <a class="btn btn--ghost btn--lg" href="mailto:gahoiraj01@gmail.com">gahoiraj01@gmail.com</a>
         </div>
 
+        <!-- Interactive Koi Pond Canvas (Exact widget from tryingtobenikhil) -->
+        <figure class="pond" data-pond data-reveal style="margin-top:60px;">
+          <canvas role="img" aria-label="A koi pond with lily pads and a bamboo spout. Tap the water and the koi come for the food."></canvas>
+          <figcaption class="pond__cap">
+            <span class="pond__k" lang="ja">鯉 <span lang="en">· tap the water to feed them</span></span>
+            <b class="pond__t">They come when you tap the water. I come when you send an email.</b>
+          </figcaption>
+        </figure>
+
         <nav class="elsewhere" aria-label="Elsewhere" data-reveal>
           <span class="elsewhere__k" lang="ja">他にも<small lang="en">elsewhere</small></span>
           <div>
             <a class="social" href="https://github.com/RajGahoi" target="_blank" rel="noopener"><b>GitHub (@RajGahoi)</b></a> · 
             <a class="social" href="https://www.linkedin.com/in/rajgahoi0411/" target="_blank" rel="noopener"><b>LinkedIn (rajgahoi)</b></a> · 
-            <a class="social" href="https://leetcode.com/u/raj_gahoi/" target="_blank" rel="noopener"><b>LeetCode (RajGahoi)</b></a> · 
+            <a class="social" href="https://leetcode.com/u/raj_gahoi/" target="_blank" rel="noopener"><b>LeetCode (raj_gahoi)</b></a> · 
             <a class="social" href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" rel="noopener"><b>Upwork Freelancer Profile</b></a> · 
             <a class="social" href="mailto:gahoiraj01@gmail.com"><b>Direct Email</b></a>
           </div>
@@ -381,10 +409,17 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
+  <!-- Complete Suite of JavaScript Engines from reference -->
   <script src="./assets/js/season.js" defer></script>
   <script src="./assets/js/scene.js" defer></script>
+  <script src="./assets/js/inkwash.js" defer></script>
+  <script src="./assets/js/print.js" defer></script>
+  <script src="./assets/js/sando.js" defer></script>
+  <script src="./assets/js/koi.js" defer></script>
+  <script src="./assets/js/ambience.js" defer></script>
+  <script src="./assets/js/trail.js" defer></script>
   <script src="./assets/js/main.js" defer></script>
+  <script src="./assets/js/extras.js" defer></script>
 
   <script>
     // Live Voice Temperature Controller
