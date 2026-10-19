@@ -3,24 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RAJ GAHOI — SYSTEMS & FULL-STACK</title>
+  <title>RAJ GAHOI — Creative Developer & Systems Architect</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Syne:wght@700;800&family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg: #070708;
-      --card: #0d0d0f;
+      --bg: #0a0a0c;
+      --surface: #121216;
+      --surface-hover: #1a1a20;
       --border: rgba(255, 255, 255, 0.08);
-      --border-strong: rgba(255, 255, 255, 0.22);
+      --border-light: rgba(255, 255, 255, 0.16);
       --text: #ffffff;
-      --muted: #808086;
-      --faint: #3a3a40;
-      --accent: #ffffff;
+      --text-muted: #9494a0;
+      --accent-glow: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+      --gradient-accent: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
       --font-display: 'Syne', sans-serif;
-      --font-body: 'Space Grotesk', -apple-system, sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
     }
 
@@ -28,6 +29,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      cursor: none; /* Custom interactive studio cursor */
     }
 
     html {
@@ -39,595 +41,1094 @@
       color: var(--text);
       font-family: var(--font-body);
       overflow-x: hidden;
-      cursor: default;
-      selection-background-color: #fff;
-      selection-color: #000;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
 
-    ::selection {
-      background: #ffffff;
-      color: #000000;
-    }
-
-    /* Grain Noise Texture */
-    .noise-overlay {
+    /* Ambient dynamic glow backdrops */
+    .ambient-bg {
       position: fixed;
       inset: 0;
-      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.035'/%3E%3C/svg%3E");
+      background: 
+        radial-gradient(circle at 15% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 75%, rgba(168, 85, 247, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.03) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Grain Film Texture */
+    .noise {
+      position: fixed;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.025'/%3E%3C/svg%3E");
       pointer-events: none;
       z-index: 999;
     }
 
-    .wrapper {
-      max-width: 1360px;
-      margin: 0 auto;
-      padding: 0 40px;
+    /* Creative Studio Custom Cursor */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: #fff;
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.2s, transform 0.05s;
     }
 
-    /* Minimal Floating Topbar */
+    .cursor-ring {
+      width: 44px;
+      height: 44px;
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                  height 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                  background-color 0.3s, 
+                  border-color 0.3s;
+    }
+
+    .cursor-ring.active {
+      width: 80px;
+      height: 80px;
+      background-color: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(4px);
+      border-color: #fff;
+    }
+
+    .cursor-ring.text-hover {
+      width: 90px;
+      height: 90px;
+      background-color: #ffffff;
+      mix-blend-mode: difference;
+      border: none;
+    }
+
+    /* Header Nav */
     header {
-      padding: 36px 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 24px 48px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      backdrop-filter: blur(20px);
+      background: rgba(10, 10, 12, 0.65);
       border-bottom: 1px solid var(--border);
     }
 
-    .brand {
+    .logo {
       font-family: var(--font-display);
-      font-size: 18px;
       font-weight: 800;
+      font-size: 20px;
       letter-spacing: -0.5px;
-      text-transform: uppercase;
       display: flex;
       align-items: center;
       gap: 12px;
+      text-decoration: none;
+      color: #fff;
     }
 
-    .brand-index {
+    .status-badge {
       font-family: var(--font-mono);
       font-size: 11px;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 2px 8px;
-      border-radius: 2px;
-    }
-
-    .nav-group {
+      padding: 4px 10px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #34d399;
+      border-radius: 100px;
       display: flex;
       align-items: center;
-      gap: 36px;
+      gap: 6px;
     }
 
-    .nav-item {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--muted);
+    .pulse {
+      width: 6px;
+      height: 6px;
+      background: #34d399;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #34d399;
+      animation: pulseAnim 2s infinite;
+    }
+
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
       text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 1px;
       transition: color 0.2s;
     }
 
-    .nav-item:hover {
-      color: var(--text);
+    .nav-link:hover {
+      color: #fff;
     }
 
-    /* Hero Editorial Typography */
-    .hero {
-      padding: 120px 0 100px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .hero-meta-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      margin-bottom: 40px;
-    }
-
-    .hero-status {
+    .cta-pill {
       font-family: var(--font-mono);
       font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .status-indicator {
-      width: 7px;
-      height: 7px;
-      background: #ffffff;
-      border-radius: 50%;
-      box-shadow: 0 0 10px #ffffff;
-    }
-
-    .hero-location {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .huge-title {
-      font-family: var(--font-display);
-      font-size: clamp(52px, 8.5vw, 120px);
-      font-weight: 800;
-      line-height: 0.95;
-      letter-spacing: -0.04em;
-      text-transform: uppercase;
-      margin-bottom: 50px;
-      word-spacing: 0.05em;
-    }
-
-    .huge-title .outline-text {
-      color: transparent;
-      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.4);
-      transition: -webkit-text-stroke 0.3s;
-    }
-
-    .huge-title:hover .outline-text {
-      -webkit-text-stroke: 1.5px #ffffff;
-    }
-
-    .hero-bottom-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: flex-start;
-    }
-
-    .hero-manifesto {
-      font-size: 21px;
-      font-weight: 400;
-      line-height: 1.5;
-      color: #d1d1d6;
-      letter-spacing: -0.3px;
-    }
-
-    .hero-actions-container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      align-items: flex-end;
-    }
-
-    .editorial-btn {
+      font-weight: 600;
+      background: #fff;
+      color: #000;
+      padding: 10px 22px;
+      border-radius: 100px;
+      text-decoration: none;
       display: inline-flex;
       align-items: center;
-      gap: 14px;
-      font-family: var(--font-mono);
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: #000;
-      background: #fff;
-      padding: 16px 36px;
-      text-decoration: none;
-      font-weight: 600;
+      gap: 8px;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .editorial-btn:hover {
-      background: #e0e0e0;
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
+    .cta-pill:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
     }
 
-    .editorial-btn-secondary {
-      background: transparent;
-      color: var(--text);
-      border: 1px solid var(--border);
+    /* Container */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 48px;
+      position: relative;
+      z-index: 10;
     }
 
-    .editorial-btn-secondary:hover {
-      background: #ffffff;
-      color: #000000;
-      border-color: #ffffff;
+    /* Hero Section */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 140px;
+      padding-bottom: 80px;
+      position: relative;
     }
 
-    /* Index Strip Section */
-    .metric-strip {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .strip-box {
-      padding: 40px 24px;
-      border-right: 1px solid var(--border);
-    }
-
-    .strip-box:last-child {
-      border-right: none;
-    }
-
-    .strip-num {
-      font-family: var(--font-display);
-      font-size: 48px;
-      font-weight: 800;
-      letter-spacing: -2px;
-      margin-bottom: 6px;
-    }
-
-    .strip-label {
+    .hero-tag {
       font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--muted);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #a855f7;
+      margin-bottom: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(48px, 8vw, 110px);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      margin-bottom: 36px;
+      text-transform: uppercase;
+    }
+
+    .gradient-text {
+      background: var(--gradient-accent);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: clamp(18px, 2vw, 24px);
+      max-width: 720px;
+      color: var(--text-muted);
+      margin-bottom: 48px;
+      line-height: 1.5;
+    }
+
+    .hero-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, auto);
+      gap: 40px;
+      align-items: center;
+      width: fit-content;
+      margin-bottom: 60px;
+    }
+
+    .meta-stat-num {
+      font-family: var(--font-display);
+      font-size: 38px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .meta-stat-label {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    /* Curated Works (List Style Awwwards) */
-    .work-section {
-      padding: 100px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .section-headline {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--muted);
-      margin-bottom: 40px;
+    .hero-actions {
       display: flex;
-      justify-content: space-between;
-    }
-
-    .project-row {
-      display: block;
-      text-decoration: none;
-      color: inherit;
-      padding: 48px 0;
-      border-top: 1px solid var(--border);
-      position: relative;
-      transition: all 0.3s;
-    }
-
-    .project-row:last-child {
-      border-bottom: 1px solid var(--border);
-    }
-
-    .project-row::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(255, 255, 255, 0.02);
-      opacity: 0;
-      transition: opacity 0.3s;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    .project-row:hover::before {
-      opacity: 1;
-    }
-
-    .project-row-inner {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: 80px 2.5fr 3fr 1fr;
-      align-items: baseline;
       gap: 20px;
+      align-items: center;
+      flex-wrap: wrap;
     }
 
-    .p-idx {
-      font-family: var(--font-mono);
-      font-size: 14px;
-      color: var(--faint);
-      transition: color 0.3s;
-    }
-
-    .project-row:hover .p-idx {
-      color: var(--text);
-    }
-
-    .p-title {
-      font-family: var(--font-display);
-      font-size: 32px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .project-row:hover .p-title {
-      transform: translateX(10px);
-    }
-
-    .p-desc {
-      font-size: 15px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    .p-action {
-      text-align: right;
-      font-family: var(--font-mono);
-      font-size: 14px;
-      color: var(--muted);
-      transition: color 0.3s, transform 0.3s;
-    }
-
-    .project-row:hover .p-action {
-      color: #fff;
-      transform: translateX(4px);
-    }
-
-    /* Stack & Systems Matrix */
-    .systems-section {
-      padding: 100px 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .matrix-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 40px;
-    }
-
-    .matrix-col h4 {
+    .btn-studio-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
       font-family: var(--font-mono);
       font-size: 13px;
       text-transform: uppercase;
       letter-spacing: 1.5px;
-      color: var(--muted);
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      background: #fff;
+      color: #000;
+      padding: 18px 38px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-studio-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-studio-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 600;
+      background: transparent;
+      color: #fff;
+      padding: 18px 38px;
+      border-radius: 100px;
+      border: 1px solid var(--border-light);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .btn-studio-ghost:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: #fff;
+      transform: translateY(-3px);
+    }
+
+    /* Horizontal Showcase Slider Section */
+    .slider-section {
+      padding: 120px 0 80px;
+      position: relative;
+    }
+
+    .section-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 40px;
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #6366f1;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 4vw, 54px);
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .slider-controls {
+      display: flex;
+      gap: 12px;
+    }
+
+    .slider-arrow-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .slider-arrow-btn:hover {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+      transform: scale(1.08);
+    }
+
+    /* Horizontal Cards Slider Track */
+    .cards-slider {
+      display: flex;
+      gap: 32px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: 40px;
+      scrollbar-width: none; /* Hide default scrollbar */
+      -ms-overflow-style: none;
+    }
+
+    .cards-slider::-webkit-scrollbar {
+      display: none;
+    }
+
+    .project-card {
+      flex: 0 0 540px;
+      scroll-snap-align: start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      padding: 36px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 600px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .project-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--border-light);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.1);
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-accent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .project-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .card-idx {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 100px;
+    }
+
+    .card-status-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #a855f7;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Floating UI Mockup Canvas inside Card */
+    .card-mockup {
+      height: 240px;
+      background: #08080a;
+      border: 1px solid var(--border);
+      border-radius: 18px;
       margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.6);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .matrix-list {
-      list-style: none;
+    .project-card:hover .card-mockup {
+      transform: scale(1.02);
     }
 
-    .matrix-list li {
-      font-size: 17px;
-      font-weight: 500;
-      padding: 12px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    .mockup-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .mock-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #2a2a32;
+    }
+
+    .mock-dot.red { background: #ef4444; }
+    .mock-dot.yellow { background: #f59e0b; }
+    .mock-dot.green { background: #10b981; }
+
+    /* Interactive visuals inside mockup */
+    .mockup-heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(16, 1fr);
+      gap: 4px;
+      height: 100%;
+      align-content: center;
+    }
+
+    .heatmap-cell {
+      height: 14px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.05);
+      transition: background 0.3s;
+    }
+
+    .project-card:hover .heatmap-cell.hot {
+      background: #ec4899;
+      box-shadow: 0 0 8px #ec4899;
+    }
+
+    .project-card:hover .heatmap-cell.med {
+      background: #a855f7;
+    }
+
+    .project-card:hover .heatmap-cell.low {
+      background: #6366f1;
+    }
+
+    /* Mockup Terminal Code */
+    .mockup-code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #9494a0;
+      line-height: 1.6;
+    }
+
+    .mockup-code span.key { color: #60a5fa; }
+    .mockup-code span.str { color: #34d399; }
+    .mockup-code span.fn { color: #f472b6; }
+
+    .card-info h3 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+
+    .card-info p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      padding-top: 20px;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tag-item {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    .card-arrow {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.2s;
+    }
+
+    .project-card:hover .card-arrow {
+      transform: translateX(4px);
+      color: #ec4899;
+    }
+
+    /* Skills & Architecture Studio Bento */
+    .studio-bento {
+      padding: 100px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 24px;
+      margin-top: 50px;
+    }
+
+    .bento-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 36px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .bento-box:hover {
+      border-color: var(--border-light);
+      transform: translateY(-4px);
+    }
+
+    .bento-span-8 { grid-column: span 8; }
+    .bento-span-4 { grid-column: span 4; }
+    .bento-span-6 { grid-column: span 6; }
+    .bento-span-12 { grid-column: span 12; }
+
+    .box-title {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .box-desc {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-bottom: 24px;
+    }
+
+    .pill-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill-item {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      padding: 8px 16px;
+      border-radius: 100px;
+      transition: all 0.2s;
+    }
+
+    .pill-item:hover {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+      transform: scale(1.05);
+    }
+
+    /* Upwork Client Banner */
+    .hire-banner {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 32px;
+      padding: 60px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 80px 0 120px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hire-text h2 {
+      font-family: var(--font-display);
+      font-size: clamp(32px, 3.5vw, 48px);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
+
+    .hire-text p {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 580px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 60px 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .matrix-list li span {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--muted);
+    .footer-left {
+      font-size: 14px;
+      color: var(--text-muted);
     }
 
-    /* Footer Colophon */
-    footer {
-      padding: 80px 0 60px;
+    .footer-links {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
+      gap: 28px;
     }
 
-    .colophon-big {
-      font-family: var(--font-display);
-      font-size: 38px;
-      font-weight: 800;
-      letter-spacing: -1px;
-      text-transform: uppercase;
-      line-height: 1.1;
-      margin-bottom: 20px;
-    }
-
-    .social-links {
-      display: flex;
-      gap: 30px;
-    }
-
-    .social-link {
+    .footer-links a {
       font-family: var(--font-mono);
       font-size: 13px;
-      color: var(--muted);
+      color: var(--text-muted);
       text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 1px;
       transition: color 0.2s;
     }
 
-    .social-link:hover {
+    .footer-links a:hover {
       color: #fff;
-      text-decoration: underline;
     }
 
-    @media (max-width: 960px) {
-      .hero-bottom-grid { grid-template-columns: 1fr; gap: 30px; }
-      .hero-actions-container { align-items: flex-start; }
-      .metric-strip { grid-template-columns: repeat(2, 1fr); }
-      .project-row-inner { grid-template-columns: 1fr; gap: 12px; }
-      .matrix-grid { grid-template-columns: 1fr; }
-      footer { flex-direction: column; gap: 40px; align-items: flex-start; }
+    @media (max-width: 992px) {
+      .bento-span-8, .bento-span-4, .bento-span-6 { grid-column: span 12; }
+      .project-card { flex: 0 0 88vw; height: auto; }
+      .hero-title { font-size: 44px; }
+      .hire-banner { flex-direction: column; gap: 30px; align-items: flex-start; padding: 40px 28px; }
+      header { padding: 20px 24px; }
+      .container { padding: 0 24px; }
+      * { cursor: auto !important; }
+      .cursor-dot, .cursor-ring { display: none !important; }
     }
   </style>
 </head>
 <body>
-  <div class="noise-overlay"></div>
+  <!-- Custom Creative Studio Interactive Cursors -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
 
-  <div class="wrapper">
-    <!-- Navbar -->
-    <header>
-      <div class="brand">
-        Raj Gahoi
-        <span class="brand-index">CORE / DEV</span>
-      </div>
-      <nav class="nav-group">
-        <a href="#work" class="nav-item">Selected Works</a>
-        <a href="#systems" class="nav-item">Architecture</a>
-        <a href="https://github.com/RajGahoi" target="_blank" class="nav-item">GitHub [15]</a>
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="nav-item">Upwork ↗</a>
-      </nav>
-    </header>
+  <!-- Ambient Dynamic Atmosphere -->
+  <div class="ambient-bg"></div>
+  <div class="noise"></div>
 
-    <!-- Editorial Hero -->
+  <!-- Header -->
+  <header>
+    <a href="#" class="logo">
+      RAJ GAHOI
+      <span class="status-badge">
+        <span class="pulse"></span>
+        AVAILABLE FOR HIRE
+      </span>
+    </a>
+    <nav class="nav-links">
+      <a href="#work" class="nav-link">Selected Work</a>
+      <a href="#architecture" class="nav-link">Architecture</a>
+      <a href="https://github.com/RajGahoi" target="_blank" class="nav-link">GitHub ↗</a>
+      <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="cta-pill">
+        Hire on Upwork ↗
+      </a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Hero Section -->
     <section class="hero">
-      <div class="hero-meta-row">
-        <div class="hero-status">
-          <div class="status-indicator"></div>
-          Available for Select Contracts & Bounties
-        </div>
-        <div class="hero-location">India · Remote UTC+5:30</div>
+      <div class="hero-tag">
+        <span>✦</span> Systems Engineer & Full-Stack Architect
       </div>
-
-      <h1 class="huge-title">
-        Distributed <span class="outline-text">Systems</span><br>
-        & High-Scale Web.
+      <h1 class="hero-title">
+        High-scale systems.<br>
+        <span class="gradient-text">Award-grade craft.</span>
       </h1>
+      <p class="hero-sub">
+        Pairing deep systems performance (Valkey cluster topologies, low-level binary protocols) with fluid modern web applications built for zero downtime and effortless scale.
+      </p>
 
-      <div class="hero-bottom-grid">
-        <p class="hero-manifesto">
-          Full-Stack and Systems Engineer specializing in distributed caching topologies, non-destructive data parsers, and bulletproof client-state synchronization for high-scale applications.
-        </p>
+      <div class="hero-meta-grid">
+        <div>
+          <div class="meta-stat-num">16K</div>
+          <div class="meta-stat-label">Cluster Slots Mapped</div>
+        </div>
+        <div>
+          <div class="meta-stat-num">100%</div>
+          <div class="meta-stat-label">CI Green Rate</div>
+        </div>
+        <div>
+          <div class="meta-stat-num">0.00</div>
+          <div class="meta-stat-label">Regression Tolerance</div>
+        </div>
+      </div>
 
-        <div class="hero-actions-container">
-          <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="editorial-btn">
-            Initiate Contract on Upwork ↗
-          </a>
-          <a href="https://github.com/RajGahoi" target="_blank" class="editorial-btn editorial-btn-secondary">
-            Inspect Source Code on GitHub
-          </a>
+      <div class="hero-actions">
+        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn-studio-primary">
+          Start Contract on Upwork ↗
+        </a>
+        <a href="https://github.com/RajGahoi" target="_blank" class="btn-studio-ghost">
+          Explore GitHub Repository
+        </a>
+      </div>
+    </section>
+
+    <!-- Horizontal Showcase Slider -->
+    <section class="slider-section" id="work">
+      <div class="section-header-row">
+        <div>
+          <div class="section-eyebrow">// 01 · CURATED PRODUCTION WORK</div>
+          <h2 class="section-heading">Featured Engineering</h2>
+        </div>
+        <div class="slider-controls">
+          <button class="slider-arrow-btn" id="prevBtn" title="Scroll Left">←</button>
+          <button class="slider-arrow-btn" id="nextBtn" title="Scroll Right">→</button>
+        </div>
+      </div>
+
+      <!-- Scrollable Cards Track -->
+      <div class="cards-slider" id="cardsSlider">
+        <!-- Card 1: Valkey Cluster Heatmap -->
+        <a href="https://github.com/valkey-io/valkey-admin/pull/579" target="_blank" class="project-card">
+          <div class="card-top">
+            <span class="card-idx">01</span>
+            <span class="card-status-pill">Valkey / Linux Foundation</span>
+          </div>
+          
+          <div class="card-mockup">
+            <div class="mockup-header">
+              <span class="mock-dot red"></span>
+              <span class="mock-dot yellow"></span>
+              <span class="mock-dot green"></span>
+            </div>
+            <!-- Interactive Visual Slot Heatmap Simulation -->
+            <div class="mockup-heatmap-grid">
+              <div class="heatmap-cell hot"></div>
+              <div class="heatmap-cell low"></div>
+              <div class="heatmap-cell med"></div>
+              <div class="heatmap-cell hot"></div>
+              <div class="heatmap-cell low"></div>
+              <div class="heatmap-cell low"></div>
+              <div class="heatmap-cell med"></div>
+              <div class="heatmap-cell hot"></div>
+              <div class="heatmap-cell low"></div>
+              <div class="heatmap-cell med"></div>
+              <div class="heatmap-cell hot"></div>
+              <div class="heatmap-cell low"></div>
+              <div class="heatmap-cell hot"></div>
+              <div class="heatmap-cell med"></div>
+              <div class="heatmap-cell low"></div>
+              <div class="heatmap-cell hot"></div>
+              <div class="heatmap-cell med"></div>
+              <div class="heatmap-cell hot"></div>
+              <div class="heatmap-cell low"></div>
+              <div class="heatmap-cell med"></div>
+              <div class="heatmap-cell hot"></div>
+              <div class="heatmap-cell low"></div>
+              <div class="heatmap-cell low"></div>
+              <div class="heatmap-cell med"></div>
+              <div class="heatmap-cell hot"></div>
+              <div class="heatmap-cell low"></div>
+              <div class="heatmap-cell med"></div>
+              <div class="heatmap-cell hot"></div>
+              <div class="heatmap-cell low"></div>
+              <div class="heatmap-cell hot"></div>
+              <div class="heatmap-cell med"></div>
+              <div class="heatmap-cell low"></div>
+            </div>
+          </div>
+
+          <div class="card-info">
+            <h3>Valkey 16K Cluster Heatmap</h3>
+            <p>Engineered full CRC16 XMODEM hash tag distribution engine for Valkey Big Keys in cluster mode. Integrated interactive route selection with GLIDE 2.4 client routing.</p>
+          </div>
+
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tag-item">React</span>
+              <span class="tag-item">CRC16</span>
+              <span class="tag-item">GLIDE</span>
+            </div>
+            <div class="card-arrow">PR #579 ↗</div>
+          </div>
+        </a>
+
+        <!-- Card 2: Binary Byte Parser -->
+        <a href="https://github.com/valkey-io/valkey-admin/pull/578" target="_blank" class="project-card">
+          <div class="card-top">
+            <span class="card-idx">02</span>
+            <span class="card-status-pill">Systems Buffer Protocol</span>
+          </div>
+          
+          <div class="card-mockup">
+            <div class="mockup-header">
+              <span class="mock-dot red"></span>
+              <span class="mock-dot yellow"></span>
+              <span class="mock-dot green"></span>
+            </div>
+            <div class="mockup-code">
+              <div><span class="fn">const</span> isBinary = <span class="key">Buffer</span>.<span class="fn">isUtf8</span>(buf);</div>
+              <div><span class="fn">if</span> (!isBinary) {</div>
+              <div>&nbsp;&nbsp;<span class="str">decodeRawHex</span>(buf.slice(0, 32));</div>
+              <div>} <span class="fn">return</span> streamSafe;</div>
+            </div>
+          </div>
+
+          <div class="card-info">
+            <h3>Non-Destructive Binary Parser</h3>
+            <p>Eliminated collection key truncation across nested Hash, List, Set, and Zset storage structures by designing byte-level detection and zero-copy slicing.</p>
+          </div>
+
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tag-item">Node.js</span>
+              <span class="tag-item">Buffers</span>
+              <span class="tag-item">V8 Memory</span>
+            </div>
+            <div class="card-arrow">PR #578 ↗</div>
+          </div>
+        </a>
+
+        <!-- Card 3: Expensify React Native Core -->
+        <a href="https://github.com/RajGahoi/App/tree/fix/104307-arrow-nav-split-delete" target="_blank" class="project-card">
+          <div class="card-top">
+            <span class="card-idx">03</span>
+            <span class="card-status-pill">Enterprise React Native</span>
+          </div>
+          
+          <div class="card-mockup">
+            <div class="mockup-header">
+              <span class="mock-dot red"></span>
+              <span class="mock-dot yellow"></span>
+              <span class="mock-dot green"></span>
+            </div>
+            <div class="mockup-code">
+              <div><span class="key">Onyx</span>.<span class="fn">connect</span>({</div>
+              <div>&nbsp;&nbsp;<span class="str">key</span>: ONYXKEYS.TRANSACTIONS,</div>
+              <div>&nbsp;&nbsp;<span class="str">callback</span>: syncNavCarouselState</div>
+              <div>}); // 0 race conditions</div>
+            </div>
+          </div>
+
+          <div class="card-info">
+            <h3>Expensify State Sync Core</h3>
+            <p>Resolved asynchronous race conditions and stale carousel navigation in multi-screen expense transactions with automated Jest unit testing suites.</p>
+          </div>
+
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tag-item">React Native</span>
+              <span class="tag-item">Onyx ORM</span>
+              <span class="tag-item">Jest CI</span>
+            </div>
+            <div class="card-arrow">Issue #104307 ↗</div>
+          </div>
+        </a>
+
+        <!-- Card 4: Cluster Topology Telemetry -->
+        <a href="https://github.com/valkey-io/valkey-admin/pull/577" target="_blank" class="project-card">
+          <div class="card-top">
+            <span class="card-idx">04</span>
+            <span class="card-status-pill">Telemetry Engine</span>
+          </div>
+          
+          <div class="card-mockup">
+            <div class="mockup-header">
+              <span class="mock-dot red"></span>
+              <span class="mock-dot yellow"></span>
+              <span class="mock-dot green"></span>
+            </div>
+            <div class="mockup-code">
+              <div><span class="fn">async</span> <span class="key">getClusterNodesInfo</span>() {</div>
+              <div>&nbsp;&nbsp;<span class="fn">return</span> shardNodes.map(node => ({</div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;cpu: node.used_cpu_sys,</div>
+              <div>&nbsp;&nbsp;&nbsp;&nbsp;slots: node.slotRange</div>
+              <div>&nbsp;&nbsp;}));</div>
+            </div>
+          </div>
+
+          <div class="card-info">
+            <h3>Cluster Topology Telemetry</h3>
+            <p>Surfaced real-time INFO metrics and CPU/memory utilization telemetry for replica nodes across heterogeneous Valkey cluster shards.</p>
+          </div>
+
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tag-item">Distributed</span>
+              <span class="tag-item">Monitoring</span>
+              <span class="tag-item">TypeScript</span>
+            </div>
+            <div class="card-arrow">PR #577 ↗</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Architecture & Capability Bento Grid -->
+    <section class="studio-bento" id="architecture">
+      <div class="section-eyebrow">// 02 · ARCHITECTURAL CAPABILITY</div>
+      <h2 class="section-heading">Systems & Stack Foundation</h2>
+
+      <div class="bento-grid">
+        <!-- Box 1: Core Systems -->
+        <div class="bento-box bento-span-8">
+          <div class="box-title">Distributed Systems & Data Infrastructure</div>
+          <p class="box-desc">Architecting robust distributed memory caching, cluster topologies, and binary packet parsers designed to withstand high concurrency and packet fragmentation.</p>
+          <div class="pill-cloud">
+            <span class="pill-item">Valkey / Redis Clusters</span>
+            <span class="pill-item">CRC16 Hash Slot Routing</span>
+            <span class="pill-item">Binary Protocols & Framing</span>
+            <span class="pill-item">AWS ElastiCache</span>
+            <span class="pill-item">GLIDE 2.4 Driver</span>
+            <span class="pill-item">V8 & jemalloc Profiling</span>
+          </div>
+        </div>
+
+        <!-- Box 2: Quality & CI -->
+        <div class="bento-box bento-span-4">
+          <div class="box-title">Zero Regression CI</div>
+          <p class="box-desc">Automated testing pipelines maintaining absolute reliability across heterogeneous production deployments.</p>
+          <div class="pill-cloud">
+            <span class="pill-item">Jest & Mocking</span>
+            <span class="pill-item">GitHub Actions Matrix</span>
+            <span class="pill-item">Docker Containers</span>
+            <span class="pill-item">Strict ESLint & DCO</span>
+          </div>
+        </div>
+
+        <!-- Box 3: Modern Full-Stack -->
+        <div class="bento-box bento-span-6">
+          <div class="box-title">Modern Full-Stack Applications</div>
+          <p class="box-desc">Next-generation UI frameworks with sub-millisecond response latencies and seamless offline synchronization.</p>
+          <div class="pill-cloud">
+            <span class="pill-item">React 19 & Next.js</span>
+            <span class="pill-item">React Native & Expo</span>
+            <span class="pill-item">TypeScript (Strict)</span>
+            <span class="pill-item">Tailwind CSS & Radix</span>
+          </div>
+        </div>
+
+        <!-- Box 4: High-Performance Backend -->
+        <div class="bento-box bento-span-6">
+          <div class="box-title">High-Throughput Backends</div>
+          <p class="box-desc">Low-latency REST and GraphQL servers engineered with asynchronous event loops and defensive database access.</p>
+          <div class="pill-cloud">
+            <span class="pill-item">Node.js (Async I/O)</span>
+            <span class="pill-item">Python & FastAPI</span>
+            <span class="pill-item">PostgreSQL & Prisma</span>
+            <span class="pill-item">GraphQL Endpoints</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Metric Strip -->
-    <div class="metric-strip">
-      <div class="strip-box">
-        <div class="strip-num">15+</div>
-        <div class="strip-label">Production Pull Requests</div>
+    <!-- Upwork Direct Contract Callout Banner -->
+    <div class="hire-banner">
+      <div class="hire-text">
+        <h2>Ready to build something world-class?</h2>
+        <p>Available for select high-stakes engineering contracts, bounty engagements, and technical architecture consulting directly through Upwork or private contract.</p>
       </div>
-      <div class="strip-box">
-        <div class="strip-num">16K</div>
-        <div class="strip-label">Cluster Slots Mapped</div>
-      </div>
-      <div class="strip-box">
-        <div class="strip-num">100%</div>
-        <div class="strip-label">CI Verification Rate</div>
-      </div>
-      <div class="strip-box">
-        <div class="strip-num">0.00</div>
-        <div class="strip-label">Regression Tolerance</div>
-      </div>
+      <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="btn-studio-primary">
+        Hire Raj on Upwork ↗
+      </a>
     </div>
-
-    <!-- Curated Works (Awwwards Style List) -->
-    <section class="work-section" id="work">
-      <div class="section-headline">
-        <span>// 01 · CURATED PRODUCTION CODE</span>
-        <span>2025 — 2026</span>
-      </div>
-
-      <!-- Item 01 -->
-      <a href="https://github.com/valkey-io/valkey-admin/pull/579" target="_blank" class="project-row">
-        <div class="project-row-inner">
-          <div class="p-idx">01</div>
-          <div class="p-title">Valkey Cluster Heatmap</div>
-          <div class="p-desc">
-            Engineered full 16,384-slot CRC16 XMODEM hash tag distribution engine for Valkey Big Keys in cluster mode. Integrated interactive route selection and GLIDE 2.4 client routing.
-          </div>
-          <div class="p-action">PR #579 ↗</div>
-        </div>
-      </a>
-
-      <!-- Item 02 -->
-      <a href="https://github.com/valkey-io/valkey-admin/pull/578" target="_blank" class="project-row">
-        <div class="project-row-inner">
-          <div class="p-idx">02</div>
-          <div class="p-title">Binary Elements Parser</div>
-          <div class="p-desc">
-            Eliminated collection key truncation by designing non-destructive binary byte-level detection across nested Hash, List, Set, and Zset storage structures.
-          </div>
-          <div class="p-action">PR #578 ↗</div>
-        </div>
-      </a>
-
-      <!-- Item 03 -->
-      <a href="https://github.com/valkey-io/valkey-admin/pull/577" target="_blank" class="project-row">
-        <div class="project-row-inner">
-          <div class="p-idx">03</div>
-          <div class="p-title">Cluster Topology Metrics</div>
-          <div class="p-desc">
-            Surfaced real-time INFO metrics and CPU/memory utilization telemetry for replica nodes across heterogeneous Valkey cluster shards.
-          </div>
-          <div class="p-action">PR #577 ↗</div>
-        </div>
-      </a>
-
-      <!-- Item 04 -->
-      <a href="https://github.com/RajGahoi/App/tree/fix/104307-arrow-nav-split-delete" target="_blank" class="project-row">
-        <div class="project-row-inner">
-          <div class="p-idx">04</div>
-          <div class="p-title">Expensify Navigation Core</div>
-          <div class="p-desc">
-            Fixed race conditions and asynchronous Onyx state desynchronization in multi-screen expense carousels with 100% automated regression coverage.
-          </div>
-          <div class="p-action">Issue #104307 ↗</div>
-        </div>
-      </a>
-    </section>
-
-    <!-- Architecture & Systems Section -->
-    <section class="systems-section" id="systems">
-      <div class="section-headline">
-        <span>// 02 · ARCHITECTURAL CAPABILITY</span>
-        <span>ENGINEERING FOUNDATION</span>
-      </div>
-
-      <div class="matrix-grid">
-        <div class="matrix-col">
-          <h4>Core Distributed</h4>
-          <ul class="matrix-list">
-            <li>Valkey / Redis Clusters <span>CRC16 / Sharding</span></li>
-            <li>Binary Protocol Parsers <span>Buffers / Framing</span></li>
-            <li>GLIDE 2.4 Driver <span>Rust / Node / Py</span></li>
-            <li>Memory Profiling <span>jemalloc / V8</span></li>
-          </ul>
-        </div>
-
-        <div class="matrix-col">
-          <h4>Modern Full-Stack</h4>
-          <ul class="matrix-list">
-            <li>React 19 & Next.js <span>Server Components</span></li>
-            <li>React Native & Expo <span>Mobile / Web</span></li>
-            <li>TypeScript <span>Strict Typing</span></li>
-            <li>Node.js & FastAPI <span>High-Throughput</span></li>
-          </ul>
-        </div>
-
-        <div class="matrix-col">
-          <h4>Reliability Standards</h4>
-          <ul class="matrix-list">
-            <li>Jest & Automated CI <span>Zero Failures</span></li>
-            <li>GitHub Actions <span>Multi-OS Matrix</span></li>
-            <li>Docker Containers <span>Reproducible</span></li>
-            <li>Open-Source DCO <span>Compliant</span></li>
-          </ul>
-        </div>
-      </div>
-    </section>
 
     <!-- Footer -->
     <footer>
-      <div>
-        <div class="colophon-big">Let's build something<br>exceptional.</div>
-        <p style="color: var(--muted); font-size: 14px;">Available for high-stakes software engineering contracts worldwide.</p>
+      <div class="footer-left">
+        © 2026 Raj Gahoi · Systems & Creative Engineering.
       </div>
-
-      <div class="social-links">
-        <a href="mailto:gahoiraj01@gmail.com" class="social-link">Email</a>
-        <a href="https://github.com/RajGahoi" target="_blank" class="social-link">GitHub</a>
-        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" class="social-link">Upwork Profile ↗</a>
+      <div class="footer-links">
+        <a href="mailto:gahoiraj01@gmail.com">Email</a>
+        <a href="https://github.com/RajGahoi" target="_blank">GitHub</a>
+        <a href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank">Upwork Profile ↗</a>
       </div>
     </footer>
-  </div>
+  </main>
+
+  <script>
+    // Creative Studio Cursor Tracker with Fluid Interpolation
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0;
+    let ringX = 0, ringY = 0;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.left = `${mouseX}px`;
+      dot.style.top = `${mouseY}px`;
+    });
+
+    function animateCursor() {
+      ringX += (mouseX - ringX) * 0.15;
+      ringY += (mouseY - ringY) * 0.15;
+      ring.style.left = `${ringX}px`;
+      ring.style.top = `${ringY}px`;
+      requestAnimationFrame(animateCursor);
+    }
+    requestAnimationFrame(animateCursor);
+
+    // Interactive Hover States for Links & Buttons
+    const interactiveElements = document.querySelectorAll('a, button, .project-card, .pill-item');
+    interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('active'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('active'));
+    });
+
+    const textElements = document.querySelectorAll('.hero-title, .section-heading, .meta-stat-num');
+    textElements.forEach(el => {
+      el.addEventListener('mouseenter', () => ring.classList.add('text-hover'));
+      el.addEventListener('mouseleave', () => ring.classList.remove('text-hover'));
+    });
+
+    // Horizontal Card Slider Navigation
+    const slider = document.getElementById('cardsSlider');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    prevBtn.addEventListener('click', () => {
+      slider.scrollBy({ left: -560, behavior: 'smooth' });
+    });
+
+    nextBtn.addEventListener('click', () => {
+      slider.scrollBy({ left: 560, behavior: 'smooth' });
+    });
+  </script>
 </body>
 </html>
