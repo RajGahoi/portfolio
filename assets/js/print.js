@@ -13,7 +13,7 @@
   const status = fig && fig.querySelector('[data-print-status]');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const img = new Image();
-  img.src = './assets/images/portrait.jpg?v=20261020_3';
+  img.src = './assets/images/portrait.jpg?v=20261020_4';
 
   // dark → light: sumi, ai, hanada, asagi, a pale indigo wash, washi
   const RAMP = ['#15162b', '#22305f', '#38548f', '#7a94bf', '#c6d0e2', '#f2e9d6'].map(h => { const n = parseInt(h.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; });
