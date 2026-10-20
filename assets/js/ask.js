@@ -24,7 +24,7 @@
     [['rust', 'glide', 'options', 'wire', 'parser', 'binary'], ['rust', 'glide', 'infosection', 'buffer']],
     [['expensify', 'mobile', 'react-native', 'frontend', 'bounty'], ['expensify', 'focus', 'carousel']],
     [['skills', 'stack', 'languages', 'tools', 'tech'], ['rust', 'typescript', 'c++', 'python', 'react', 'valkey']],
-    [['location', 'city', 'based', 'timezone', 'ist'], ['jaipur', 'remote', 'ist']],
+    [['location', 'city', 'based', 'timezone', 'ist'], ['gr. noida', 'greater noida', 'ncr', 'remote', 'ist']],
     [['leetcode', 'cp', 'dsa', 'competitive', 'ranking'], ['leetcode', 'algorithmic', 'dsa']],
     [['degree', 'college', 'education', 'university'], ['engineering', 'systems', 'computer']],
   ];
