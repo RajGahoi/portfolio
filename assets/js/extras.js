@@ -602,3 +602,101 @@
     }
   })();
 })();
+
+  // Live Multi-Region Cluster Ping Simulator
+  (function initLatencyMesh() {
+    const cv = document.getElementById('latency-mesh-canvas');
+    if (!cv) return;
+    const ctx = cv.getContext('2d');
+    const btn = document.getElementById('inject-spike-btn');
+    const p50El = document.getElementById('p50-val');
+    const p99El = document.getElementById('p99-val');
+    const jitterEl = document.getElementById('jitter-val');
+
+    let w = cv.offsetWidth || 500, h = cv.offsetHeight || 90;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = w * dpr; cv.height = h * dpr;
+    ctx.scale(dpr, dpr);
+
+    const history = Array.from({ length: 60 }, () => 0.4 + Math.random() * 0.15);
+    let spike = 0;
+
+    if (btn) {
+      btn.addEventListener('click', () => {
+        spike = 2.8 + Math.random() * 1.5;
+        btn.textContent = '🔥 Burst Active!';
+        setTimeout(() => { btn.textContent = '⚡ Simulate 10K QPS Burst'; }, 1500);
+      });
+    }
+
+    function render() {
+      w = cv.offsetWidth; h = cv.offsetHeight;
+      if (cv.width !== Math.round(w * dpr)) {
+        cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+        ctx.scale(dpr, dpr);
+      }
+
+      // Compute next ping
+      let next = 0.38 + Math.sin(Date.now() * 0.003) * 0.08 + Math.random() * 0.12;
+      if (spike > 0) {
+        next += spike;
+        spike = Math.max(0, spike - 0.25);
+      }
+      history.shift();
+      history.push(next);
+
+      // Render line graph
+      ctx.clearRect(0, 0, w, h);
+
+      // Grid lines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+      ctx.lineWidth = 1;
+      for (let y = 15; y < h; y += 25) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+
+      // Area gradient
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, 'rgba(228, 173, 98, 0.4)');
+      grad.addColorStop(1, 'rgba(228, 173, 98, 0.0)');
+
+      ctx.beginPath();
+      const step = w / (history.length - 1);
+      history.forEach((val, i) => {
+        const x = i * step;
+        const y = h - (val / 4.5) * (h - 16) - 8;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.lineTo(w, h);
+      ctx.lineTo(0, h);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Stroke line
+      ctx.beginPath();
+      history.forEach((val, i) => {
+        const x = i * step;
+        const y = h - (val / 4.5) * (h - 16) - 8;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.strokeStyle = '#e4ad62';
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+
+      // Update text metrics
+      const sorted = [...history].sort((a, b) => a - b);
+      const p50 = sorted[Math.floor(sorted.length * 0.5)];
+      const p99 = sorted[Math.floor(sorted.length * 0.95)];
+      const jitter = Math.abs(history[history.length - 1] - history[history.length - 2]);
+
+      if (p50El) p50El.textContent = p50.toFixed(2) + 'ms';
+      if (p99El) p99El.textContent = p99.toFixed(2) + 'ms';
+      if (jitterEl) jitterEl.textContent = jitter.toFixed(2) + 'ms';
+
+      requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+  })();

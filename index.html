@@ -43,6 +43,10 @@
         <a href="#contact"><i lang="ja" aria-hidden="true">縁</i>Contact</a>
       </nav>
 
+            <button class="nav__icon nav__sound" type="button" data-sound aria-label="Toggle ambient soundscape" title="Play ambient sound (temple chimes & flute)">
+        <span class="snd" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="snd__label">音</span>
+      </button>
       <button class="nav__icon nav__season" type="button" data-season-next aria-label="Change the season" title="Change the season"><span data-season-kanji>秋</span></button>
       <span class="nav__status nav__time" title="Local time in Gr. Noida (IST)"><span class="nav__city">Gr. Noida</span><b data-clock>--:--</b></span>
       <a class="btn btn--primary btn--sm" href="https://www.upwork.com/freelancers/~014898525b9c53fc32" target="_blank" style="margin-left:4px;height:34px;padding:0 14px;border-radius:999px;">
@@ -509,6 +513,29 @@
             </div>
             <h4>Zero-Copy Stream Analyzer</h4>
             <p>Interactive binary buffer inspection demonstrating zero data corruption across nested structures.</p>
+          </div>
+
+                    <!-- Toy 4: Distributed Packet Jitter & Mesh Latency Engine -->
+          <div class="toy" style="grid-column: 1 / -1; margin-top: 10px;">
+            <div class="toy__stage" style="background:rgba(14,13,15,0.7); padding: 18px 22px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <div class="toy__prompt" style="font-size:12px; margin:0;">Multi-Region Cluster Ping Simulator:</div>
+                <div style="display:flex; gap:10px; font-family:var(--mono); font-size:11px;">
+                  <span>p50: <b style="color:#4ade80;" id="p50-val">0.42ms</b></span>
+                  <span>p99: <b style="color:var(--accent);" id="p99-val">1.18ms</b></span>
+                  <span>jitter: <b style="color:#60a5fa;" id="jitter-val">0.03ms</b></span>
+                </div>
+              </div>
+              <canvas id="latency-mesh-canvas" style="width:100%; height:90px; border-radius:8px; background:rgba(0,0,0,0.4); display:block;"></canvas>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; font-size:11px; font-family:var(--mono); color:var(--fg-3);">
+                <span>Routing: <b style="color:var(--fg-2);">Tokyo (NRT) ↔ Singapore (SIN) ↔ Mumbai (BOM)</b></span>
+                <button type="button" id="inject-spike-btn" style="background:rgba(212,85,59,0.25); border:1px solid rgba(212,85,59,0.5); color:#fca5a5; padding:4px 12px; border-radius:6px; cursor:pointer; font-family:var(--mono); font-size:11px; transition:0.2s;">
+                  ⚡ Simulate 10K QPS Burst
+                </button>
+              </div>
+            </div>
+            <h4>Real-Time Cluster Latency & Jitter Monitor</h4>
+            <p>Live sliding window visualizing zero-drift packet routing across 16,384 memory slots under synthetic burst load.</p>
           </div>
 
           <!-- Toy 3: Deterministic Invariants -->
