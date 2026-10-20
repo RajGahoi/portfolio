@@ -13,7 +13,7 @@
   const status = fig && fig.querySelector('[data-print-status]');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const img = new Image();
-  img.src = './assets/images/portrait.jpg?v=20261020_2';
+  img.src = './assets/images/portrait.jpg?v=20261020_3';
 
   // dark → light: sumi, ai, hanada, asagi, a pale indigo wash, washi
   const RAMP = ['#15162b', '#22305f', '#38548f', '#7a94bf', '#c6d0e2', '#f2e9d6'].map(h => { const n = parseInt(h.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; });
@@ -42,7 +42,7 @@
     const read = blur => {
       const o = surface(W, H).getContext('2d', { willReadFrequently: true });
       o.filter = blur ? `blur(${blur}px)` : 'none';
-      o.drawImage(img, 170 * k, 80 * k, 800 * k, 1000 * k, 0, 0, W, H);
+      o.drawImage(img, 0, 0, img.width, img.height, 0, 0, W, H);
       const d = o.getImageData(0, 0, W, H).data, L = new Float32Array(W * H);
       for (let i = 0; i < L.length; i++) L[i] = (d[i * 4] * 0.3 + d[i * 4 + 1] * 0.59 + d[i * 4 + 2] * 0.11) / 255;
       return L;
@@ -127,7 +127,7 @@
     g.fillStyle = 'rgba(196, 64, 44, 0.92)'; g.fillRect(x, y, s, s * 2.1);
     g.strokeStyle = 'rgba(242, 233, 214, 0.75)'; g.lineWidth = dpr; g.strokeRect(x + 1.6 * dpr, y + 1.6 * dpr, s - 3.2 * dpr, s * 2.1 - 3.2 * dpr);
     g.fillStyle = '#f6ecdb'; g.font = `700 ${Math.round(8.5 * dpr)}px 'Shippori Mincho', serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
-    ['ニ', 'キ', 'ル'].forEach((ch, i) => g.fillText(ch, x + s / 2, y + s * 0.42 + i * s * 0.62));
+    ['ラ', 'ジ', 'ガ'].forEach((ch, i) => g.fillText(ch, x + s / 2, y + s * 0.42 + i * s * 0.62));
     return c;
   }
 
