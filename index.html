@@ -259,24 +259,26 @@
         <header class="shead" data-reveal>
           <p class="tag"><span class="seal">二</span>Experience<em class="tag__jp" lang="ja">経歴</em></p>
           <h2 class="shead__title">Where it runs <span class="dim">in production.</span></h2>
-          <p class="shead__desc">Where my code met real users and high-scale traffic.</p>
+          <p class="shead__desc">The evolutionary journey: from algorithmic rigor to enterprise frontend scale and distributed cloud infrastructure.</p>
         </header>
 
         <ol class="timeline">
+          <!-- Chapter 1: Core Systems & Linux Foundation -->
           <li class="role is-live" data-reveal>
             <div class="role__gate">
               <svg class="gate" viewBox="0 0 100 92" aria-hidden="true"><path class="k" d="M1 13 Q50 22 99 13 L100 5 Q50 14 0 5Z"/><rect class="v" x="9" y="18" width="82" height="6"/><rect class="v" x="44.5" y="24" width="11" height="11"/><rect class="v" x="5" y="33" width="90" height="6"/><rect class="v" x="18" y="18" width="9" height="66"/><rect class="v" x="73" y="18" width="9" height="66"/><rect class="k" x="16" y="82" width="13" height="10"/><rect class="k" x="71" y="82" width="13" height="10"/></svg>
-              <span class="role__when">Now</span>
+              <span class="role__when">Present</span>
             </div>
             <div class="role__main">
               <div class="role__head">
-                <h3><a href="https://github.com/valkey-io/valkey-admin" target="_blank" rel="noopener">Linux Foundation / Valkey Admin <span aria-hidden="true">↗</span></a></h3>
-                <p class="role__title">Core Contributor · Systems &amp; Distributed Architecture</p>
+                <h3><a href="https://github.com/valkey-io/valkey-admin" target="_blank" rel="noopener">Linux Foundation / Valkey Architecture <span aria-hidden="true">↗</span></a></h3>
+                <p class="role__title">Core Contributor · Distributed Systems &amp; Low-Latency Memory</p>
               </div>
+              <p class="role__text">Working on the open-source Redis successor under the Linux Foundation. Architected 16K-slot CRC16 XMODEM cluster routing heatmaps and engineered non-destructive zero-copy byte parsers for large-scale nested KV data trees.</p>
               <ul class="role__points">
                 <li>Engineered the <strong>16,384-slot CRC16 XMODEM cluster heatmap engine</strong> for Valkey Big Keys in cluster mode.</li>
-                <li>Eliminated collection key truncation by designing non-destructive binary byte-level detection across nested Hash, List, Set, and Zset storage structures.</li>
-                <li>Surfaced real-time INFO metrics and CPU/memory utilization telemetry for replica nodes across heterogeneous shards.</li>
+                <li>Eliminated memory buffer truncation in complex KV trees by designing non-destructive binary byte parsers.</li>
+                <li>Contributed wire protocol enhancements to Valkey GLIDE Rust client (PR #7373).</li>
               </ul>
               <div class="role__nums">
                 <div><b>16,384</b><span>cluster slots</span></div>
@@ -286,6 +288,7 @@
             </div>
           </li>
 
+          <!-- Chapter 2: Enterprise Mobile & Concurrency -->
           <li class="role" data-reveal>
             <div class="role__gate">
               <svg class="gate" viewBox="0 0 100 92" aria-hidden="true"><path class="k" d="M1 13 Q50 22 99 13 L100 5 Q50 14 0 5Z"/><rect class="v" x="9" y="18" width="82" height="6"/><rect class="v" x="44.5" y="24" width="11" height="11"/><rect class="v" x="5" y="33" width="90" height="6"/><rect class="v" x="18" y="18" width="9" height="66"/><rect class="v" x="73" y="18" width="9" height="66"/><rect class="k" x="16" y="82" width="13" height="10"/><rect class="k" x="71" y="82" width="13" height="10"/></svg>
@@ -293,10 +296,35 @@
             </div>
             <div class="role__main">
               <div class="role__head">
-                <h3><a href="https://github.com/Expensify/App" target="_blank" rel="noopener">Expensify Ecosystem <span aria-hidden="true">↗</span></a></h3>
-                <p class="role__title">Open-Source Bounty Engineer · Enterprise React Native</p>
+                <h3><a href="https://github.com/Expensify/App" target="_blank" rel="noopener">Expensify Platform <span aria-hidden="true">↗</span></a></h3>
+                <p class="role__title">Engineering Bounty Partner · Enterprise React Native &amp; Onyx Store</p>
               </div>
-              <p class="role__text">Solved multi-screen transaction carousel race conditions and stale Onyx store synchronizations with automated Jest unit testing.</p>
+              <p class="role__text">Dove into one of GitHub's largest React Native codebases ($100M+ ARR scale). Resolved multi-screen transaction carousel race conditions, keyboard navigation focus traps, and stale Onyx asynchronous store synchronizations.</p>
+              <div class="role__nums">
+                <div><b>Jest</b><span>regression safety</span></div>
+                <div><b>Multi-OS</b><span>iOS, Android, Web</span></div>
+                <div><b>Zero</b><span>UI jank</span></div>
+              </div>
+            </div>
+          </li>
+
+          <!-- Chapter 3: Algorithmic Rigor & Competitive Problem Solving -->
+          <li class="role" data-reveal>
+            <div class="role__gate">
+              <svg class="gate" viewBox="0 0 100 92" aria-hidden="true"><path class="k" d="M1 13 Q50 22 99 13 L100 5 Q50 14 0 5Z"/><rect class="v" x="9" y="18" width="82" height="6"/><rect class="v" x="44.5" y="24" width="11" height="11"/><rect class="v" x="5" y="33" width="90" height="6"/><rect class="v" x="18" y="18" width="9" height="66"/><rect class="v" x="73" y="18" width="9" height="66"/><rect class="k" x="16" y="82" width="13" height="10"/><rect class="k" x="71" y="82" width="13" height="10"/></svg>
+              <span class="role__when">Foundation</span>
+            </div>
+            <div class="role__main">
+              <div class="role__head">
+                <h3><a href="https://leetcode.com/u/raj_gahoi/" target="_blank" rel="noopener">Algorithmic Problem Solving &amp; Data Structures <span aria-hidden="true">↗</span></a></h3>
+                <p class="role__title">Competitive Programmer &amp; Core Computer Science Practitioner</p>
+              </div>
+              <p class="role__text">Built mathematical rigor and optimal time-space intuition solving complex graph theory, dynamic programming, and tree traversal challenges on LeetCode (@raj_gahoi). Every backend system I design inherits this exact focus on Big-O efficiency.</p>
+              <div class="role__nums">
+                <div><b>DSA</b><span>first principles</span></div>
+                <div><b>O(1)</b><span>slot lookup</span></div>
+                <div><b>C++ / TS</b><span>idiomatic patterns</span></div>
+              </div>
             </div>
           </li>
         </ol>
